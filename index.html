@@ -46,16 +46,35 @@
     }
 
     /* PERFECT ANCHOR ALIGNMENT FOR MODULE 2 */
-    .flash-container {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      font-family: monospace;
-    }
-    .flash-prefix { text-align: right; width: 50%; }
-    .flash-anchor { color: #dc2626; font-weight: 900; text-decoration: underline; text-underline-offset: 4px; padding: 0 1px; }
-    .flash-suffix { text-align: left; width: 50%; }
+  /* FIXED OPTICAL FLASHER LAYOUT */
+  .flash-container {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap; /* Prevents text from breaking onto multiple lines */
+    font-family: monospace;
+    font-size: 1.5rem;
+    line-height: 1;
+    width: 100%;
+  }
+  .flash-prefix {
+    text-align: right;
+    flex: 1;
+    white-space: pre; /* Preserves exact spaces in phrase chunks */
+  }
+  .flash-anchor {
+    color: #dc2626;
+    font-weight: 900;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    flex: 0 0 auto;
+    padding: 0 1px;
+  }
+  .flash-suffix {
+    text-align: left;
+    flex: 1;
+    white-space: pre; /* Preserves exact spaces in phrase chunks */
+  }
 
     @media print {
       body * { visibility: hidden !important; }
@@ -808,40 +827,39 @@
     }
 
     function startFlasher() {
-      let i = 0;
-      const display = document.getElementById('flashDisplay');
-      const counter = document.getElementById('flashCounter');
-      const chunks = currentData.chunks || buildChunksFromPassage(currentData.passage);
-      
-      const interval = setInterval(() => {
-        if (i >= chunks.length) { 
-          clearInterval(interval); 
-          display.innerHTML = `<span class="text-emerald-400 font-bold">Session Complete! (${chunks.length} Flashes)</span>`; 
-          counter.innerText = `Done: ${chunks.length} / ${chunks.length} Flashes`;
-          return; 
-        }
-        
-        const item = chunks[i];
-        const text = item.text || "";
-        const oap = item.oap !== undefined ? item.oap : Math.floor(text.length / 2);
-        
-        const prefix = text.slice(0, oap);
-        const anchorChar = text[oap] || text[0];
-        const suffix = text.slice(oap + 1);
-
-        display.innerHTML = `
-          <div class="flash-container">
-            <span class="flash-prefix">${prefix}</span>
-            <span class="flash-anchor">${anchorChar}</span>
-            <span class="flash-suffix">${suffix}</span>
-          </div>
-        `;
-        
-        counter.innerText = `Training: ${i + 1} / ${chunks.length} Flashes`;
-        i++;
-      }, currentFlashDelay);
+  let i = 0;
+  const display = document.getElementById('flashDisplay');
+  const counter = document.getElementById('flashCounter');
+  const chunks = currentData.chunks || buildChunksFromPassage(currentData.passage);
+  
+  const interval = setInterval(() => {
+    if (i >= chunks.length) { 
+      clearInterval(interval); 
+      display.innerHTML = `<span class="text-emerald-400 font-bold text-base">Session Complete! (${chunks.length} Flashes)</span>`; 
+      counter.innerText = `Done: ${chunks.length} / ${chunks.length} Flashes`;
+      return; 
     }
+    
+    const item = chunks[i];
+    const text = item.text || "";
+    const oap = item.oap !== undefined ? item.oap : Math.floor(text.length / 2);
+    
+    const prefix = text.slice(0, oap);
+    const anchorChar = text[oap] || text[0];
+    const suffix = text.slice(oap + 1);
 
+    display.innerHTML = `
+      <div class="flash-container">
+        <span class="flash-prefix">${prefix}</span>
+        <span class="flash-anchor">${anchorChar}</span>
+        <span class="flash-suffix">${suffix}</span>
+      </div>
+    `;
+    
+    counter.innerText = `Training: ${i + 1} / ${chunks.length} Flashes`;
+    i++;
+  }, currentFlashDelay);
+}
     function pqrstNext(step) {
       document.getElementById('pqrstStep1').classList.add('hidden');
       document.getElementById('pqrstStep2').classList.add('hidden');
