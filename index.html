@@ -717,24 +717,33 @@
     }
 
     function renderQuestionList(containerId, questions, groupPrefix) {
-      const container = document.getElementById(containerId);
-      container.innerHTML = questions.map((q, qIdx) => `
-        <div class="bg-[#faf8f5] p-4 rounded-lg border border-stone-200 space-y-2 text-xs">
-          <div class="flex justify-between font-bold text-sky-950">
-            <span>${q.question}</span>
-            <span class="text-[10px] bg-stone-200 text-stone-700 px-2 py-0.5 rounded font-mono">${q.type}</span>
-          </div>
-          <div class="space-y-1.5 pl-2">
-            ${q.options.map((opt, oIdx) => `
-              <label class="block cursor-pointer text-slate-800 hover:text-slate-950">
-                <input type="radio" name="${groupPrefix}_q${qIdx}" value="${oIdx}"> ${opt}
-              </label>
-            `).join('')}
-          </div>
-        </div>
-      `).join('');
-    }
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  
+  // Safe fallback if questions is undefined or not an array
+  const safeQuestions = Array.isArray(questions) ? questions : [];
+  
+  if (safeQuestions.length === 0) {
+    container.innerHTML = `<div class="text-xs text-stone-500 italic p-2">No verification questions available for this passage.</div>`;
+    return;
+  }
 
+  container.innerHTML = safeQuestions.map((q, qIdx) => `
+    <div class="bg-[#faf8f5] p-4 rounded-lg border border-stone-200 space-y-2 text-xs">
+      <div class="flex justify-between font-bold text-sky-950">
+        <span>${q.question || 'Question'}</span>
+        <span class="text-[10px] bg-stone-200 text-stone-700 px-2 py-0.5 rounded font-mono">${q.type || 'Comprehension'}</span>
+      </div>
+      <div class="space-y-1.5 pl-2">
+        ${(q.options || []).map((opt, oIdx) => `
+          <label class="block cursor-pointer text-slate-800 hover:text-slate-950">
+            <input type="radio" name="${groupPrefix}_q${qIdx}" value="${oIdx}"> ${opt}
+          </label>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
     function loadBenchmarkData() {
       const benchmark = benchmarkBank[window.currentLexileTier][window.currentBenchmarkForm];
       document.getElementById('diagText').innerText = benchmark.passage;
@@ -748,20 +757,21 @@
     }
 
     function loadDataIntoModules() {
-      const sentences = currentData.passage.match(/[^.!?]+[.!?]+/g) || [currentData.passage];
-      document.getElementById('shutterContainer').innerHTML = sentences.map((s, i) => `<div id="line-${i}" class="shutter-line dimmed p-3.5 rounded-lg">${s.trim()}</div>`).join('');
-      document.getElementById('m1Title').innerText = "Module 1: " + (currentData.title || "Focus Shutter Accelerator");
+  const sentences = (currentData.passage || "").match(/[^.!?]+[.!?]+/g) || [currentData.passage || ""];
+  document.getElementById('shutterContainer').innerHTML = sentences.map((s, i) => `<div id="line-${i}" class="shutter-line dimmed p-3.5 rounded-lg">${s.trim()}</div>`).join('');
+  document.getElementById('m1Title').innerText = "Module 1: " + (currentData.title || "Focus Shutter Accelerator");
 
-      document.getElementById('pqrstTitle').innerText = currentData.title || "Custom Reading Practice";
-      document.getElementById('pqrstPreview').innerText = currentData.preview || "Preview main ideas before reading.";
-      document.getElementById('pqrstQuestion').innerText = currentData.guiding_question || "What are the main concepts?";
-      document.getElementById('pqrstPassageText').innerText = currentData.passage;
-      
-      renderQuestionList('pqrstQuizContainer', currentData.questions, 'pqrst');
+  document.getElementById('pqrstTitle').innerText = currentData.title || "Custom Reading Practice";
+  document.getElementById('pqrstPreview').innerText = currentData.preview || "Preview main ideas before reading.";
+  document.getElementById('pqrstQuestion').innerText = currentData.guiding_question || "What are the main concepts?";
+  document.getElementById('pqrstPassageText').innerText = currentData.passage || "";
+  
+  // Safely pass questions array with fallback to empty array
+  renderQuestionList('pqrstQuizContainer', currentData.questions || [], 'pqrst');
 
-      document.getElementById('flashCounter').innerText = `Ready: 0 / ${currentData.chunks.length} Flashes`;
-      pqrstReset();
-    }
+  document.getElementById('flashCounter').innerText = `Ready: 0 / ${(currentData.chunks || []).length} Flashes`;
+  pqrstReset();
+}
 
     loadBenchmarkData();
 
