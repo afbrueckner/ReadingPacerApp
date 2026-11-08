@@ -1,81 +1,51 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reading Pacer App - Ave Maria Edition</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            daylight: {
-              bg: '#f8fafc',
-              card: '#ffffff',
-              border: '#cbd5e1',
-              text: '#0f172a',
-              muted: '#64748b'
-            }
-          }
-        }
-      }
-    }
-  </script>
   <style>
-    body { transition: background-color 0.3s, color 0.3s; }
-    
-    .shutter-line { transition: all 0.25s ease-in-out; }
-    .dimmed { opacity: 0.2; filter: blur(1px); }
-    .dark .focused { 
+    /* CLASSIC PAPER & INK TYPOGRAPHY STYLES */
+    body {
+      background-color: #f7f5f0;
+      color: #1e293b;
+      font-family: Georgia, Cambria, "Times New Roman", Times, serif;
+    }
+
+    .font-sans-ui {
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    /* MODULE 1: FOCUS SHUTTER HIGHLIGHTER */
+    .shutter-line { transition: all 0.2s ease-in-out; }
+    .dimmed { opacity: 0.22; filter: blur(0.5px); }
+    .focused { 
       opacity: 1; 
       filter: blur(0px); 
-      font-weight: 700; 
-      background: #fef08a; 
+      font-weight: 600; 
+      background-color: #fef08a; 
       color: #0f172a; 
-      box-shadow: 0 4px 12px rgba(254, 240, 138, 0.2); 
-    }
-    .light .focused { 
-      opacity: 1; 
-      filter: blur(0px); 
-      font-weight: 700; 
-      background: #0284c7; 
-      color: #ffffff; 
-      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25); 
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(254, 240, 138, 0.4); 
     }
 
-    /* PERFECT ANCHOR ALIGNMENT FOR MODULE 2 */
-  /* FIXED OPTICAL FLASHER LAYOUT */
-  .flash-container {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    white-space: nowrap; /* Prevents text from breaking onto multiple lines */
-    font-family: monospace;
-    font-size: 1.5rem;
-    line-height: 1;
-    width: 100%;
-  }
-  .flash-prefix {
-    text-align: right;
-    flex: 1;
-    white-space: pre; /* Preserves exact spaces in phrase chunks */
-  }
-  .flash-anchor {
-    color: #dc2626;
-    font-weight: 900;
-    text-decoration: underline;
-    text-underline-offset: 4px;
-    flex: 0 0 auto;
-    padding: 0 1px;
-  }
-  .flash-suffix {
-    text-align: left;
-    flex: 1;
-    white-space: pre; /* Preserves exact spaces in phrase chunks */
-  }
+    /* MODULE 2: PERFECT OPTICAL FLASHER ANCHOR ALIGNMENT */
+    .flash-container {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 1.6rem;
+      line-height: 1;
+      width: 100%;
+    }
+    .flash-prefix { text-align: right; flex: 1; white-space: pre; color: #1e293b; }
+    .flash-anchor { color: #dc2626; font-weight: 900; text-decoration: underline; text-underline-offset: 4px; flex: 0 0 auto; padding: 0 1px; }
+    .flash-suffix { text-align: left; flex: 1; white-space: pre; color: #1e293b; }
 
+    /* PERFECT 2-PAGE PRINT STYLESHEET */
     @media print {
       body * { visibility: hidden !important; }
       #guideModal { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; height: auto !important; background: white !important; display: block !important; }
@@ -87,106 +57,102 @@
     }
   </style>
 </head>
-<body id="appBody" class="bg-slate-900 text-slate-100 min-h-screen font-sans p-6">
+<body id="appBody" class="min-h-screen p-6">
   <div class="max-w-4xl mx-auto space-y-6">
     
     <!-- HEADER -->
-    <header class="border-b border-slate-700 pb-4 flex justify-between items-center">
+    <header class="border-b border-stone-300 pb-4 flex justify-between items-center font-sans-ui">
       <div>
-        <h1 class="text-2xl font-bold text-cyan-400">Cognitive Reading Pacer</h1>
-        <p class="text-xs text-slate-400">Ave Maria Middle School Edition • IXL Lexile & Firebase Connected</p>
+        <h1 class="text-2xl font-bold text-sky-900">Cognitive Reading Pacer</h1>
+        <p class="text-xs text-stone-600">Ave Maria Middle School Edition • IXL Lexile & Firebase Connected</p>
       </div>
       
       <div class="flex items-center space-x-3">
-        <button onclick="toggleAppTheme()" id="themeToggleBtn" class="bg-slate-800 border border-slate-700 text-xs px-3 py-2 rounded text-yellow-300 font-bold flex items-center space-x-1">
-          <span id="themeIcon">☀️</span> <span id="themeText">Daylight Theme</span>
-        </button>
-
-        <button onclick="openGuideModal()" class="bg-indigo-600 hover:bg-indigo-500 text-xs px-3 py-2 rounded text-white font-bold">
+        <button onclick="openGuideModal()" class="bg-indigo-700 hover:bg-indigo-800 text-xs px-3 py-2 rounded text-white font-bold shadow-sm">
           📖 Educator Guide
         </button>
 
-        <div id="userInfoBox" class="hidden text-right text-xs bg-slate-800 p-2 rounded border border-slate-700 space-y-0.5">
-          <div id="userNameDisplay" class="text-slate-200 font-semibold">User Name</div>
-          <div id="userDomainDisplay" class="text-[10px] text-cyan-400 font-mono">user@domain</div>
+        <div id="userInfoBox" class="hidden text-right text-xs bg-white p-2 rounded border border-stone-300 space-y-0.5 shadow-sm">
+          <div id="userNameDisplay" class="text-slate-800 font-semibold">User Name</div>
+          <div id="userDomainDisplay" class="text-[10px] text-sky-700 font-mono">user@domain</div>
         </div>
 
-        <button id="authBtn" onclick="handleAuthAction()" class="bg-emerald-600 hover:bg-emerald-500 text-xs px-3 py-2 rounded text-white font-bold flex items-center space-x-1">
+        <button id="authBtn" onclick="handleAuthAction()" class="bg-emerald-700 hover:bg-emerald-800 text-xs px-3 py-2 rounded text-white font-bold shadow-sm flex items-center space-x-1">
           <span>Sign In with Google</span>
         </button>
       </div>
     </header>
 
-    <!-- SIGN-IN PROMPT -->
-    <div id="loggedOutState" class="bg-slate-800 p-8 rounded-xl border border-slate-700 text-center space-y-4 max-w-md mx-auto my-12">
+    <!-- SIGN-IN PROMPT SCREEN -->
+    <div id="loggedOutState" class="bg-white p-8 rounded-xl border border-stone-300 text-center space-y-4 max-w-md mx-auto my-12 shadow-sm font-sans-ui">
       <div class="text-4xl">⛪</div>
-      <h2 class="text-lg font-bold text-cyan-300">Catholic School Portal Sign-In</h2>
-      <p class="text-xs text-slate-300 leading-relaxed">
+      <h2 class="text-lg font-bold text-sky-950">Catholic School Portal Sign-In</h2>
+      <p class="text-xs text-stone-600 leading-relaxed">
         Please sign in using your school Google account to access your reading modules or classroom dashboard.
       </p>
-      <div class="text-xs bg-slate-900 p-3 rounded text-left border border-slate-700 space-y-1 font-mono">
-        <div>• Faculty (@avemaria.school): <span class="text-emerald-400">Teacher Dashboard</span></div>
-        <div>• Students (@aveangels.org): <span class="text-cyan-400">Practice Modules</span></div>
+      <div class="text-xs bg-stone-50 p-3 rounded text-left border border-stone-200 space-y-1 font-mono">
+        <div>• Faculty (@avemaria.school): <span class="text-emerald-700 font-bold">Teacher Dashboard</span></div>
+        <div>• Students (@aveangels.org): <span class="text-sky-700 font-bold">Practice Modules</span></div>
       </div>
-      <button onclick="loginWithGoogle()" class="w-full bg-emerald-600 hover:bg-emerald-500 font-bold py-2.5 rounded text-xs text-white">
+      <button onclick="loginWithGoogle()" class="w-full bg-emerald-700 hover:bg-emerald-800 font-bold py-2.5 rounded text-xs text-white shadow-sm">
         Sign In with Google SSO
       </button>
     </div>
 
     <!-- TEACHER DASHBOARD PORTAL -->
-    <main id="teacherPortal" class="hidden space-y-6">
+    <main id="teacherPortal" class="hidden space-y-6 font-sans-ui">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-          <div class="text-xs text-slate-400 font-semibold">Class Avg ERR</div>
-          <div class="text-2xl font-bold text-cyan-400 mt-1">198 <span class="text-xs text-emerald-400 font-normal">(+28 Growth)</span></div>
+        <div class="bg-white p-4 rounded-lg border border-stone-300 shadow-sm">
+          <div class="text-xs text-stone-500 font-semibold">Class Avg ERR</div>
+          <div class="text-2xl font-bold text-sky-900 mt-1">198 <span class="text-xs text-emerald-700 font-normal">(+28 Growth)</span></div>
         </div>
-        <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-          <div class="text-xs text-slate-400 font-semibold">Avg Comprehension</div>
-          <div class="text-2xl font-bold text-emerald-400 mt-1">87.5%</div>
+        <div class="bg-white p-4 rounded-lg border border-stone-300 shadow-sm">
+          <div class="text-xs text-stone-500 font-semibold">Avg Comprehension</div>
+          <div class="text-2xl font-bold text-emerald-700 mt-1">87.5%</div>
         </div>
-        <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-          <div class="text-xs text-slate-400 font-semibold">Active Lexile Span</div>
-          <div class="text-2xl font-bold text-yellow-400 mt-1">500L – 950L</div>
+        <div class="bg-white p-4 rounded-lg border border-stone-300 shadow-sm">
+          <div class="text-xs text-stone-500 font-semibold">Active Lexile Span</div>
+          <div class="text-2xl font-bold text-amber-700 mt-1">500L – 950L</div>
         </div>
-        <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-          <div class="text-xs text-slate-400 font-semibold">Flagged Interventions</div>
-          <div class="text-2xl font-bold text-rose-400 mt-1">2 Students</div>
+        <div class="bg-white p-4 rounded-lg border border-stone-300 shadow-sm">
+          <div class="text-xs text-stone-500 font-semibold">Flagged Interventions</div>
+          <div class="text-2xl font-bold text-rose-700 mt-1">2 Students</div>
         </div>
       </div>
 
-      <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-3">
-        <h2 class="text-sm font-bold text-cyan-300 flex items-center space-x-2">
+      <div class="bg-white p-4 rounded-lg border border-stone-300 space-y-3 shadow-sm">
+        <h2 class="text-sm font-bold text-sky-950 flex items-center space-x-2">
           <span>⚡ Automated Instructional Flags</span>
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-          <div class="bg-slate-900/80 p-3 rounded border border-rose-900/50 flex space-x-3 items-start">
+          <div class="bg-rose-50 p-3 rounded border border-rose-200 flex space-x-3 items-start">
             <span class="text-lg">🚨</span>
             <div>
-              <div class="font-bold text-rose-300">Skimming Risk: Julian K. (Foundational Band)</div>
-              <p class="text-slate-400 mt-0.5">High WPM speed (220 WPM) but low Form B comprehension (50%). System has capped Module 1 speed to 160 WPM.</p>
+              <div class="font-bold text-rose-900">Skimming Risk: Julian K. (Foundational Band)</div>
+              <p class="text-rose-800 mt-0.5">High WPM speed (220 WPM) but low Form B comprehension (50%). System has capped Module 1 speed to 160 WPM.</p>
             </div>
           </div>
-          <div class="bg-slate-900/80 p-3 rounded border border-emerald-900/50 flex space-x-3 items-start">
+          <div class="bg-emerald-50 p-3 rounded border border-emerald-200 flex space-x-3 items-start">
             <span class="text-lg">🎯</span>
             <div>
-              <div class="font-bold text-emerald-300">Promotion Ready: Clara M. (Intermediate Band)</div>
-              <p class="text-slate-400 mt-0.5">Achieved 245 ERR on Form B with 100% comprehension. Ready to advance to Advanced Band (800L-950L).</p>
+              <div class="font-bold text-emerald-900">Promotion Ready: Clara M. (Intermediate Band)</div>
+              <p class="text-emerald-800 mt-0.5">Achieved 245 ERR on Form B with 100% comprehension. Ready to advance to Advanced Band (800L-950L).</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-4">
+      <div class="bg-white p-4 rounded-lg border border-stone-300 space-y-4 shadow-sm">
         <div class="flex justify-between items-center">
           <div>
-            <h2 class="text-base font-bold text-cyan-300">Live Roster Analytics (Firestore Connected)</h2>
-            <p class="text-xs text-slate-400">Standardized ERR metrics calculated from Form A (Baseline) and Form B (Re-Test)</p>
+            <h2 class="text-base font-bold text-sky-950">Live Roster Analytics (Firestore Connected)</h2>
+            <p class="text-xs text-stone-500">Standardized ERR metrics calculated from Form A (Baseline) and Form B (Re-Test)</p>
           </div>
           <div class="flex space-x-2">
-            <button onclick="toggleTeacherDemoView()" id="demoToggleBtn" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3 py-1.5 rounded font-bold">
+            <button onclick="toggleTeacherDemoView()" id="demoToggleBtn" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs px-3 py-1.5 rounded font-bold shadow-sm">
               👁️ Preview Student Experience (Demo Mode)
             </button>
-            <button onclick="downloadPDFGuide()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-1.5 rounded font-bold">
+            <button onclick="downloadPDFGuide()" class="bg-indigo-700 hover:bg-indigo-800 text-white text-xs px-3 py-1.5 rounded font-bold shadow-sm">
               Export Educator Guide (PDF)
             </button>
           </div>
@@ -195,7 +161,7 @@
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs border-collapse">
             <thead>
-              <tr class="border-b border-slate-700 text-slate-400 font-semibold bg-slate-900/50">
+              <tr class="border-b border-stone-300 text-stone-600 font-semibold bg-stone-100">
                 <th class="p-3">Student Name</th>
                 <th class="p-3">Lexile Reading Band</th>
                 <th class="p-3">Form A (Baseline)</th>
@@ -204,8 +170,8 @@
                 <th class="p-3 text-right">Status / Action</th>
               </tr>
             </thead>
-            <tbody id="teacherRosterBody" class="divide-y divide-slate-700/60 text-slate-200">
-              <tr><td colspan="6" class="p-4 text-center text-slate-400">Loading student roster data...</td></tr>
+            <tbody id="teacherRosterBody" class="divide-y divide-stone-200 text-slate-800">
+              <tr><td colspan="6" class="p-4 text-center text-stone-500">Loading student roster data...</td></tr>
             </tbody>
           </table>
         </div>
@@ -215,30 +181,30 @@
     <!-- STUDENT PORTAL -->
     <main id="studentPortal" class="hidden space-y-6">
       
-      <div id="demoBanner" class="hidden bg-emerald-950 border border-emerald-700 text-emerald-300 p-3 rounded text-xs flex justify-between items-center">
+      <div id="demoBanner" class="hidden bg-amber-50 border border-amber-300 text-amber-900 p-3 rounded-lg text-xs flex justify-between items-center font-sans-ui shadow-sm">
         <span><strong>Faculty Demo Mode Active:</strong> You are previewing student practice modules. Benchmark saves are in test mode.</span>
-        <button onclick="toggleTeacherDemoView()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-1 rounded font-bold">Return to Teacher Dashboard</button>
+        <button onclick="toggleTeacherDemoView()" class="bg-amber-800 hover:bg-amber-900 text-white px-3 py-1 rounded font-bold">Return to Dashboard</button>
       </div>
 
       <!-- STUDENT PROGRESS BAR -->
-      <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 flex justify-between items-center text-xs">
+      <div class="bg-white p-3.5 rounded-xl border border-stone-300 flex justify-between items-center text-xs font-sans-ui shadow-sm">
         <div class="flex items-center space-x-3">
-          <span class="bg-indigo-900 text-indigo-300 px-2.5 py-1 rounded font-bold">Active Goal</span>
-          <span class="text-slate-300">Target Lexile: <strong id="studentLexileBadge" class="text-cyan-400">600L - 750L</strong></span>
+          <span class="bg-indigo-100 text-indigo-900 border border-indigo-200 px-2.5 py-1 rounded-md font-bold">Active Goal</span>
+          <span class="text-stone-700">Target Readability: <strong id="studentLexileBadge" class="text-sky-900 font-bold">600L - 750L</strong></span>
         </div>
         <div class="flex items-center space-x-4">
-          <div>Weekly Training: <strong class="text-emerald-400">2 / 3 Completed</strong></div>
-          <div>Baseline ERR: <strong id="studentBaselineDisplay" class="text-yellow-400">180 ERR</strong></div>
+          <div class="text-stone-700">Weekly Training: <strong class="text-emerald-700 font-bold">2 / 3 Completed</strong></div>
+          <div class="text-stone-700">Baseline ERR: <strong id="studentBaselineDisplay" class="text-amber-800 font-bold">180 ERR</strong></div>
         </div>
       </div>
 
       <!-- LEXILE & CONTENT GENERATOR -->
-      <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-3">
-        <div class="flex justify-between items-center border-b border-slate-700 pb-2">
-          <h2 class="text-sm font-bold text-cyan-300">Target Reading Calibration</h2>
+      <div class="bg-white p-5 rounded-xl border border-stone-300 space-y-3 font-sans-ui shadow-sm">
+        <div class="flex justify-between items-center border-b border-stone-200 pb-2.5">
+          <h2 class="text-sm font-bold text-sky-950">Target Reading Calibration</h2>
           <div class="flex items-center space-x-2">
-            <label for="lexileSelect" class="text-xs text-slate-300 font-semibold">IXL Reading Band:</label>
-            <select id="lexileSelect" onchange="onLexileChange()" class="bg-slate-900 border border-slate-700 text-xs px-2 py-1 rounded text-cyan-400 font-bold">
+            <label for="lexileSelect" class="text-xs text-stone-600 font-semibold">IXL Reading Band:</label>
+            <select id="lexileSelect" onchange="onLexileChange()" class="bg-stone-50 border border-stone-300 text-xs px-2.5 py-1.5 rounded-md text-sky-900 font-bold">
               <option value="tier1">Foundational Band (400L - 550L)</option>
               <option value="tier2" selected>Intermediate Band (600L - 750L)</option>
               <option value="tier3">Advanced Band (800L - 950L)</option>
@@ -247,141 +213,144 @@
           </div>
         </div>
 
-        <h2 class="text-sm font-bold text-cyan-300 pt-1">Generate Custom Practice Passage</h2>
+        <h2 class="text-sm font-bold text-sky-950 pt-1">Generate Custom Practice Passage</h2>
         <div class="flex space-x-2">
-          <input type="text" id="topicInput" placeholder="Topic (e.g., St. Patrick, Solar System, Roman Aqueducts)" class="bg-slate-900 border border-slate-700 text-xs px-3 py-2 rounded flex-1">
-          <button onclick="generateAIContent()" id="genBtn" class="bg-indigo-600 hover:bg-indigo-500 font-bold px-4 py-2 text-xs rounded text-white">Generate Content</button>
+          <input type="text" id="topicInput" placeholder="Topic (e.g., St. Patrick, Solar System, Roman Aqueducts)" class="bg-stone-50 border border-stone-300 text-xs px-3 py-2 rounded-md flex-1 text-slate-900">
+          <button onclick="generateAIContent()" id="genBtn" class="bg-indigo-700 hover:bg-indigo-800 font-bold px-4 py-2 text-xs rounded-md text-white shadow-sm">Generate Content</button>
         </div>
-        <div id="genStatus" class="text-xs text-slate-400 hidden">Generating faith-aligned passage and 3 comprehension questions...</div>
+        <div id="genStatus" class="text-xs text-stone-500 hidden">Generating faith-aligned passage & 3 comprehension questions...</div>
       </div>
 
       <!-- TABS -->
-      <div class="flex space-x-2 border-b border-slate-700 pb-2">
-        <button onclick="switchTab('diagnostic')" class="tab-btn px-4 py-2 text-sm font-semibold rounded bg-cyan-600 text-white">1. Standardized Diagnostic</button>
-        <button onclick="switchTab('module1')" class="tab-btn px-4 py-2 text-sm font-semibold rounded bg-slate-800 text-slate-300">Module 1 (Accelerator)</button>
-        <button onclick="switchTab('module2')" class="tab-btn px-4 py-2 text-sm font-semibold rounded bg-slate-800 text-slate-300">Module 2 (Visual Flasher)</button>
-        <button onclick="switchTab('module3')" class="tab-btn px-4 py-2 text-sm font-semibold rounded bg-slate-800 text-slate-300">Module 3 (PQRST Reader)</button>
+      <div class="flex space-x-2 border-b border-stone-300 pb-2 font-sans-ui">
+        <button onclick="switchTab('diagnostic')" class="tab-btn px-4 py-2 text-sm font-semibold rounded-md bg-sky-800 text-white shadow-sm">1. Standardized Diagnostic</button>
+        <button onclick="switchTab('module1')" class="tab-btn px-4 py-2 text-sm font-semibold rounded-md bg-white text-stone-700 border border-stone-300">Module 1 (Accelerator)</button>
+        <button onclick="switchTab('module2')" class="tab-btn px-4 py-2 text-sm font-semibold rounded-md bg-white text-stone-700 border border-stone-300">Module 2 (Visual Flasher)</button>
+        <button onclick="switchTab('module3')" class="tab-btn px-4 py-2 text-sm font-semibold rounded-md bg-white text-stone-700 border border-stone-300">Module 3 (PQRST Reader)</button>
       </div>
 
       <!-- TAB 1: DIAGNOSTIC -->
       <section id="tab-diagnostic" class="tab-content space-y-4">
-        <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-          <div class="flex justify-between items-center mb-2">
-            <h2 class="text-lg font-bold text-cyan-300">Step 1: Standardized Fluency Sprint</h2>
+        <div class="bg-white p-6 rounded-xl border border-stone-300 shadow-sm">
+          <div class="flex justify-between items-center mb-3 font-sans-ui">
+            <h2 class="text-lg font-bold text-sky-950">Step 1: Standardized Fluency Sprint</h2>
             <div class="flex space-x-2 text-xs">
-              <button id="formABtn" onclick="setBenchmarkForm('FormA')" class="px-2 py-1 rounded bg-cyan-600 text-white font-bold">Form A (Initial Baseline)</button>
-              <button id="formBBtn" onclick="setBenchmarkForm('FormB')" class="px-2 py-1 rounded bg-slate-700 text-slate-300 font-bold">Form B (Progress Re-Test)</button>
+              <button id="formABtn" onclick="setBenchmarkForm('FormA')" class="px-3 py-1 rounded-md bg-sky-800 text-white font-bold">Form A (Baseline)</button>
+              <button id="formBBtn" onclick="setBenchmarkForm('FormB')" class="px-3 py-1 rounded-md bg-stone-200 text-stone-700 font-bold">Form B (Re-Test)</button>
             </div>
           </div>
           
-          <p class="text-xs text-slate-400 mb-4">Read the calibrated passage at your normal speed. Click "Finished Reading" when done.</p>
+          <p class="text-xs text-stone-500 mb-4 font-sans-ui">Read the calibrated passage at your normal speed. Click "Finished Reading" when done.</p>
           
-          <div id="diagText" class="bg-slate-950 p-4 rounded border border-slate-800 text-slate-200 leading-relaxed mb-4 min-h-[120px]"></div>
+          <!-- BOOK-STYLE PASSAGE CONTAINER -->
+          <div id="diagText" class="bg-[#faf8f5] p-6 rounded-lg border border-stone-200 text-slate-900 leading-loose text-lg mb-5 min-h-[140px] max-w-2xl mx-auto shadow-inner"></div>
 
-          <button id="diagStartBtn" onclick="startDiagnostic()" class="w-full bg-cyan-500 hover:bg-cyan-600 font-bold py-2 rounded text-slate-950">Start Diagnostic Sprint</button>
-          <button id="diagFinishBtn" onclick="finishDiagnostic()" class="hidden w-full bg-emerald-500 hover:bg-emerald-600 font-bold py-2 rounded text-slate-950">I Finished Reading!</button>
+          <div class="font-sans-ui">
+            <button id="diagStartBtn" onclick="startDiagnostic()" class="w-full bg-sky-800 hover:bg-sky-900 font-bold py-2.5 rounded-md text-white shadow-sm">Start Diagnostic Sprint</button>
+            <button id="diagFinishBtn" onclick="finishDiagnostic()" class="hidden w-full bg-emerald-700 hover:bg-emerald-800 font-bold py-2.5 rounded-md text-white shadow-sm">I Finished Reading!</button>
+          </div>
 
-          <!-- DIAGNOSTIC 3-QUESTION QUIZ CONTAINER -->
-          <div id="diagQuiz" class="hidden mt-4 space-y-4 pt-4 border-t border-slate-700">
+          <div id="diagQuiz" class="hidden mt-6 space-y-4 pt-5 border-t border-stone-200 font-sans-ui">
             <div class="flex justify-between items-center">
-              <p class="text-sm font-semibold text-yellow-400">Comprehension Verification Check (3 Questions):</p>
-              <span class="text-xs text-slate-400 font-mono">Literal • Inferential • Vocabulary</span>
+              <p class="text-sm font-bold text-amber-900">Comprehension Verification Check (3 Questions):</p>
+              <span class="text-xs text-stone-500 font-mono">Literal • Inferential • Vocabulary</span>
             </div>
             <div id="diagQuizQuestionsContainer" class="space-y-4"></div>
-            <button onclick="submitDiagnostic()" class="bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded text-sm font-bold mt-2 text-white">Calculate ERR & Save Score</button>
+            <button onclick="submitDiagnostic()" class="bg-indigo-700 hover:bg-indigo-800 px-5 py-2.5 rounded-md text-sm font-bold mt-2 text-white shadow-sm">Calculate ERR & Save Score</button>
           </div>
         </div>
       </section>
 
-      <!-- TAB 2: MODULE 1 -->
+      <!-- TAB 2: MODULE 1 (ACCELERATOR FOCUS SHUTTER - BOOK STYLE) -->
       <section id="tab-module1" class="tab-content hidden space-y-4">
-        <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-3">
-          <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+        <div class="bg-white p-6 rounded-xl border border-stone-300 space-y-4 shadow-sm">
+          <div class="flex justify-between items-center border-b border-stone-200 pb-3 font-sans-ui">
             <div>
-              <h2 id="m1Title" class="text-lg font-bold text-cyan-300">Module 1: Focus Shutter Accelerator</h2>
-              <p class="text-xs text-slate-400">💡 <strong>How to practice:</strong> Keep your gaze inside the moving highlight window to eliminate line re-reading.</p>
+              <h2 id="m1Title" class="text-lg font-bold text-sky-950">Module 1: Focus Shutter Accelerator</h2>
+              <p class="text-xs text-stone-500">💡 <strong>How to practice:</strong> Keep your gaze inside the moving highlight window to eliminate line re-reading.</p>
             </div>
             <div class="flex items-center space-x-2">
-              <label for="wpmInput" class="text-xs">Speed (WPM):</label>
-              <input type="number" id="wpmInput" value="180" class="w-16 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-cyan-400 font-bold">
+              <label for="wpmInput" class="text-xs text-stone-600 font-semibold">Speed (WPM):</label>
+              <input type="number" id="wpmInput" value="180" class="w-16 bg-stone-50 border border-stone-300 rounded-md px-2 py-1 text-xs text-sky-900 font-bold">
             </div>
           </div>
 
-          <div id="shutterViewport" class="bg-slate-950 p-6 rounded-xl border border-slate-800 h-80 overflow-y-auto space-y-4 text-xl leading-[2.5] relative scroll-smooth">
+          <!-- BOOK-LIKE SHUTTER VIEWPORT -->
+          <div id="shutterViewport" class="bg-[#faf8f5] p-6 rounded-lg border border-stone-200 h-96 overflow-y-auto space-y-4 text-lg leading-[2.2] relative scroll-smooth max-w-2xl mx-auto shadow-inner">
             <div id="shutterContainer" class="space-y-4"></div>
           </div>
 
-          <div class="flex space-x-2 mt-4">
-            <button onclick="startShutter()" class="flex-1 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2.5 rounded">Start Shutter Pacer</button>
-            <button onclick="stopShutter()" class="bg-slate-700 hover:bg-slate-600 px-4 py-2.5 rounded text-slate-300">Stop</button>
+          <div class="flex space-x-2 mt-4 font-sans-ui">
+            <button onclick="startShutter()" class="flex-1 bg-sky-800 hover:bg-sky-900 text-white font-bold py-2.5 rounded-md shadow-sm">Start Shutter Pacer</button>
+            <button onclick="stopShutter()" class="bg-stone-200 hover:bg-stone-300 px-4 py-2.5 rounded-md text-stone-700 font-bold">Stop</button>
           </div>
         </div>
       </section>
 
-      <!-- TAB 3: MODULE 2 -->
+      <!-- TAB 3: MODULE 2 (MORPHO-VISUAL FLASHER - PAPER STYLE) -->
       <section id="tab-module2" class="tab-content hidden space-y-4">
-        <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-4 text-center">
-          <div class="border-b border-slate-700 pb-2 text-left flex justify-between items-center">
+        <div class="bg-white p-6 rounded-xl border border-stone-300 space-y-5 text-center font-sans-ui shadow-sm">
+          <div class="border-b border-stone-200 pb-3 text-left flex justify-between items-center">
             <div>
-              <h2 class="text-lg font-bold text-cyan-300">Module 2: Morpho-Visual Flasher</h2>
-              <p class="text-xs text-slate-400">🎯 <strong>How to practice:</strong> Keep your eyes locked on the red ┼ crosshair. Target red letters align directly underneath.</p>
+              <h2 class="text-lg font-bold text-sky-950">Module 2: Morpho-Visual Flasher</h2>
+              <p class="text-xs text-stone-500">🎯 <strong>How to practice:</strong> Keep your eyes locked on the red ┼ crosshair. Target red letters align directly underneath.</p>
             </div>
-            <span id="flashCounter" class="bg-indigo-900 text-indigo-300 px-3 py-1 rounded text-xs font-bold">Ready: 0 / 0 Flashes</span>
+            <span id="flashCounter" class="bg-stone-100 border border-stone-300 text-stone-700 px-3 py-1 rounded-md text-xs font-bold">Ready: 0 / 0 Flashes</span>
           </div>
 
           <div class="flex justify-center items-center space-x-3 text-xs">
-            <span class="text-slate-400">Flash Speed:</span>
-            <button onclick="setFlashSpeed(500)" id="spd500" class="px-3 py-1 rounded bg-slate-700 text-slate-300 font-bold">500ms (Slow)</button>
-            <button onclick="setFlashSpeed(350)" id="spd350" class="px-3 py-1 rounded bg-indigo-600 text-white font-bold">350ms (Medium)</button>
-            <button onclick="setFlashSpeed(200)" id="spd200" class="px-3 py-1 rounded bg-slate-700 text-slate-300 font-bold">200ms (Fast)</button>
+            <span class="text-stone-600 font-semibold">Flash Speed:</span>
+            <button onclick="setFlashSpeed(500)" id="spd500" class="px-3 py-1 rounded-md bg-stone-200 text-stone-700 font-bold">500ms (Slow)</button>
+            <button onclick="setFlashSpeed(350)" id="spd350" class="px-3 py-1 rounded-md bg-indigo-700 text-white font-bold">350ms (Medium)</button>
+            <button onclick="setFlashSpeed(200)" id="spd200" class="px-3 py-1 rounded-md bg-stone-200 text-stone-700 font-bold">200ms (Fast)</button>
           </div>
 
-          <div class="h-44 bg-slate-950 rounded-xl border border-slate-800 flex flex-col items-center justify-center relative overflow-hidden">
-            <div class="text-red-500 font-extrabold text-2xl mb-1 pointer-events-none">┼</div>
+          <!-- PAPER TARGET CANVAS WITH RED CROSSHAIR -->
+          <div class="h-44 bg-[#faf8f5] rounded-lg border border-stone-200 flex flex-col items-center justify-center relative overflow-hidden max-w-xl mx-auto shadow-inner">
+            <div class="text-red-600 font-extrabold text-2xl mb-1 pointer-events-none">┼</div>
             <div id="flashDisplay" class="text-xl font-bold tracking-wide h-10 flex items-center justify-center w-full">
               Ready?
             </div>
           </div>
 
-          <button onclick="startFlasher()" class="bg-indigo-500 hover:bg-indigo-400 font-bold px-8 py-2.5 rounded text-white text-sm">Start Optical Training Session</button>
+          <button onclick="startFlasher()" class="bg-indigo-700 hover:bg-indigo-800 font-bold px-8 py-2.5 rounded-md text-white text-sm shadow-sm">Start Optical Training Session</button>
         </div>
       </section>
 
-      <!-- TAB 4: MODULE 3 (PQRST ACTIVE READING WITH 3-QUESTION QUIZ) -->
+      <!-- TAB 4: MODULE 3 (PQRST ACTIVE READING - BOOK STYLE) -->
       <section id="tab-module3" class="tab-content hidden space-y-4">
-        <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-4">
-          <div class="border-b border-slate-700 pb-2 flex justify-between items-center">
+        <div class="bg-white p-6 rounded-xl border border-stone-300 space-y-4 shadow-sm">
+          <div class="border-b border-stone-200 pb-3 flex justify-between items-center font-sans-ui">
             <div>
-              <h2 class="text-lg font-bold text-cyan-300">Module 3: PQRST Active Reading</h2>
-              <p class="text-xs text-slate-400">📘 <strong>How to practice:</strong> Preview key ideas, answer guiding questions, and verify comprehension across 3 question types.</p>
+              <h2 class="text-lg font-bold text-sky-950">Module 3: PQRST Active Reading</h2>
+              <p class="text-xs text-stone-500">📘 <strong>How to practice:</strong> Preview key ideas, answer guiding questions, and verify comprehension across 3 question types.</p>
             </div>
-            <button onclick="pqrstReset()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 text-xs px-2.5 py-1 rounded font-bold">🔄 Restart Passage</button>
+            <button onclick="pqrstReset()" class="bg-stone-200 hover:bg-stone-300 text-stone-700 text-xs px-3 py-1 rounded-md font-bold">🔄 Restart Passage</button>
           </div>
           
-          <div id="pqrstStep1" class="space-y-2">
-            <span class="text-xs bg-indigo-900 text-indigo-300 px-2 py-1 rounded font-bold">Step 1: Preview & Question</span>
-            <h3 id="pqrstTitle" class="font-bold text-yellow-400 text-base">Passage Title</h3>
-            <p id="pqrstPreview" class="text-sm text-slate-300 leading-relaxed">Preview summary...</p>
-            <div class="bg-slate-900 p-3 rounded border border-slate-800 text-xs text-slate-300">
+          <div id="pqrstStep1" class="space-y-3">
+            <span class="text-xs bg-indigo-100 text-indigo-900 border border-indigo-200 px-2.5 py-1 rounded-md font-bold font-sans-ui">Step 1: Preview & Question</span>
+            <h3 id="pqrstTitle" class="font-bold text-amber-900 text-lg">Passage Title</h3>
+            <p id="pqrstPreview" class="text-sm text-slate-800 leading-relaxed bg-[#faf8f5] p-4 rounded-lg border border-stone-200">Preview summary...</p>
+            <div class="bg-stone-100 p-3.5 rounded-lg border border-stone-300 text-xs text-stone-700 font-sans-ui">
               <strong>Guiding Question:</strong> <span id="pqrstQuestion">Guiding question...</span>
             </div>
-            <button onclick="pqrstNext(2)" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-4 py-2 rounded text-sm mt-2">Proceed to Paced Read</button>
+            <button onclick="pqrstNext(2)" class="bg-sky-800 hover:bg-sky-900 text-white font-bold px-4 py-2 rounded-md text-sm mt-2 font-sans-ui shadow-sm">Proceed to Paced Read</button>
           </div>
 
-          <div id="pqrstStep2" class="hidden space-y-2">
-            <span class="text-xs bg-emerald-900 text-emerald-300 px-2 py-1 rounded font-bold">Step 2: Read & Recite</span>
-            <div id="pqrstPassageText" class="bg-slate-950 p-4 rounded text-sm leading-relaxed text-slate-200"></div>
-            <button onclick="pqrstNext(3)" class="bg-yellow-500 hover:bg-yellow-400 text-slate-950 font-bold px-4 py-2 rounded text-sm mt-2">Recite & Test Knowledge</button>
+          <div id="pqrstStep2" class="hidden space-y-3">
+            <span class="text-xs bg-emerald-100 text-emerald-900 border border-emerald-200 px-2.5 py-1 rounded-md font-bold font-sans-ui">Step 2: Read & Recite</span>
+            <div id="pqrstPassageText" class="bg-[#faf8f5] p-6 rounded-lg border border-stone-200 text-slate-900 leading-loose text-lg max-w-2xl mx-auto shadow-inner"></div>
+            <button onclick="pqrstNext(3)" class="bg-amber-700 hover:bg-amber-800 text-white font-bold px-4 py-2 rounded-md text-sm mt-2 font-sans-ui shadow-sm">Recite & Test Knowledge</button>
           </div>
 
-          <!-- PQRST STEP 3: 3-QUESTION QUIZ CONTAINER -->
-          <div id="pqrstStep3" class="hidden space-y-4">
+          <div id="pqrstStep3" class="hidden space-y-4 font-sans-ui">
             <div class="flex justify-between items-center">
-              <span class="text-xs bg-purple-900 text-purple-300 px-2 py-1 rounded font-bold">Step 3: Review & 3-Question Verification Quiz</span>
-              <span class="text-xs text-slate-400 font-mono">3 Questions • Mixed Cognitive Depth</span>
+              <span class="text-xs bg-purple-100 text-purple-900 border border-purple-200 px-2.5 py-1 rounded-md font-bold">Step 3: Review & 3-Question Verification Quiz</span>
+              <span class="text-xs text-stone-500 font-mono">3 Questions • Mixed Cognitive Depth</span>
             </div>
             <div id="pqrstQuizContainer" class="space-y-4"></div>
-            <button onclick="submitPqrstQuiz()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-5 py-2.5 rounded text-sm mt-2">Submit 3-Question Quiz</button>
+            <button onclick="submitPqrstQuiz()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-5 py-2.5 rounded-md text-sm mt-2 shadow-sm">Submit 3-Question Quiz</button>
           </div>
         </div>
       </section>
@@ -390,25 +359,25 @@
   </div>
 
   <!-- EDUCATOR FIELD GUIDE MODAL -->
-  <div id="guideModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-slate-900 border border-slate-700 rounded-xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl">
-      <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800/50 rounded-t-xl no-print">
-        <h2 class="text-lg font-bold text-cyan-300 flex items-center space-x-2">
+  <div id="guideModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden font-sans-ui">
+    <div class="bg-white border border-stone-300 rounded-xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl">
+      <div class="p-4 border-b border-stone-200 flex justify-between items-center bg-stone-50 rounded-t-xl no-print">
+        <h2 class="text-lg font-bold text-sky-950 flex items-center space-x-2">
           <span>📖 Educator & Parent Field Guide</span>
         </h2>
         <div class="flex items-center space-x-2">
-          <button onclick="downloadPDFGuide()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-1.5 rounded font-bold">Download PDF</button>
-          <button onclick="closeGuideModal()" class="text-slate-400 hover:text-white text-lg font-bold px-2">✕</button>
+          <button onclick="downloadPDFGuide()" class="bg-indigo-700 hover:bg-indigo-800 text-white text-xs px-3 py-1.5 rounded-md font-bold shadow-sm">Download PDF</button>
+          <button onclick="closeGuideModal()" class="text-stone-500 hover:text-stone-800 text-lg font-bold px-2">✕</button>
         </div>
       </div>
-      <div id="printableGuide" class="p-6 overflow-y-auto space-y-6 text-slate-200 text-sm leading-relaxed">
-        <div class="border-b border-slate-700 pb-3">
-          <h1 class="text-xl font-bold text-cyan-400">Cognitive Reading Pacer — Field Manual</h1>
-          <p class="text-xs text-slate-400 mt-1">Catholic Middle School Edition • Research-Backed Fluency & Comprehension Protocol</p>
+      <div id="printableGuide" class="p-6 overflow-y-auto space-y-6 text-slate-800 text-sm leading-relaxed">
+        <div class="border-b border-stone-200 pb-3">
+          <h1 class="text-xl font-bold text-sky-900">Cognitive Reading Pacer — Field Manual</h1>
+          <p class="text-xs text-stone-500 mt-1">Catholic Middle School Edition • Research-Backed Fluency & Comprehension Protocol</p>
         </div>
         <section class="space-y-2">
-          <h3 class="font-bold text-cyan-300 text-base">1. Key Metrics & Definitions</h3>
-          <div class="bg-slate-950 p-3 rounded border border-slate-800 space-y-2 text-xs">
+          <h3 class="font-bold text-sky-950 text-base">1. Key Metrics & Definitions</h3>
+          <div class="bg-stone-50 p-4 rounded-lg border border-stone-200 space-y-2 text-xs">
             <p><strong>WPM (Words Per Minute):</strong> Pure physical tracking speed across lines of text (Words / Seconds × 60).</p>
             <p><strong>Comprehension %:</strong> Accuracy score on 3-question verification check (100%, 67%, 33%, or 0%).</p>
             <p><strong>ERR (Effective Reading Rate):</strong> Calculated as <strong>WPM × Comprehension %</strong>.</p>
@@ -464,7 +433,7 @@
         document.getElementById('userDomainDisplay').innerText = email;
         userInfoBox.classList.remove('hidden');
         authBtn.innerText = "Sign Out";
-        authBtn.className = "bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs px-3 py-2 rounded text-slate-300 font-bold";
+        authBtn.className = "bg-stone-200 hover:bg-stone-300 border border-stone-300 text-xs px-3 py-2 rounded text-stone-800 font-bold shadow-sm";
         loggedOutState.classList.add('hidden');
 
         if (email.endsWith('@avemaria.school')) {
@@ -480,7 +449,7 @@
         currentUser = null;
         userInfoBox.classList.add('hidden');
         authBtn.innerText = "Sign In with Google";
-        authBtn.className = "bg-emerald-600 hover:bg-emerald-500 text-xs px-3 py-2 rounded text-white font-bold";
+        authBtn.className = "bg-emerald-700 hover:bg-emerald-800 text-xs px-3 py-2 rounded text-white font-bold shadow-sm";
         loggedOutState.classList.remove('hidden');
         teacherPortal.classList.add('hidden');
         studentPortal.classList.add('hidden');
@@ -508,7 +477,7 @@
     function listenToTeacherRoster() {
       const rosterBody = document.getElementById('teacherRosterBody');
       onSnapshot(collection(db, 'students'), (snapshot) => {
-        if (snapshot.empty) { rosterBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">No student assessments recorded yet.</td></tr>`; return; }
+        if (snapshot.empty) { rosterBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-stone-500">No student assessments recorded yet.</td></tr>`; return; }
         let html = '';
         snapshot.forEach(docSnap => {
           const s = docSnap.data();
@@ -516,26 +485,18 @@
           const formB = s.formB_ERR ? `${s.formB_ERR} ERR` : 'Unset';
           const delta = (s.formA_ERR && s.formB_ERR) ? (s.formB_ERR - s.formA_ERR) : null;
           const deltaStr = delta !== null ? (delta >= 0 ? `+${delta} ERR` : `${delta} ERR`) : 'N/A';
-          html += `<tr class="hover:bg-slate-700/30"><td class="p-3 font-semibold text-white">${s.name || 'Student'}</td><td class="p-3"><span class="bg-slate-900 text-cyan-300 px-2 py-0.5 rounded font-mono">${s.lexileTier || 'tier2'}</span></td><td class="p-3 font-mono text-slate-300">${formA}</td><td class="p-3 font-mono text-emerald-400 font-bold">${formB}</td><td class="p-3"><span class="text-emerald-400 font-bold">${deltaStr}</span></td><td class="p-3 text-right"><span class="bg-slate-700 text-slate-300 px-2 py-1 rounded text-[10px] font-bold">Active</span></td></tr>`;
+          html += `<tr class="hover:bg-stone-50"><td class="p-3 font-semibold text-slate-900">${s.name || 'Student'}</td><td class="p-3"><span class="bg-stone-100 text-sky-900 border border-stone-200 px-2 py-0.5 rounded font-mono">${s.lexileTier || 'tier2'}</span></td><td class="p-3 font-mono text-stone-600">${formA}</td><td class="p-3 font-mono text-emerald-800 font-bold">${formB}</td><td class="p-3"><span class="text-emerald-800 font-bold">${deltaStr}</span></td><td class="p-3 text-right"><span class="bg-stone-200 text-stone-700 px-2 py-1 rounded text-[10px] font-bold">Active</span></td></tr>`;
         });
         rosterBody.innerHTML = html;
       });
     }
   </script>
 
-  <!-- PACER SCRIPT ENGINE WITH 3-QUESTION QUIZ CONTROLS -->
+  <!-- PACER SCRIPT ENGINE -->
   <script>
     function openGuideModal() { document.getElementById('guideModal').classList.remove('hidden'); }
     function closeGuideModal() { document.getElementById('guideModal').classList.add('hidden'); }
     function downloadPDFGuide() { openGuideModal(); setTimeout(() => { window.print(); }, 200); }
-
-    let isDarkTheme = true;
-    function toggleAppTheme() {
-      isDarkTheme = !isDarkTheme;
-      document.body.className = isDarkTheme ? "bg-slate-900 text-slate-100 min-h-screen font-sans p-6 dark" : "bg-slate-100 text-slate-900 min-h-screen font-sans p-6 light";
-      document.getElementById('themeIcon').innerText = isDarkTheme ? "☀️" : "🌙";
-      document.getElementById('themeText').innerText = isDarkTheme ? "Daylight Theme" : "Dark Theme";
-    }
 
     window.isTeacherDemoActive = false;
     function toggleTeacherDemoView() {
@@ -543,10 +504,9 @@
       document.getElementById('teacherPortal').classList.toggle('hidden', window.isTeacherDemoActive);
       document.getElementById('studentPortal').classList.toggle('hidden', !window.isTeacherDemoActive);
       document.getElementById('demoBanner').classList.toggle('hidden', !window.isTeacherDemoActive);
-      document.getElementById('demoToggleBtn').innerText = window.isTeacherDemoActive ? "🔙 Return to Teacher Dashboard" : "👁️ Preview Student Experience (Demo Mode)";
+      document.getElementById('demoToggleBtn').innerText = window.isTeacherDemoActive ? "🔙 Return to Dashboard" : "👁️ Preview Student Experience (Demo Mode)";
     }
 
-    // BENCHMARK BANK WITH 3 QUESTIONS PER FORM
     const benchmarkBank = {
       tier1: {
         FormA: { wordCount: 110, passage: "Lighthouses are tall towers built near coasts and harbors. They shine bright beams of light to guide ships safely through dark waters. Long ago, lighthouse keepers had to trim oil lamps every night. Today, most lighthouses use electric bulbs and automatic timers. Warnings from lighthouses prevent boats from hitting sharp rocks near the shore during stormy weather.", 
@@ -646,22 +606,22 @@
 
     function setBenchmarkForm(form) {
       window.currentBenchmarkForm = form;
-      document.getElementById('formABtn').className = form === 'FormA' ? 'px-2 py-1 rounded bg-cyan-600 text-white font-bold' : 'px-2 py-1 rounded bg-slate-700 text-slate-300 font-bold';
-      document.getElementById('formBBtn').className = form === 'FormB' ? 'px-2 py-1 rounded bg-cyan-600 text-white font-bold' : 'px-2 py-1 rounded bg-slate-700 text-slate-300 font-bold';
+      document.getElementById('formABtn').className = form === 'FormA' ? 'px-3 py-1 rounded-md bg-sky-800 text-white font-bold' : 'px-3 py-1 rounded-md bg-stone-200 text-stone-700 font-bold';
+      document.getElementById('formBBtn').className = form === 'FormB' ? 'px-3 py-1 rounded-md bg-sky-800 text-white font-bold' : 'px-3 py-1 rounded-md bg-stone-200 text-stone-700 font-bold';
       loadBenchmarkData();
     }
 
     function renderQuestionList(containerId, questions, groupPrefix) {
       const container = document.getElementById(containerId);
       container.innerHTML = questions.map((q, qIdx) => `
-        <div class="bg-slate-900/90 p-3 rounded-lg border border-slate-700/80 space-y-2 text-xs">
-          <div class="flex justify-between font-bold text-yellow-300">
+        <div class="bg-[#faf8f5] p-4 rounded-lg border border-stone-200 space-y-2 text-xs">
+          <div class="flex justify-between font-bold text-sky-950">
             <span>${q.question}</span>
-            <span class="text-[10px] bg-slate-800 text-cyan-400 px-2 py-0.5 rounded font-mono">${q.type}</span>
+            <span class="text-[10px] bg-stone-200 text-stone-700 px-2 py-0.5 rounded font-mono">${q.type}</span>
           </div>
-          <div class="space-y-1 pl-2">
+          <div class="space-y-1.5 pl-2">
             ${q.options.map((opt, oIdx) => `
-              <label class="block cursor-pointer text-slate-300 hover:text-white">
+              <label class="block cursor-pointer text-slate-800 hover:text-slate-950">
                 <input type="radio" name="${groupPrefix}_q${qIdx}" value="${oIdx}"> ${opt}
               </label>
             `).join('')}
@@ -684,7 +644,7 @@
 
     function loadDataIntoModules() {
       const sentences = currentData.passage.match(/[^.!?]+[.!?]+/g) || [currentData.passage];
-      document.getElementById('shutterContainer').innerHTML = sentences.map((s, i) => `<div id="line-${i}" class="shutter-line dimmed p-3 rounded-lg">${s.trim()}</div>`).join('');
+      document.getElementById('shutterContainer').innerHTML = sentences.map((s, i) => `<div id="line-${i}" class="shutter-line dimmed p-3.5 rounded-lg">${s.trim()}</div>`).join('');
       document.getElementById('m1Title').innerText = "Module 1: " + (currentData.title || "Focus Shutter Accelerator");
 
       document.getElementById('pqrstTitle').innerText = currentData.title || "Custom Reading Practice";
@@ -692,7 +652,6 @@
       document.getElementById('pqrstQuestion').innerText = currentData.guiding_question || "What are the main concepts?";
       document.getElementById('pqrstPassageText').innerText = currentData.passage;
       
-      // RENDER MODULE 3 3-QUESTION QUIZ
       renderQuestionList('pqrstQuizContainer', currentData.questions, 'pqrst');
 
       document.getElementById('flashCounter').innerText = `Ready: 0 / ${currentData.chunks.length} Flashes`;
@@ -742,7 +701,10 @@
 
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.replace('bg-cyan-600', 'bg-slate-800'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.className = 'tab-btn px-4 py-2 text-sm font-semibold rounded-md bg-white text-stone-700 border border-stone-300';
+      });
+      document.querySelector(`[onclick="switchTab('${tabId}')"]`).className = 'tab-btn px-4 py-2 text-sm font-semibold rounded-md bg-sky-800 text-white shadow-sm';
       document.getElementById('tab-' + tabId).classList.remove('hidden');
     }
 
@@ -756,7 +718,6 @@
       document.getElementById('diagQuiz').classList.remove('hidden'); 
     }
 
-    // ACCURATE 3-QUESTION DIAGNOSTIC SUBMISSION & ERR CALCULATOR
     function submitDiagnostic() { 
       const questions = currentData.questions || benchmarkBank[window.currentLexileTier][window.currentBenchmarkForm].questions;
       let correctCount = 0;
@@ -768,7 +729,7 @@
         }
       });
 
-      const accuracy = correctCount / questions.length; // e.g., 3/3 = 1.0, 2/3 = 0.67
+      const accuracy = correctCount / questions.length;
       const calculatedERR = Math.round(window.rawWpm * accuracy);
 
       if (window.saveStudentAssessment) {
@@ -806,10 +767,10 @@
       shutterInterval = setInterval(() => {
         lines.forEach((el, i) => {
           if (i === shutterIdx) {
-            el.className = 'shutter-line focused p-3 rounded-lg';
+            el.className = 'shutter-line focused p-3.5 rounded-lg';
             el.scrollIntoView({ behavior: 'smooth', block: 'center' });
           } else {
-            el.className = 'shutter-line dimmed p-3 rounded-lg';
+            el.className = 'shutter-line dimmed p-3.5 rounded-lg';
           }
         });
         shutterIdx++;
@@ -821,45 +782,46 @@
     let currentFlashDelay = 350;
     function setFlashSpeed(speedMs) {
       currentFlashDelay = speedMs;
-      document.getElementById('spd500').className = speedMs === 500 ? 'px-3 py-1 rounded bg-indigo-600 text-white font-bold' : 'px-3 py-1 rounded bg-slate-700 text-slate-300 font-bold';
-      document.getElementById('spd350').className = speedMs === 350 ? 'px-3 py-1 rounded bg-indigo-600 text-white font-bold' : 'px-3 py-1 rounded bg-slate-700 text-slate-300 font-bold';
-      document.getElementById('spd200').className = speedMs === 200 ? 'px-3 py-1 rounded bg-indigo-600 text-white font-bold' : 'px-3 py-1 rounded bg-slate-700 text-slate-300 font-bold';
+      document.getElementById('spd500').className = speedMs === 500 ? 'px-3 py-1 rounded-md bg-indigo-700 text-white font-bold' : 'px-3 py-1 rounded-md bg-stone-200 text-stone-700 font-bold';
+      document.getElementById('spd350').className = speedMs === 350 ? 'px-3 py-1 rounded-md bg-indigo-700 text-white font-bold' : 'px-3 py-1 rounded-md bg-stone-200 text-stone-700 font-bold';
+      document.getElementById('spd200').className = speedMs === 200 ? 'px-3 py-1 rounded-md bg-indigo-700 text-white font-bold' : 'px-3 py-1 rounded-md bg-stone-200 text-stone-700 font-bold';
     }
 
     function startFlasher() {
-  let i = 0;
-  const display = document.getElementById('flashDisplay');
-  const counter = document.getElementById('flashCounter');
-  const chunks = currentData.chunks || buildChunksFromPassage(currentData.passage);
-  
-  const interval = setInterval(() => {
-    if (i >= chunks.length) { 
-      clearInterval(interval); 
-      display.innerHTML = `<span class="text-emerald-400 font-bold text-base">Session Complete! (${chunks.length} Flashes)</span>`; 
-      counter.innerText = `Done: ${chunks.length} / ${chunks.length} Flashes`;
-      return; 
-    }
-    
-    const item = chunks[i];
-    const text = item.text || "";
-    const oap = item.oap !== undefined ? item.oap : Math.floor(text.length / 2);
-    
-    const prefix = text.slice(0, oap);
-    const anchorChar = text[oap] || text[0];
-    const suffix = text.slice(oap + 1);
+      let i = 0;
+      const display = document.getElementById('flashDisplay');
+      const counter = document.getElementById('flashCounter');
+      const chunks = currentData.chunks || buildChunksFromPassage(currentData.passage);
+      
+      const interval = setInterval(() => {
+        if (i >= chunks.length) { 
+          clearInterval(interval); 
+          display.innerHTML = `<span class="text-emerald-700 font-bold text-base">Session Complete! (${chunks.length} Flashes)</span>`; 
+          counter.innerText = `Done: ${chunks.length} / ${chunks.length} Flashes`;
+          return; 
+        }
+        
+        const item = chunks[i];
+        const text = item.text || "";
+        const oap = item.oap !== undefined ? item.oap : Math.floor(text.length / 2);
+        
+        const prefix = text.slice(0, oap);
+        const anchorChar = text[oap] || text[0];
+        const suffix = text.slice(oap + 1);
 
-    display.innerHTML = `
-      <div class="flash-container">
-        <span class="flash-prefix">${prefix}</span>
-        <span class="flash-anchor">${anchorChar}</span>
-        <span class="flash-suffix">${suffix}</span>
-      </div>
-    `;
-    
-    counter.innerText = `Training: ${i + 1} / ${chunks.length} Flashes`;
-    i++;
-  }, currentFlashDelay);
-}
+        display.innerHTML = `
+          <div class="flash-container">
+            <span class="flash-prefix">${prefix}</span>
+            <span class="flash-anchor">${anchorChar}</span>
+            <span class="flash-suffix">${suffix}</span>
+          </div>
+        `;
+        
+        counter.innerText = `Training: ${i + 1} / ${chunks.length} Flashes`;
+        i++;
+      }, currentFlashDelay);
+    }
+
     function pqrstNext(step) {
       document.getElementById('pqrstStep1').classList.add('hidden');
       document.getElementById('pqrstStep2').classList.add('hidden');
