@@ -24,10 +24,8 @@
     }
   </script>
   <style>
-    /* Theme Transition Setup */
     body { transition: background-color 0.3s, color 0.3s; }
     
-    /* Module 1 Focus Shutter Animations */
     .shutter-line { transition: all 0.25s ease-in-out; }
     .dimmed { opacity: 0.2; filter: blur(1px); }
     .dark .focused { 
@@ -47,68 +45,41 @@
       box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25); 
     }
 
-    /* Module 2 Optical Target Styling */
-    .oap-target { color: #dc2626; font-weight: 900; text-decoration: underline; text-underline-offset: 4px; }
+    /* PERFECT ANCHOR ALIGNMENT FOR MODULE 2 */
+    .flash-container {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      font-family: monospace;
+    }
+    .flash-prefix { text-align: right; width: 50%; }
+    .flash-anchor { color: #dc2626; font-weight: 900; text-decoration: underline; text-underline-offset: 4px; padding: 0 1px; }
+    .flash-suffix { text-align: left; width: 50%; }
 
-    /* PERFECT 2-PAGE PRINT STYLESHEET */
     @media print {
       body * { visibility: hidden !important; }
-      
-      #guideModal {
-        position: absolute !important;
-        left: 0 !important;
-        top: 0 !important;
-        width: 100% !important;
-        height: auto !important;
-        background: white !important;
-        display: block !important;
-      }
-
-      #guideModal > div {
-        max-height: none !important;
-        border: none !important;
-        box-shadow: none !important;
-        width: 100% !important;
-        background: white !important;
-      }
-
-      #printableGuide, #printableGuide * { 
-        visibility: visible !important; 
-      }
-
-      #printableGuide {
-        position: absolute !important;
-        left: 0 !important;
-        top: 0 !important;
-        width: 100% !important;
-        color: #0f172a !important;
-        background: white !important;
-        font-size: 10pt !important;
-        line-height: 1.35 !important;
-        padding: 0 !important;
-      }
-
+      #guideModal { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; height: auto !important; background: white !important; display: block !important; }
+      #guideModal > div { max-height: none !important; border: none !important; box-shadow: none !important; width: 100% !important; background: white !important; }
+      #printableGuide, #printableGuide * { visibility: visible !important; }
+      #printableGuide { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; color: #0f172a !important; background: white !important; font-size: 10pt !important; line-height: 1.35 !important; padding: 0 !important; }
       .no-print { display: none !important; }
-      .print-break-before { 
-        page-break-before: always !important; 
-        break-before: page !important; 
-      }
+      .print-break-before { page-break-before: always !important; break-before: page !important; }
     }
   </style>
 </head>
 <body id="appBody" class="bg-slate-900 text-slate-100 min-h-screen font-sans p-6">
   <div class="max-w-4xl mx-auto space-y-6">
     
-    <!-- HEADER & THEME TOGGLE CONTROLS -->
-    <header class="border-b border-slate-700 dark:border-slate-700 pb-4 flex justify-between items-center">
+    <!-- HEADER -->
+    <header class="border-b border-slate-700 pb-4 flex justify-between items-center">
       <div>
-        <h1 class="text-2xl font-bold text-cyan-400 dark:text-cyan-400 light:text-cyan-700">Cognitive Reading Pacer</h1>
+        <h1 class="text-2xl font-bold text-cyan-400">Cognitive Reading Pacer</h1>
         <p class="text-xs text-slate-400">Ave Maria Middle School Edition • IXL Lexile & Firebase Connected</p>
       </div>
       
       <div class="flex items-center space-x-3">
-        <!-- DAYLIGHT / DARK THEME TOGGLE BUTTON -->
-        <button onclick="toggleAppTheme()" id="themeToggleBtn" class="bg-slate-800 dark:bg-slate-800 border border-slate-700 text-xs px-3 py-2 rounded text-yellow-300 font-bold flex items-center space-x-1">
+        <button onclick="toggleAppTheme()" id="themeToggleBtn" class="bg-slate-800 border border-slate-700 text-xs px-3 py-2 rounded text-yellow-300 font-bold flex items-center space-x-1">
           <span id="themeIcon">☀️</span> <span id="themeText">Daylight Theme</span>
         </button>
 
@@ -127,8 +98,8 @@
       </div>
     </header>
 
-    <!-- SIGN-IN PROMPT SCREEN -->
-    <div id="loggedOutState" class="bg-slate-800 dark:bg-slate-800 p-8 rounded-xl border border-slate-700 text-center space-y-4 max-w-md mx-auto my-12">
+    <!-- SIGN-IN PROMPT -->
+    <div id="loggedOutState" class="bg-slate-800 p-8 rounded-xl border border-slate-700 text-center space-y-4 max-w-md mx-auto my-12">
       <div class="text-4xl">⛪</div>
       <h2 class="text-lg font-bold text-cyan-300">Catholic School Portal Sign-In</h2>
       <p class="text-xs text-slate-300 leading-relaxed">
@@ -230,18 +201,19 @@
         <button onclick="toggleTeacherDemoView()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-1 rounded font-bold">Return to Teacher Dashboard</button>
       </div>
 
-      <!-- STUDENT PROFILE PROGRESS TRACKER BAR -->
-      <div class="bg-slate-800 dark:bg-slate-800 p-3 rounded-lg border border-slate-700 flex justify-between items-center text-xs">
+      <!-- STUDENT PROGRESS BAR -->
+      <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 flex justify-between items-center text-xs">
         <div class="flex items-center space-x-3">
-          <span class="bg-indigo-900 text-indigo-300 px-2.5 py-1 rounded font-bold">Student Active Goal</span>
+          <span class="bg-indigo-900 text-indigo-300 px-2.5 py-1 rounded font-bold">Active Goal</span>
           <span class="text-slate-300">Target Lexile: <strong id="studentLexileBadge" class="text-cyan-400">600L - 750L</strong></span>
         </div>
         <div class="flex items-center space-x-4">
-          <div>Weekly Sprints: <strong class="text-emerald-400">2 / 3 Completed</strong></div>
+          <div>Weekly Training: <strong class="text-emerald-400">2 / 3 Completed</strong></div>
           <div>Baseline ERR: <strong id="studentBaselineDisplay" class="text-yellow-400">180 ERR</strong></div>
         </div>
       </div>
 
+      <!-- LEXILE & CONTENT GENERATOR -->
       <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-3">
         <div class="flex justify-between items-center border-b border-slate-700 pb-2">
           <h2 class="text-sm font-bold text-cyan-300">Target Reading Calibration</h2>
@@ -261,9 +233,10 @@
           <input type="text" id="topicInput" placeholder="Topic (e.g., St. Patrick, Solar System, Roman Aqueducts)" class="bg-slate-900 border border-slate-700 text-xs px-3 py-2 rounded flex-1">
           <button onclick="generateAIContent()" id="genBtn" class="bg-indigo-600 hover:bg-indigo-500 font-bold px-4 py-2 text-xs rounded text-white">Generate Content</button>
         </div>
-        <div id="genStatus" class="text-xs text-slate-400 hidden">Generating faith-aligned, Lexile-calibrated passage...</div>
+        <div id="genStatus" class="text-xs text-slate-400 hidden">Generating faith-aligned passage and 3 comprehension questions...</div>
       </div>
 
+      <!-- TABS -->
       <div class="flex space-x-2 border-b border-slate-700 pb-2">
         <button onclick="switchTab('diagnostic')" class="tab-btn px-4 py-2 text-sm font-semibold rounded bg-cyan-600 text-white">1. Standardized Diagnostic</button>
         <button onclick="switchTab('module1')" class="tab-btn px-4 py-2 text-sm font-semibold rounded bg-slate-800 text-slate-300">Module 1 (Accelerator)</button>
@@ -289,16 +262,19 @@
           <button id="diagStartBtn" onclick="startDiagnostic()" class="w-full bg-cyan-500 hover:bg-cyan-600 font-bold py-2 rounded text-slate-950">Start Diagnostic Sprint</button>
           <button id="diagFinishBtn" onclick="finishDiagnostic()" class="hidden w-full bg-emerald-500 hover:bg-emerald-600 font-bold py-2 rounded text-slate-950">I Finished Reading!</button>
 
-          <div id="diagQuiz" class="hidden mt-4 space-y-3 pt-4 border-t border-slate-700">
-            <p class="text-sm font-semibold text-yellow-400">Comprehension Verification Check:</p>
-            <p id="diagQuizQ" class="text-sm text-slate-200">Question goes here...</p>
-            <div id="diagQuizOpts" class="space-y-1 text-sm"></div>
-            <button onclick="submitDiagnostic()" class="bg-indigo-600 px-4 py-2 rounded text-sm font-bold mt-2">Calculate ERR & Save Score</button>
+          <!-- DIAGNOSTIC 3-QUESTION QUIZ CONTAINER -->
+          <div id="diagQuiz" class="hidden mt-4 space-y-4 pt-4 border-t border-slate-700">
+            <div class="flex justify-between items-center">
+              <p class="text-sm font-semibold text-yellow-400">Comprehension Verification Check (3 Questions):</p>
+              <span class="text-xs text-slate-400 font-mono">Literal • Inferential • Vocabulary</span>
+            </div>
+            <div id="diagQuizQuestionsContainer" class="space-y-4"></div>
+            <button onclick="submitDiagnostic()" class="bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded text-sm font-bold mt-2 text-white">Calculate ERR & Save Score</button>
           </div>
         </div>
       </section>
 
-      <!-- TAB 2: MODULE 1 (ACCELERATOR FOCUS SHUTTER - ENHANCED VISUALS) -->
+      <!-- TAB 2: MODULE 1 -->
       <section id="tab-module1" class="tab-content hidden space-y-4">
         <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-3">
           <div class="flex justify-between items-center border-b border-slate-700 pb-2">
@@ -312,7 +288,6 @@
             </div>
           </div>
 
-          <!-- ENHANCED VIEWPORT CONTAINER WITH HIGH-CONTRAST HIGHLIGHT -->
           <div id="shutterViewport" class="bg-slate-950 p-6 rounded-xl border border-slate-800 h-80 overflow-y-auto space-y-4 text-xl leading-[2.5] relative scroll-smooth">
             <div id="shutterContainer" class="space-y-4"></div>
           </div>
@@ -324,39 +299,44 @@
         </div>
       </section>
 
-      <!-- TAB 3: MODULE 2 (MORPHO-VISUAL FLASHER - ENHANCED FIXATION CROSSHAIR) -->
+      <!-- TAB 3: MODULE 2 -->
       <section id="tab-module2" class="tab-content hidden space-y-4">
         <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-4 text-center">
-          <div class="border-b border-slate-700 pb-2 text-left">
-            <h2 class="text-lg font-bold text-cyan-300">Module 2: Morpho-Visual Flasher</h2>
-            <p class="text-xs text-slate-400">🎯 <strong>How to practice:</strong> Fix your eyes strictly on the red target letter below the crosshair to expand your peripheral attention span.</p>
+          <div class="border-b border-slate-700 pb-2 text-left flex justify-between items-center">
+            <div>
+              <h2 class="text-lg font-bold text-cyan-300">Module 2: Morpho-Visual Flasher</h2>
+              <p class="text-xs text-slate-400">🎯 <strong>How to practice:</strong> Keep your eyes locked on the red ┼ crosshair. Target red letters align directly underneath.</p>
+            </div>
+            <span id="flashCounter" class="bg-indigo-900 text-indigo-300 px-3 py-1 rounded text-xs font-bold">Ready: 0 / 0 Flashes</span>
           </div>
 
-          <!-- OPTICAL FLASH CONTROLS -->
           <div class="flex justify-center items-center space-x-3 text-xs">
-            <span class="text-slate-400">Flash Interval:</span>
+            <span class="text-slate-400">Flash Speed:</span>
             <button onclick="setFlashSpeed(500)" id="spd500" class="px-3 py-1 rounded bg-slate-700 text-slate-300 font-bold">500ms (Slow)</button>
             <button onclick="setFlashSpeed(350)" id="spd350" class="px-3 py-1 rounded bg-indigo-600 text-white font-bold">350ms (Medium)</button>
             <button onclick="setFlashSpeed(200)" id="spd200" class="px-3 py-1 rounded bg-slate-700 text-slate-300 font-bold">200ms (Fast)</button>
           </div>
 
-          <!-- TARGET FIXATION CANVAS -->
-          <div class="h-40 bg-slate-950 rounded-xl border border-slate-800 flex flex-col items-center justify-center relative overflow-hidden">
-            <!-- PERSISTENT FIXATION CROSSHAIR -->
-            <div class="text-red-500 font-bold text-lg mb-1 pointer-events-none">┼</div>
-            <div id="flashDisplay" class="text-2xl font-bold tracking-wider">Ready?</div>
+          <div class="h-44 bg-slate-950 rounded-xl border border-slate-800 flex flex-col items-center justify-center relative overflow-hidden">
+            <div class="text-red-500 font-extrabold text-2xl mb-1 pointer-events-none">┼</div>
+            <div id="flashDisplay" class="text-xl font-bold tracking-wide h-10 flex items-center justify-center w-full">
+              Ready?
+            </div>
           </div>
 
-          <button onclick="startFlasher()" class="bg-indigo-500 hover:bg-indigo-400 font-bold px-8 py-2.5 rounded text-white text-sm">Start Optical Flashes</button>
+          <button onclick="startFlasher()" class="bg-indigo-500 hover:bg-indigo-400 font-bold px-8 py-2.5 rounded text-white text-sm">Start Optical Training Session</button>
         </div>
       </section>
 
-      <!-- TAB 4: MODULE 3 (PQRST WORKFLOW) -->
+      <!-- TAB 4: MODULE 3 (PQRST ACTIVE READING WITH 3-QUESTION QUIZ) -->
       <section id="tab-module3" class="tab-content hidden space-y-4">
         <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-4">
-          <div class="border-b border-slate-700 pb-2">
-            <h2 class="text-lg font-bold text-cyan-300">Module 3: PQRST Active Reading</h2>
-            <p class="text-xs text-slate-400">📘 <strong>How to practice:</strong> Preview key ideas, answer guiding questions, and verify comprehension.</p>
+          <div class="border-b border-slate-700 pb-2 flex justify-between items-center">
+            <div>
+              <h2 class="text-lg font-bold text-cyan-300">Module 3: PQRST Active Reading</h2>
+              <p class="text-xs text-slate-400">📘 <strong>How to practice:</strong> Preview key ideas, answer guiding questions, and verify comprehension across 3 question types.</p>
+            </div>
+            <button onclick="pqrstReset()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 text-xs px-2.5 py-1 rounded font-bold">🔄 Restart Passage</button>
           </div>
           
           <div id="pqrstStep1" class="space-y-2">
@@ -375,11 +355,14 @@
             <button onclick="pqrstNext(3)" class="bg-yellow-500 hover:bg-yellow-400 text-slate-950 font-bold px-4 py-2 rounded text-sm mt-2">Recite & Test Knowledge</button>
           </div>
 
-          <div id="pqrstStep3" class="hidden space-y-2">
-            <span class="text-xs bg-purple-900 text-purple-300 px-2 py-1 rounded font-bold">Step 3: Review & Quiz</span>
-            <p id="quizQ" class="text-sm font-semibold text-yellow-400">Question</p>
-            <div id="quizOpts" class="space-y-1 text-sm"></div>
-            <button onclick="alert('PQRST Session Completed!')" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-4 py-2 rounded text-sm mt-2">Submit Quiz</button>
+          <!-- PQRST STEP 3: 3-QUESTION QUIZ CONTAINER -->
+          <div id="pqrstStep3" class="hidden space-y-4">
+            <div class="flex justify-between items-center">
+              <span class="text-xs bg-purple-900 text-purple-300 px-2 py-1 rounded font-bold">Step 3: Review & 3-Question Verification Quiz</span>
+              <span class="text-xs text-slate-400 font-mono">3 Questions • Mixed Cognitive Depth</span>
+            </div>
+            <div id="pqrstQuizContainer" class="space-y-4"></div>
+            <button onclick="submitPqrstQuiz()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-5 py-2.5 rounded text-sm mt-2">Submit 3-Question Quiz</button>
           </div>
         </div>
       </section>
@@ -387,138 +370,37 @@
 
   </div>
 
-  <!-- EDUCATOR & PARENT FIELD GUIDE MODAL -->
+  <!-- EDUCATOR FIELD GUIDE MODAL -->
   <div id="guideModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-700 rounded-xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl">
-      
       <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800/50 rounded-t-xl no-print">
         <h2 class="text-lg font-bold text-cyan-300 flex items-center space-x-2">
           <span>📖 Educator & Parent Field Guide</span>
         </h2>
         <div class="flex items-center space-x-2">
-          <button onclick="downloadPDFGuide()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-1.5 rounded font-bold">
-            Download PDF
-          </button>
+          <button onclick="downloadPDFGuide()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-1.5 rounded font-bold">Download PDF</button>
           <button onclick="closeGuideModal()" class="text-slate-400 hover:text-white text-lg font-bold px-2">✕</button>
         </div>
       </div>
-
       <div id="printableGuide" class="p-6 overflow-y-auto space-y-6 text-slate-200 text-sm leading-relaxed">
-        
         <div class="border-b border-slate-700 pb-3">
           <h1 class="text-xl font-bold text-cyan-400">Cognitive Reading Pacer — Field Manual</h1>
           <p class="text-xs text-slate-400 mt-1">Catholic Middle School Edition • Research-Backed Fluency & Comprehension Protocol</p>
         </div>
-
         <section class="space-y-2">
           <h3 class="font-bold text-cyan-300 text-base">1. Key Metrics & Definitions</h3>
           <div class="bg-slate-950 p-3 rounded border border-slate-800 space-y-2 text-xs">
             <p><strong>WPM (Words Per Minute):</strong> Pure physical tracking speed across lines of text (Words / Seconds × 60).</p>
-            <p><strong>Comprehension %:</strong> Accuracy score on post-reading verification quiz (100% or 50%).</p>
-            <p><strong>ERR (Effective Reading Rate):</strong> Calculated as <strong>WPM × Comprehension %</strong>. This core metric prevents skimming by penalizing fast reading without retention.</p>
-            <p><strong>ΔERR (Growth Delta):</strong> True cognitive growth measured between standardized Form A (Baseline) and Form B (Re-Test) benchmarks.</p>
-          </div>
-          <div class="text-xs bg-slate-900/60 p-2.5 rounded border border-yellow-500/30 text-yellow-300">
-            <strong>The Golden Rule of ERR:</strong> A student reading at 300 WPM with 50% comprehension has an ERR of <strong>150</strong>. A student reading at 180 WPM with 100% comprehension has an ERR of <strong>180</strong>. Higher comprehension always wins.
+            <p><strong>Comprehension %:</strong> Accuracy score on 3-question verification check (100%, 67%, 33%, or 0%).</p>
+            <p><strong>ERR (Effective Reading Rate):</strong> Calculated as <strong>WPM × Comprehension %</strong>.</p>
+            <p><strong>ΔERR (Growth Delta):</strong> True cognitive growth measured between Form A and Form B.</p>
           </div>
         </section>
-
-        <section class="space-y-2">
-          <h3 class="font-bold text-cyan-300 text-base">2. Lexile Bands vs. RTI Support Tiers</h3>
-          <p class="text-xs text-slate-300">To avoid confusion with school Multi-Tiered System of Support (MTSS/RTI) frameworks, the app separates instructional support tiers from text readability bands:</p>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-            <div class="bg-slate-950 p-3 rounded border border-slate-800 space-y-1">
-              <div class="font-bold text-yellow-400">RTI Support Tiers (School Level)</div>
-              <p>• <strong>Tier 1:</strong> Universal core classroom instruction (100% of students).</p>
-              <p>• <strong>Tier 2:</strong> Targeted small-group intervention (10–15% needing pacer support).</p>
-              <p>• <strong>Tier 3:</strong> Intensive individualized intervention (5% specialized support).</p>
-            </div>
-            <div class="bg-slate-950 p-3 rounded border border-slate-800 space-y-1">
-              <div class="font-bold text-cyan-400">App Lexile Reading Bands</div>
-              <p>• <strong>Foundational Band (400L–550L):</strong> Grade 4–5 readability.</p>
-              <p>• <strong>Intermediate Band (600L–750L):</strong> On-grade Grade 6–7 readability.</p>
-              <p>• <strong>Advanced Band (800L–950L):</strong> Grade 8 / Honors readability.</p>
-              <p>• <strong>Mastery Band (1000L+):</strong> High School / College Ready readability.</p>
-            </div>
-          </div>
-        </section>
-
-        <section class="space-y-2">
-          <h3 class="font-bold text-cyan-300 text-base">3. The 4 Pacing Modules</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-            <div class="bg-slate-950 p-3 rounded border border-slate-800">
-              <div class="font-bold text-yellow-400">1. Standardized Diagnostic (Tab 1)</div>
-              <p class="text-slate-400 mt-1">Establishes true baseline ERR using pre-calibrated static benchmark texts (Form A/B) matching IXL Lexile bands.</p>
-            </div>
-            <div class="bg-slate-950 p-3 rounded border border-slate-800">
-              <div class="font-bold text-cyan-400">2. Accelerator Focus Shutter (Module 1)</div>
-              <p class="text-slate-400 mt-1">Eliminates line regression and sub-vocalization by pacing eyes forward with a moving highlight shutter window.</p>
-            </div>
-            <div class="bg-slate-950 p-3 rounded border border-slate-800">
-              <div class="font-bold text-indigo-400">3. Morpho-Visual Flasher (Module 2)</div>
-              <p class="text-slate-400 mt-1">Expands peripheral visual attention span and foveal fixation width using phrase flashes centered on anchor target letters.</p>
-            </div>
-            <div class="bg-slate-950 p-3 rounded border border-slate-800">
-              <div class="font-bold text-emerald-400">4. PQRST Active Reader (Module 3)</div>
-              <p class="text-slate-400 mt-1">Guides Preview, Question, Read, State/Recite, and Test steps for high comprehension retention on faith-aligned AI topics.</p>
-            </div>
-          </div>
-        </section>
-
-        <!-- STRICT PAGE BREAK BEFORE SECTION 4 FOR PRINT -->
-        <section class="space-y-2 print-break-before">
-          <h3 class="font-bold text-cyan-300 text-base">4. Recommended 15-Minute Classroom Protocol</h3>
-          <ol class="list-decimal list-inside text-xs space-y-1.5 text-slate-300 bg-slate-950 p-3 rounded border border-slate-800">
-            <li><strong>Diagnostic / Re-Test (3 Mins - Mondays/Fridays):</strong> Complete Form A (Day 1) or Form B (Progress Check) on Tab 1 to log ERR.</li>
-            <li><strong>Ocular Span Warmup (3 Mins):</strong> Run 20–30 flashes on Module 2 (Visual Flasher) to expand peripheral fixation span.</li>
-            <li><strong>Speed Pacing (5 Mins):</strong> Set Module 1 Focus Shutter to +20 WPM above baseline on a custom topic (e.g., St. Patrick, Solar System).</li>
-            <li><strong>Active Recall & Quiz (4 Mins):</strong> Complete Module 3 (PQRST Reader) preview, read, and verification quiz.</li>
-          </ol>
-        </section>
-
-        <section class="space-y-2">
-          <h3 class="font-bold text-cyan-300 text-base">5. Teacher Troubleshooting & Intervention Matrix</h3>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs border-collapse border border-slate-800 bg-slate-950">
-              <thead>
-                <tr class="border-b border-slate-800 bg-slate-900 text-slate-300">
-                  <th class="p-2 border-r border-slate-800">Observed Behavior</th>
-                  <th class="p-2 border-r border-slate-800">Root Cognitive Cause</th>
-                  <th class="p-2">Recommended Action</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-800 text-slate-300">
-                <tr>
-                  <td class="p-2 font-bold text-rose-300 border-r border-slate-800">High Speed / Low Quiz Score</td>
-                  <td class="p-2 border-r border-slate-800"><strong>The Skimmer:</strong> Eye movement outpaces cognitive comprehension.</td>
-                  <td class="p-2">Lower Module 1 WPM by 30 points. Require 90%+ quiz score before increasing speed.</td>
-                </tr>
-                <tr>
-                  <td class="p-2 font-bold text-yellow-300 border-r border-slate-800">Slow Speed / 100% Quiz Score</td>
-                  <td class="p-2 border-r border-slate-800"><strong>The Perfectionist:</strong> Sub-vocalizes every word; frequent line regression.</td>
-                  <td class="p-2">Increase Module 1 Focus Shutter speed by +20 WPM to force comfortable forward movement.</td>
-                </tr>
-                <tr>
-                  <td class="p-2 font-bold text-emerald-300 border-r border-slate-800">Consistent +30 ERR Growth</td>
-                  <td class="p-2 border-r border-slate-800"><strong>Mastery Achieved:</strong> Expanded optical span and pacing capacity.</td>
-                  <td class="p-2"><strong>Promote Student:</strong> Switch Lexile selector to the next higher reading band!</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-
       </div>
-      
-      <div class="p-4 border-t border-slate-700 bg-slate-800/50 rounded-b-xl flex justify-between items-center no-print">
-        <span class="text-xs text-slate-400">Catholic Middle School Educational Protocol</span>
-        <button onclick="closeGuideModal()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs px-4 py-2 rounded font-bold">Close Guide</button>
-      </div>
-
     </div>
   </div>
 
-  <!-- FIREBASE MODULAR SDK INGESTION -->
+  <!-- FIREBASE MODULAR SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -542,19 +424,11 @@
     let currentUser = null;
 
     window.loginWithGoogle = async () => {
-      try {
-        await signInWithPopup(auth, provider);
-      } catch (err) {
-        alert("Authentication Error: " + err.message);
-      }
+      try { await signInWithPopup(auth, provider); } catch (err) { alert("Auth Error: " + err.message); }
     };
 
     window.handleAuthAction = () => {
-      if (currentUser) {
-        signOut(auth);
-      } else {
-        window.loginWithGoogle();
-      }
+      if (currentUser) { signOut(auth); } else { window.loginWithGoogle(); }
     };
 
     onAuthStateChanged(auth, async (user) => {
@@ -578,12 +452,7 @@
           teacherPortal.classList.remove('hidden');
           studentPortal.classList.add('hidden');
           listenToTeacherRoster();
-        } else if (email.endsWith('@aveangels.org')) {
-          studentPortal.classList.remove('hidden');
-          teacherPortal.classList.add('hidden');
-          loadStudentProfile(user);
         } else {
-          alert(`Logged in as ${email}. (Note: Standard accounts default to Student View. Faculty domain is @avemaria.school).`);
           studentPortal.classList.remove('hidden');
           teacherPortal.classList.add('hidden');
           loadStudentProfile(user);
@@ -602,46 +471,25 @@
     async function loadStudentProfile(user) {
       const userRef = doc(db, 'students', user.uid);
       const snap = await getDoc(userRef);
-      if (snap.exists()) {
-        const data = snap.data();
-        if (data.baselineERR) {
-          window.baselineERR = data.baselineERR;
-          document.getElementById('studentBaselineDisplay').innerText = `${data.baselineERR} ERR`;
-        }
+      if (snap.exists() && snap.data().baselineERR) {
+        window.baselineERR = snap.data().baselineERR;
+        document.getElementById('studentBaselineDisplay').innerText = `${snap.data().baselineERR} ERR`;
       }
     }
 
     window.saveStudentAssessment = async (formType, rawWpm, accuracy, calculatedERR) => {
       if (!currentUser || window.isTeacherDemoActive) return;
-      
       const studentRef = doc(db, 'students', currentUser.uid);
-      const updateData = {
-        name: currentUser.displayName,
-        email: currentUser.email,
-        lexileTier: window.currentLexileTier || 'tier2',
-        lastUpdated: new Date()
-      };
-
-      if (formType === 'FormA') {
-        updateData.formA_ERR = calculatedERR;
-        updateData.baselineERR = calculatedERR;
-        window.baselineERR = calculatedERR;
-        document.getElementById('studentBaselineDisplay').innerText = `${calculatedERR} ERR`;
-      } else {
-        updateData.formB_ERR = calculatedERR;
-      }
-
+      const updateData = { name: currentUser.displayName, email: currentUser.email, lexileTier: window.currentLexileTier || 'tier2', lastUpdated: new Date() };
+      if (formType === 'FormA') { updateData.formA_ERR = calculatedERR; updateData.baselineERR = calculatedERR; window.baselineERR = calculatedERR; document.getElementById('studentBaselineDisplay').innerText = `${calculatedERR} ERR`; } 
+      else { updateData.formB_ERR = calculatedERR; }
       await setDoc(studentRef, updateData, { merge: true });
     };
 
     function listenToTeacherRoster() {
       const rosterBody = document.getElementById('teacherRosterBody');
       onSnapshot(collection(db, 'students'), (snapshot) => {
-        if (snapshot.empty) {
-          rosterBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">No student assessments recorded yet in Firestore.</td></tr>`;
-          return;
-        }
-
+        if (snapshot.empty) { rosterBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">No student assessments recorded yet.</td></tr>`; return; }
         let html = '';
         snapshot.forEach(docSnap => {
           const s = docSnap.data();
@@ -649,92 +497,101 @@
           const formB = s.formB_ERR ? `${s.formB_ERR} ERR` : 'Unset';
           const delta = (s.formA_ERR && s.formB_ERR) ? (s.formB_ERR - s.formA_ERR) : null;
           const deltaStr = delta !== null ? (delta >= 0 ? `+${delta} ERR` : `${delta} ERR`) : 'N/A';
-
-          html += `
-            <tr class="hover:bg-slate-700/30">
-              <td class="p-3 font-semibold text-white">${s.name || 'Student'}</td>
-              <td class="p-3"><span class="bg-slate-900 text-cyan-300 px-2 py-0.5 rounded font-mono">${s.lexileTier || 'tier2'}</span></td>
-              <td class="p-3 font-mono text-slate-300">${formA}</td>
-              <td class="p-3 font-mono text-emerald-400 font-bold">${formB}</td>
-              <td class="p-3"><span class="text-emerald-400 font-bold">${deltaStr}</span></td>
-              <td class="p-3 text-right">
-                <span class="bg-slate-700 text-slate-300 px-2 py-1 rounded text-[10px] font-bold">Active</span>
-              </td>
-            </tr>
-          `;
+          html += `<tr class="hover:bg-slate-700/30"><td class="p-3 font-semibold text-white">${s.name || 'Student'}</td><td class="p-3"><span class="bg-slate-900 text-cyan-300 px-2 py-0.5 rounded font-mono">${s.lexileTier || 'tier2'}</span></td><td class="p-3 font-mono text-slate-300">${formA}</td><td class="p-3 font-mono text-emerald-400 font-bold">${formB}</td><td class="p-3"><span class="text-emerald-400 font-bold">${deltaStr}</span></td><td class="p-3 text-right"><span class="bg-slate-700 text-slate-300 px-2 py-1 rounded text-[10px] font-bold">Active</span></td></tr>`;
         });
         rosterBody.innerHTML = html;
       });
     }
   </script>
 
-  <!-- PACER ENGINE, DAYLIGHT THEME & MODULE VISUAL SCRIPT -->
+  <!-- PACER SCRIPT ENGINE WITH 3-QUESTION QUIZ CONTROLS -->
   <script>
     function openGuideModal() { document.getElementById('guideModal').classList.remove('hidden'); }
     function closeGuideModal() { document.getElementById('guideModal').classList.add('hidden'); }
-    
-    function downloadPDFGuide() { 
-      openGuideModal(); 
-      setTimeout(() => { window.print(); }, 200); 
-    }
+    function downloadPDFGuide() { openGuideModal(); setTimeout(() => { window.print(); }, 200); }
 
-    // DAYLIGHT / DARK THEME TOGGLE LOGIC
     let isDarkTheme = true;
     function toggleAppTheme() {
       isDarkTheme = !isDarkTheme;
-      const body = document.body;
-      const icon = document.getElementById('themeIcon');
-      const text = document.getElementById('themeText');
-
-      if (isDarkTheme) {
-        body.className = "bg-slate-900 text-slate-100 min-h-screen font-sans p-6 dark";
-        icon.innerText = "☀️";
-        text.innerText = "Daylight Theme";
-      } else {
-        body.className = "bg-slate-100 text-slate-900 min-h-screen font-sans p-6 light";
-        icon.innerText = "🌙";
-        text.innerText = "Dark Theme";
-      }
+      document.body.className = isDarkTheme ? "bg-slate-900 text-slate-100 min-h-screen font-sans p-6 dark" : "bg-slate-100 text-slate-900 min-h-screen font-sans p-6 light";
+      document.getElementById('themeIcon').innerText = isDarkTheme ? "☀️" : "🌙";
+      document.getElementById('themeText').innerText = isDarkTheme ? "Daylight Theme" : "Dark Theme";
     }
 
-    // TEACHER DEMO TOGGLE LOGIC
     window.isTeacherDemoActive = false;
     function toggleTeacherDemoView() {
       window.isTeacherDemoActive = !window.isTeacherDemoActive;
-      const teacherPortal = document.getElementById('teacherPortal');
-      const studentPortal = document.getElementById('studentPortal');
-      const demoBanner = document.getElementById('demoBanner');
-      const demoBtn = document.getElementById('demoToggleBtn');
-
-      if (window.isTeacherDemoActive) {
-        teacherPortal.classList.add('hidden');
-        studentPortal.classList.remove('hidden');
-        demoBanner.classList.remove('hidden');
-        demoBtn.innerText = "🔙 Return to Teacher Dashboard";
-      } else {
-        studentPortal.classList.add('hidden');
-        teacherPortal.classList.remove('hidden');
-        demoBanner.classList.add('hidden');
-        demoBtn.innerText = "👁️ Preview Student Experience (Demo Mode)";
-      }
+      document.getElementById('teacherPortal').classList.toggle('hidden', window.isTeacherDemoActive);
+      document.getElementById('studentPortal').classList.toggle('hidden', !window.isTeacherDemoActive);
+      document.getElementById('demoBanner').classList.toggle('hidden', !window.isTeacherDemoActive);
+      document.getElementById('demoToggleBtn').innerText = window.isTeacherDemoActive ? "🔙 Return to Teacher Dashboard" : "👁️ Preview Student Experience (Demo Mode)";
     }
 
+    // BENCHMARK BANK WITH 3 QUESTIONS PER FORM
     const benchmarkBank = {
       tier1: {
-        FormA: { wordCount: 110, passage: "Lighthouses are tall towers built near coasts and harbors. They shine bright beams of light to guide ships safely through dark waters. Long ago, lighthouse keepers had to trim oil lamps every night. Today, most lighthouses use electric bulbs and automatic timers. Warnings from lighthouses prevent boats from hitting sharp rocks near the shore during stormy weather.", quiz: { question: "What was a task for lighthouse keepers long ago?", options: ["Fixing electric bulbs", "Trimming oil lamps every night", "Building new harbors"], correctIndex: 1 } },
-        FormB: { wordCount: 115, passage: "Coral reefs are underwater structures made by tiny sea creatures called polyps. These reefs provide homes for one quarter of all marine life in the ocean. Bright fish, sea turtles, and crabs rely on corals for food and shelter. Ocean pollution and warm water can harm these fragile ecosystems. Scientists work to protect reefs by creating ocean sanctuaries.", quiz: { question: "What creatures build coral reefs?", options: ["Sea turtles", "Tiny polyps", "Electric eels"], correctIndex: 1 } }
+        FormA: { wordCount: 110, passage: "Lighthouses are tall towers built near coasts and harbors. They shine bright beams of light to guide ships safely through dark waters. Long ago, lighthouse keepers had to trim oil lamps every night. Today, most lighthouses use electric bulbs and automatic timers. Warnings from lighthouses prevent boats from hitting sharp rocks near the shore during stormy weather.", 
+          questions: [
+            { type: "Literal Recall", question: "1. What was a task for lighthouse keepers long ago?", options: ["Fixing electric bulbs", "Trimming oil lamps every night", "Building new harbors"], correctIndex: 1 },
+            { type: "Inferential", question: "2. Why are lighthouses built on high coastal rocks?", options: ["So keepers can see stars", "To maximize light visibility for approaching ships", "To stay away from town noise"], correctIndex: 1 },
+            { type: "Vocabulary", question: "3. What does 'automatic' mean in the context of modern lighthouses?", options: ["Operated by hand", "Self-operating without manual effort", "Broken and unpowered"], correctIndex: 1 }
+          ]
+        },
+        FormB: { wordCount: 115, passage: "Coral reefs are underwater structures made by tiny sea creatures called polyps. These reefs provide homes for one quarter of all marine life in the ocean. Bright fish, sea turtles, and crabs rely on corals for food and shelter. Ocean pollution and warm water can harm these fragile ecosystems. Scientists work to protect reefs by creating ocean sanctuaries.", 
+          questions: [
+            { type: "Literal Recall", question: "1. What creatures build coral reefs?", options: ["Sea turtles", "Tiny polyps", "Electric eels"], correctIndex: 1 },
+            { type: "Inferential", question: "2. What would happen if coral reefs were destroyed?", options: ["25% of marine life would lose their habitat", "Ocean water would instantly dry up", "Fish would swim faster"], correctIndex: 0 },
+            { type: "Vocabulary", question: "3. What does 'fragile' mean when describing reef ecosystems?", options: ["Strong and indestructible", "Easily damaged or delicate", "Deep underwater"], correctIndex: 1 }
+          ]
+        }
       },
       tier2: {
-        FormA: { wordCount: 165, passage: "Volcanoes are openings in the Earth's crust that allow molten rock, ash, and gases to escape onto the surface. When magma builds up pressure beneath a volcano, an eruption can occur. Some eruptions are explosive and send ash high into the atmosphere, while others produce gentle flows of liquid lava. Scientists monitor volcanic activity by measuring seismic waves, gas emissions, and ground deformation. Understanding these signs helps warning systems protect nearby communities from unexpected hazards.", quiz: { question: "What allows scientists to monitor volcanic activity?", options: ["Weather forecasts", "Seismic waves and gas emissions", "Ocean tides"], correctIndex: 1 } },
-        FormB: { wordCount: 170, passage: "Glaciers are massive sheets of dense ice that move slowly across land under their own weight. Formed over hundreds of years from accumulated snow, glaciers hold most of the world's freshwater. As climate temperatures rise, glaciers melt faster than new snow can collect. Scientists track glacier movement using satellite imagery and aerial radar. Shrinking glaciers cause rising sea levels and alter river habitats around the world.", quiz: { question: "How do scientists track glacier movement?", options: ["Using satellite imagery and aerial radar", "By measuring rainwater", "Through deep sea diving"], correctIndex: 0 } }
+        FormA: { wordCount: 165, passage: "Volcanoes are openings in the Earth's crust that allow molten rock, ash, and gases to escape onto the surface. When magma builds up pressure beneath a volcano, an eruption can occur. Some eruptions are explosive and send ash high into the atmosphere, while others produce gentle flows of liquid lava. Scientists monitor volcanic activity by measuring seismic waves, gas emissions, and ground deformation. Understanding these signs helps warning systems protect nearby communities from unexpected hazards.", 
+          questions: [
+            { type: "Literal Recall", question: "1. What allows scientists to monitor volcanic activity?", options: ["Weather forecasts", "Seismic waves, gas emissions, and ground deformation", "Ocean tides"], correctIndex: 1 },
+            { type: "Inferential", question: "2. Why is monitoring ground deformation critical near active volcanoes?", options: ["It shows where trees grow best", "It indicates rising magma pressure underneath", "It tracks animal migration"], correctIndex: 1 },
+            { type: "Vocabulary", question: "3. What is 'magma' before it reaches the Earth's surface?", options: ["Molten rock beneath the surface", "Cold volcanic ash", "Atmospheric gas"], correctIndex: 0 }
+          ]
+        },
+        FormB: { wordCount: 170, passage: "Glaciers are massive sheets of dense ice that move slowly across land under their own weight. Formed over hundreds of years from accumulated snow, glaciers hold most of the world's freshwater. As climate temperatures rise, glaciers melt faster than new snow can collect. Scientists track glacier movement using satellite imagery and aerial radar. Shrinking glaciers cause rising sea levels and alter river habitats around the world.", 
+          questions: [
+            { type: "Literal Recall", question: "1. How do scientists track glacier movement?", options: ["Using satellite imagery and aerial radar", "By measuring rainwater", "Through deep sea diving"], correctIndex: 0 },
+            { type: "Inferential", question: "2. Why does melting glaciers impact coastal communities?", options: ["It decreases ocean levels", "It causes sea levels to rise and floods coasts", "It stops river flow entirely"], correctIndex: 1 },
+            { type: "Vocabulary", question: "3. What does 'accumulated' mean regarding glacier formation?", options: ["Melted away quickly", "Gathered and built up over time", "Blown away by wind"], correctIndex: 1 }
+          ]
+        }
       },
       tier3: {
-        FormA: { wordCount: 210, passage: "Hydrothermal vents are fissures on the ocean floor where geothermally heated water emerges. Located near volcanically active oceanic ridges, these vents discharge mineral-rich fluids exceeding four hundred degrees Celsius. Despite the total absence of sunlight and extreme hydrostatic pressure, complex ecosystems thrive surrounding hydrothermal vents. Chemosynthetic bacteria convert chemical compounds like hydrogen sulfide into organic energy, serving as the primary producers for specialized sea life including giant tube worms and blind shrimp.", quiz: { question: "What process do bacteria near hydrothermal vents use to generate energy?", options: ["Photosynthesis", "Chemosynthesis using chemical compounds", "Nuclear decay"], correctIndex: 1 } },
-        FormB: { wordCount: 215, passage: "Bioluminescence is the biochemical emission of light by living organisms, occurring predominantly among marine species. This physiological reaction requires the enzyme luciferase to catalyze the oxidation of luciferin, generating light without heat. Organisms utilize bioluminescence for diverse evolutionary adaptations, including camouflage through counterillumination, attracting prey, and deterring potential predators. Marine biologists study these molecular mechanisms to develop advanced medical imaging technologies.", quiz: { question: "What enzyme catalyzes the light-producing reaction in bioluminescence?", options: ["Luciferase", "Amylase", "Hemoglobin"], correctIndex: 0 } }
+        FormA: { wordCount: 210, passage: "Hydrothermal vents are fissures on the ocean floor where geothermally heated water emerges. Located near volcanically active oceanic ridges, these vents discharge mineral-rich fluids exceeding four hundred degrees Celsius. Despite the total absence of sunlight and extreme hydrostatic pressure, complex ecosystems thrive surrounding hydrothermal vents. Chemosynthetic bacteria convert chemical compounds like hydrogen sulfide into organic energy, serving as the primary producers for specialized sea life including giant tube worms and blind shrimp.", 
+          questions: [
+            { type: "Literal Recall", question: "1. What process do bacteria near hydrothermal vents use to generate energy?", options: ["Photosynthesis", "Chemosynthesis using chemical compounds", "Nuclear decay"], correctIndex: 1 },
+            { type: "Inferential", question: "2. Why is chemosynthesis necessary for vent life instead of photosynthesis?", options: ["Sunlight cannot penetrate to deep ocean floors", "Water is too cold for plants", "Bacteria prefer dark colors"], correctIndex: 0 },
+            { type: "Vocabulary", question: "3. What are 'fissures' in the ocean floor?", options: ["Floating seaweed beds", "Deep cracks or openings in the crust", "Solid ice formations"], correctIndex: 1 }
+          ]
+        },
+        FormB: { wordCount: 215, passage: "Bioluminescence is the biochemical emission of light by living organisms, occurring predominantly among marine species. This physiological reaction requires the enzyme luciferase to catalyze the oxidation of luciferin, generating light without heat. Organisms utilize bioluminescence for diverse evolutionary adaptations, including camouflage through counterillumination, attracting prey, and deterring potential predators. Marine biologists study these molecular mechanisms to develop advanced medical imaging technologies.", 
+          questions: [
+            { type: "Literal Recall", question: "1. What enzyme catalyzes the light-producing reaction in bioluminescence?", options: ["Luciferase", "Amylase", "Hemoglobin"], correctIndex: 0 },
+            { type: "Inferential", question: "2. How does counterillumination aid a deep-sea creature's survival?", options: ["It glows brightly to blind enemies", "It matches overhead light to hide its silhouette from predators below", "It warms the cold surrounding water"], correctIndex: 1 },
+            { type: "Vocabulary", question: "3. What does 'catalyze' mean in a biochemical reaction?", options: ["To prevent or block a change", "To accelerate or trigger a chemical process", "To freeze liquids"], correctIndex: 1 }
+          ]
+        }
       },
       tier4: {
-        FormA: { wordCount: 235, passage: "Quantum computing represents a paradigm shift from classical computation, leveraging the principles of quantum mechanics to process information. Unlike classical bits that exist in definitive binary states of zero or one, quantum bits or qubits exhibit superposition, enabling simultaneous representation of multiple state combinations. Furthermore, quantum entanglement allows qubits to remain interconnected regardless of spatial distance, exponentially accelerating complex calculations in cryptography, material science, and algorithmic simulation.", quiz: { question: "What property allows qubits to represent multiple states simultaneously?", options: ["Binary compilation", "Superposition", "Thermal conductivity"], correctIndex: 1 } },
-        FormB: { wordCount: 240, passage: "The CRISPR-Cas9 system is a revolutionary genome-editing tool derived from bacterial adaptive immune mechanisms. Bacteria employ CRISPR sequences to recognize and destroy recurring viral DNA using the endonuclease Cas9 as molecular scissors. Researchers have repurposed this precision mechanism to introduce targeted alterations within complex eukaryotic genomes, opening unprecedented avenues for treating hereditary genetic disorders, enhancing agricultural resilience, and elucidating fundamental cellular pathways.", quiz: { question: "What is the function of the Cas9 protein in CRISPR editing?", options: ["Synthesizing sugars", "Acting as molecular scissors to cut DNA", "Storing lipids"], correctIndex: 1 } }
+        FormA: { wordCount: 235, passage: "Quantum computing represents a paradigm shift from classical computation, leveraging the principles of quantum mechanics to process information. Unlike classical bits that exist in definitive binary states of zero or one, quantum bits or qubits exhibit superposition, enabling simultaneous representation of multiple state combinations. Furthermore, quantum entanglement allows qubits to remain interconnected regardless of spatial distance, exponentially accelerating complex calculations in cryptography, material science, and algorithmic simulation.", 
+          questions: [
+            { type: "Literal Recall", question: "1. What property allows qubits to represent multiple states simultaneously?", options: ["Binary compilation", "Superposition", "Thermal conductivity"], correctIndex: 1 },
+            { type: "Inferential", question: "2. Why does quantum computing threaten traditional data cryptography?", options: ["Qubits can process complex calculations exponentially faster", "Qubits delete classical hard drives", "Quantum computers use less electricity"], correctIndex: 0 },
+            { type: "Vocabulary", question: "3. What is a 'paradigm shift' in scientific computing?", options: ["A minor hardware update", "A fundamental change in basic concepts and approach", "A system error"], correctIndex: 1 }
+          ]
+        },
+        FormB: { wordCount: 240, passage: "The CRISPR-Cas9 system is a revolutionary genome-editing tool derived from bacterial adaptive immune mechanisms. Bacteria employ CRISPR sequences to recognize and destroy recurring viral DNA using the endonuclease Cas9 as molecular scissors. Researchers have repurposed this precision mechanism to introduce targeted alterations within complex eukaryotic genomes, opening unprecedented avenues for treating hereditary genetic disorders, enhancing agricultural resilience, and elucidating fundamental cellular pathways.", 
+          questions: [
+            { type: "Literal Recall", question: "1. What is the function of the Cas9 protein in CRISPR editing?", options: ["Synthesizing sugars", "Acting as molecular scissors to cut DNA", "Storing lipids"], correctIndex: 1 },
+            { type: "Inferential", question: "2. How did bacteria originally evolve the CRISPR-Cas9 system?", options: ["To store excess food energy", "As an adaptive immune system against viral attacks", "To build cell walls"], correctIndex: 1 },
+            { type: "Vocabulary", question: "3. What does 'elucidating' mean in scientific research?", options: ["Hiding secret data", "Making clear or explaining complex pathways", "Removing cellular waste"], correctIndex: 1 }
+          ]
+        }
       }
     };
 
@@ -746,17 +603,25 @@
       passage: benchmarkBank.tier2.FormA.passage,
       preview: "Volcanoes are dangerous crustal vents caused by magma pressure.",
       guiding_question: "How do scientists monitor volcanic eruptions?",
-      chunks: [
-        { text: "Volcanoes are openings", oap: 5 },
-        { text: "in the Earth's crust", oap: 4 }
-      ],
-      quiz: benchmarkBank.tier2.FormA.quiz
+      chunks: [],
+      questions: benchmarkBank.tier2.FormA.questions
     };
+
+    function buildChunksFromPassage(passageText) {
+      const words = passageText.replace(/[\n\r]+/g, ' ').split(' ');
+      const chunks = [];
+      for (let i = 0; i < words.length; i += 3) {
+        const chunkText = words.slice(i, i + 3).join(' ');
+        if (chunkText.trim()) {
+          const oapIndex = Math.floor(chunkText.length / 2);
+          chunks.push({ text: chunkText, oap: oapIndex });
+        }
+      }
+      return chunks;
+    }
 
     function onLexileChange() { 
       window.currentLexileTier = document.getElementById('lexileSelect').value; 
-      const selText = document.getElementById('lexileSelect').options[document.getElementById('lexileSelect').selectedIndex].text;
-      document.getElementById('studentLexileBadge').innerText = selText.split('(')[1].replace(')', '');
       loadBenchmarkData(); 
     }
 
@@ -767,15 +632,34 @@
       loadBenchmarkData();
     }
 
+    function renderQuestionList(containerId, questions, groupPrefix) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = questions.map((q, qIdx) => `
+        <div class="bg-slate-900/90 p-3 rounded-lg border border-slate-700/80 space-y-2 text-xs">
+          <div class="flex justify-between font-bold text-yellow-300">
+            <span>${q.question}</span>
+            <span class="text-[10px] bg-slate-800 text-cyan-400 px-2 py-0.5 rounded font-mono">${q.type}</span>
+          </div>
+          <div class="space-y-1 pl-2">
+            ${q.options.map((opt, oIdx) => `
+              <label class="block cursor-pointer text-slate-300 hover:text-white">
+                <input type="radio" name="${groupPrefix}_q${qIdx}" value="${oIdx}"> ${opt}
+              </label>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
     function loadBenchmarkData() {
       const benchmark = benchmarkBank[window.currentLexileTier][window.currentBenchmarkForm];
       document.getElementById('diagText').innerText = benchmark.passage;
-      document.getElementById('diagQuizQ').innerText = benchmark.quiz.question;
-      document.getElementById('diagQuizOpts').innerHTML = benchmark.quiz.options.map((opt, i) => 
-        `<label class="block cursor-pointer"><input type="radio" name="diagQ" value="${i}"> ${opt}</label>`
-      ).join('');
+      
       currentData.passage = benchmark.passage;
-      currentData.quiz = benchmark.quiz;
+      currentData.questions = benchmark.questions;
+      currentData.chunks = buildChunksFromPassage(benchmark.passage);
+
+      renderQuestionList('diagQuizQuestionsContainer', benchmark.questions, 'diag');
       loadDataIntoModules();
     }
 
@@ -788,10 +672,12 @@
       document.getElementById('pqrstPreview').innerText = currentData.preview || "Preview main ideas before reading.";
       document.getElementById('pqrstQuestion').innerText = currentData.guiding_question || "What are the main concepts?";
       document.getElementById('pqrstPassageText').innerText = currentData.passage;
-      document.getElementById('quizQ').innerText = currentData.quiz.question;
-      document.getElementById('quizOpts').innerHTML = currentData.quiz.options.map((opt, i) => 
-        `<label class="block cursor-pointer"><input type="radio" name="pqrstQ" value="${i}"> ${opt}</label>`
-      ).join('');
+      
+      // RENDER MODULE 3 3-QUESTION QUIZ
+      renderQuestionList('pqrstQuizContainer', currentData.questions, 'pqrst');
+
+      document.getElementById('flashCounter').innerText = `Ready: 0 / ${currentData.chunks.length} Flashes`;
+      pqrstReset();
     }
 
     loadBenchmarkData();
@@ -820,8 +706,11 @@
         }
 
         currentData = await response.json();
+        if (!currentData.chunks || currentData.chunks.length === 0) {
+          currentData.chunks = buildChunksFromPassage(currentData.passage);
+        }
         loadDataIntoModules();
-        alert(`Successfully generated passage for "${currentData.title}"!`);
+        alert(`Successfully generated passage & 3 questions for "${currentData.title}"!`);
         switchTab('module1');
       } catch (err) {
         console.error("API Error:", err);
@@ -848,34 +737,50 @@
       document.getElementById('diagQuiz').classList.remove('hidden'); 
     }
 
+    // ACCURATE 3-QUESTION DIAGNOSTIC SUBMISSION & ERR CALCULATOR
     function submitDiagnostic() { 
-      const selected = document.querySelector('input[name="diagQ"]:checked'); 
-      const correctIdx = benchmarkBank[window.currentLexileTier][window.currentBenchmarkForm].quiz.correctIndex;
-      const accuracy = (selected && parseInt(selected.value) === correctIdx) ? 1.0 : 0.5; 
+      const questions = currentData.questions || benchmarkBank[window.currentLexileTier][window.currentBenchmarkForm].questions;
+      let correctCount = 0;
+
+      questions.forEach((q, idx) => {
+        const selected = document.querySelector(`input[name="diag_q${idx}"]:checked`);
+        if (selected && parseInt(selected.value) === q.correctIndex) {
+          correctCount++;
+        }
+      });
+
+      const accuracy = correctCount / questions.length; // e.g., 3/3 = 1.0, 2/3 = 0.67
       const calculatedERR = Math.round(window.rawWpm * accuracy);
 
       if (window.saveStudentAssessment) {
         window.saveStudentAssessment(window.currentBenchmarkForm, window.rawWpm, accuracy, calculatedERR);
       }
 
-      if (window.currentBenchmarkForm === 'FormA') {
-        alert(`Baseline Score Saved!\nSpeed: ${window.rawWpm} WPM\nComprehension: ${accuracy * 100}%\nBaseline ERR: ${calculatedERR}`);
-      } else {
-        alert(`Re-Test Score Saved!\nNew ERR: ${calculatedERR}`);
-      }
+      alert(`Diagnostic Sprint Completed!\n------------------------------\nSpeed: ${window.rawWpm} WPM\nComprehension: ${correctCount}/${questions.length} Correct (${Math.round(accuracy * 100)}%)\nCalculated ERR: ${calculatedERR}`);
 
       document.getElementById('diagQuiz').classList.add('hidden');
       document.getElementById('diagStartBtn').classList.remove('hidden');
       switchTab('module1');
     }
 
-    // ENHANCED FOCUS SHUTTER WITH SMOOTH VIEWPORT SCROLLING
+    function submitPqrstQuiz() {
+      const questions = currentData.questions;
+      let correctCount = 0;
+      questions.forEach((q, idx) => {
+        const selected = document.querySelector(`input[name="pqrst_q${idx}"]:checked`);
+        if (selected && parseInt(selected.value) === q.correctIndex) {
+          correctCount++;
+        }
+      });
+      const pct = Math.round((correctCount / questions.length) * 100);
+      alert(`PQRST Module Completed!\nScore: ${correctCount}/${questions.length} Correct (${pct}%)`);
+    }
+
     let shutterIdx = 0, shutterInterval;
     function startShutter() {
       clearInterval(shutterInterval);
       shutterIdx = 0;
       const lines = document.querySelectorAll('#shutterContainer > div');
-      const viewport = document.getElementById('shutterViewport');
       const wpm = parseInt(document.getElementById('wpmInput').value);
       const delay = (60 / (wpm / 10)) * 1000;
       
@@ -894,7 +799,6 @@
     }
     function stopShutter() { clearInterval(shutterInterval); }
 
-    // ENHANCED VISUAL FLASHER WITH ADJUSTABLE SPEED INTERVALS
     let currentFlashDelay = 350;
     function setFlashSpeed(speedMs) {
       currentFlashDelay = speedMs;
@@ -906,15 +810,34 @@
     function startFlasher() {
       let i = 0;
       const display = document.getElementById('flashDisplay');
-      const chunks = currentData.chunks || [
-        { text: "Volcanoes are openings", oap: 5 },
-        { text: "in the Earth's crust", oap: 4 }
-      ];
+      const counter = document.getElementById('flashCounter');
+      const chunks = currentData.chunks || buildChunksFromPassage(currentData.passage);
+      
       const interval = setInterval(() => {
-        if (i >= chunks.length) { clearInterval(interval); display.innerText = "Done!"; return; }
+        if (i >= chunks.length) { 
+          clearInterval(interval); 
+          display.innerHTML = `<span class="text-emerald-400 font-bold">Session Complete! (${chunks.length} Flashes)</span>`; 
+          counter.innerText = `Done: ${chunks.length} / ${chunks.length} Flashes`;
+          return; 
+        }
+        
         const item = chunks[i];
-        const oap = item.oap || 2;
-        display.innerHTML = `${item.text.slice(0, oap)}<span class="oap-target">${item.text[oap] || item.text[0]}</span>${item.text.slice(oap + 1)}`;
+        const text = item.text || "";
+        const oap = item.oap !== undefined ? item.oap : Math.floor(text.length / 2);
+        
+        const prefix = text.slice(0, oap);
+        const anchorChar = text[oap] || text[0];
+        const suffix = text.slice(oap + 1);
+
+        display.innerHTML = `
+          <div class="flash-container">
+            <span class="flash-prefix">${prefix}</span>
+            <span class="flash-anchor">${anchorChar}</span>
+            <span class="flash-suffix">${suffix}</span>
+          </div>
+        `;
+        
+        counter.innerText = `Training: ${i + 1} / ${chunks.length} Flashes`;
         i++;
       }, currentFlashDelay);
     }
@@ -924,6 +847,10 @@
       document.getElementById('pqrstStep2').classList.add('hidden');
       document.getElementById('pqrstStep3').classList.add('hidden');
       document.getElementById(`pqrstStep${step}`).classList.remove('hidden');
+    }
+
+    function pqrstReset() {
+      pqrstNext(1);
     }
   </script>
 </body>
