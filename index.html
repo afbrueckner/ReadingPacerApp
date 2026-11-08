@@ -45,6 +45,16 @@
     .flash-anchor { color: #dc2626; font-weight: 900; text-decoration: underline; text-underline-offset: 4px; flex: 0 0 auto; padding: 0 1px; }
     .flash-suffix { text-align: left; flex: 1; white-space: pre; color: #1e293b; }
 
+    /* ANIMATED PROGRESS BAR PULSE */
+    @keyframes progressPulse {
+      0% { width: 15%; }
+      50% { width: 70%; }
+      100% { width: 95%; }
+    }
+    .progress-bar-fill {
+      animation: progressPulse 4s ease-in-out infinite alternate;
+    }
+
     /* PERFECT 2-PAGE PRINT STYLESHEET */
     @media print {
       body * { visibility: hidden !important; }
@@ -198,7 +208,7 @@
         </div>
       </div>
 
-      <!-- LEXILE & CONTENT GENERATOR -->
+      <!-- LEXILE & CONTENT GENERATOR WITH PROGRESS LOADER -->
       <div class="bg-white p-5 rounded-xl border border-stone-300 space-y-3 font-sans-ui shadow-sm">
         <div class="flex justify-between items-center border-b border-stone-200 pb-2.5">
           <h2 class="text-sm font-bold text-sky-950">Target Reading Calibration</h2>
@@ -215,10 +225,20 @@
 
         <h2 class="text-sm font-bold text-sky-950 pt-1">Generate Custom Practice Passage</h2>
         <div class="flex space-x-2">
-          <input type="text" id="topicInput" placeholder="Topic (e.g., St. Patrick, Solar System, Roman Aqueducts)" class="bg-stone-50 border border-stone-300 text-xs px-3 py-2 rounded-md flex-1 text-slate-900">
+          <input type="text" id="topicInput" placeholder="Topic (e.g., Solar System, Ancient Rome, Rainforests)" class="bg-stone-50 border border-stone-300 text-xs px-3 py-2 rounded-md flex-1 text-slate-900">
           <button onclick="generateAIContent()" id="genBtn" class="bg-indigo-700 hover:bg-indigo-800 font-bold px-4 py-2 text-xs rounded-md text-white shadow-sm">Generate Content</button>
         </div>
-        <div id="genStatus" class="text-xs text-stone-500 hidden">Generating faith-aligned passage & 3 comprehension questions...</div>
+
+        <!-- PROGRESS BAR UI ANIMATION -->
+        <div id="genStatusContainer" class="hidden space-y-2 pt-2">
+          <div class="flex justify-between text-xs text-stone-600 font-semibold">
+            <span id="loaderStepText">Gathering reading passage information...</span>
+            <span id="loaderPctText">Step 1 of 3</span>
+          </div>
+          <div class="w-full bg-stone-200 rounded-full h-2 overflow-hidden">
+            <div id="progressBarFill" class="bg-sky-700 h-2 rounded-full progress-bar-fill"></div>
+          </div>
+        </div>
       </div>
 
       <!-- TABS -->
@@ -242,7 +262,6 @@
           
           <p class="text-xs text-stone-500 mb-4 font-sans-ui">Read the calibrated passage at your normal speed. Click "Finished Reading" when done.</p>
           
-          <!-- BOOK-STYLE PASSAGE CONTAINER -->
           <div id="diagText" class="bg-[#faf8f5] p-6 rounded-lg border border-stone-200 text-slate-900 leading-loose text-lg mb-5 min-h-[140px] max-w-2xl mx-auto shadow-inner"></div>
 
           <div class="font-sans-ui">
@@ -261,7 +280,7 @@
         </div>
       </section>
 
-      <!-- TAB 2: MODULE 1 (ACCELERATOR FOCUS SHUTTER - BOOK STYLE) -->
+      <!-- TAB 2: MODULE 1 -->
       <section id="tab-module1" class="tab-content hidden space-y-4">
         <div class="bg-white p-6 rounded-xl border border-stone-300 space-y-4 shadow-sm">
           <div class="flex justify-between items-center border-b border-stone-200 pb-3 font-sans-ui">
@@ -275,7 +294,6 @@
             </div>
           </div>
 
-          <!-- BOOK-LIKE SHUTTER VIEWPORT -->
           <div id="shutterViewport" class="bg-[#faf8f5] p-6 rounded-lg border border-stone-200 h-96 overflow-y-auto space-y-4 text-lg leading-[2.2] relative scroll-smooth max-w-2xl mx-auto shadow-inner">
             <div id="shutterContainer" class="space-y-4"></div>
           </div>
@@ -287,7 +305,7 @@
         </div>
       </section>
 
-      <!-- TAB 3: MODULE 2 (MORPHO-VISUAL FLASHER - PAPER STYLE) -->
+      <!-- TAB 3: MODULE 2 -->
       <section id="tab-module2" class="tab-content hidden space-y-4">
         <div class="bg-white p-6 rounded-xl border border-stone-300 space-y-5 text-center font-sans-ui shadow-sm">
           <div class="border-b border-stone-200 pb-3 text-left flex justify-between items-center">
@@ -305,7 +323,6 @@
             <button onclick="setFlashSpeed(200)" id="spd200" class="px-3 py-1 rounded-md bg-stone-200 text-stone-700 font-bold">200ms (Fast)</button>
           </div>
 
-          <!-- PAPER TARGET CANVAS WITH RED CROSSHAIR -->
           <div class="h-44 bg-[#faf8f5] rounded-lg border border-stone-200 flex flex-col items-center justify-center relative overflow-hidden max-w-xl mx-auto shadow-inner">
             <div class="text-red-600 font-extrabold text-2xl mb-1 pointer-events-none">┼</div>
             <div id="flashDisplay" class="text-xl font-bold tracking-wide h-10 flex items-center justify-center w-full">
@@ -317,7 +334,7 @@
         </div>
       </section>
 
-      <!-- TAB 4: MODULE 3 (PQRST ACTIVE READING - BOOK STYLE) -->
+      <!-- TAB 4: MODULE 3 -->
       <section id="tab-module3" class="tab-content hidden space-y-4">
         <div class="bg-white p-6 rounded-xl border border-stone-300 space-y-4 shadow-sm">
           <div class="border-b border-stone-200 pb-3 flex justify-between items-center font-sans-ui">
@@ -358,9 +375,11 @@
 
   </div>
 
-  <!-- EDUCATOR FIELD GUIDE MODAL -->
+  <!-- FULL EDUCATOR & PARENT FIELD GUIDE MODAL (RESTORED SECTIONS 1-5) -->
   <div id="guideModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden font-sans-ui">
     <div class="bg-white border border-stone-300 rounded-xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl">
+      
+      <!-- MODAL NAVBAR -->
       <div class="p-4 border-b border-stone-200 flex justify-between items-center bg-stone-50 rounded-t-xl no-print">
         <h2 class="text-lg font-bold text-sky-950 flex items-center space-x-2">
           <span>📖 Educator & Parent Field Guide</span>
@@ -370,25 +389,111 @@
           <button onclick="closeGuideModal()" class="text-stone-500 hover:text-stone-800 text-lg font-bold px-2">✕</button>
         </div>
       </div>
+
+      <!-- PRINTABLE MANUAL CONTENT -->
       <div id="printableGuide" class="p-6 overflow-y-auto space-y-6 text-slate-800 text-sm leading-relaxed">
+        
+        <!-- HEADER PAGE 1 -->
         <div class="border-b border-stone-200 pb-3">
           <h1 class="text-xl font-bold text-sky-900">Cognitive Reading Pacer — Field Manual</h1>
           <p class="text-xs text-stone-500 mt-1">Catholic Middle School Edition • Research-Backed Fluency & Comprehension Protocol</p>
         </div>
+
+        <!-- SECTION 1 -->
         <section class="space-y-2">
           <h3 class="font-bold text-sky-950 text-base">1. Key Metrics & Definitions</h3>
           <div class="bg-stone-50 p-4 rounded-lg border border-stone-200 space-y-2 text-xs">
-            <p><strong>WPM (Words Per Minute):</strong> Pure physical tracking speed across lines of text (Words / Seconds × 60).</p>
-            <p><strong>Comprehension %:</strong> Accuracy score on 3-question verification check (100%, 67%, 33%, or 0%).</p>
-            <p><strong>ERR (Effective Reading Rate):</strong> Calculated as <strong>WPM × Comprehension %</strong>.</p>
-            <p><strong>ΔERR (Growth Delta):</strong> True cognitive growth measured between Form A and Form B.</p>
+            <p><strong>WPM (Words Per Minute):</strong> Pure physical tracking speed across lines of text ($\text{Words} / \text{Seconds} \times 60$).</p>
+            <p><strong>Comprehension %:</strong> Accuracy score on 3-question verification check ($100\%$, $67\%$, $33\%$, or $0\%$).</p>
+            <p><strong>ERR (Effective Reading Rate):</strong> Calculated as $\text{WPM} \times \text{Comprehension \%}$.</p>
+            <p><strong>&Delta;ERR (Growth Delta):</strong> True cognitive growth measured between Form A (Baseline) and Form B (Re-Test).</p>
           </div>
         </section>
+
+        <!-- SECTION 2 -->
+        <section class="space-y-2">
+          <h3 class="font-bold text-sky-950 text-base">2. Pedagogical Rationale & Research Base</h3>
+          <p class="text-xs text-stone-700 leading-normal">
+            Middle school reading interventions often fall into two extremes: physical speed reading without understanding, or passive reading without focus pacing. The Cognitive Reading Pacer bridges these modalities by targeting <strong>saccadic eye movement efficiency</strong> and <strong>working memory retention</strong>.
+          </p>
+          <ul class="list-disc pl-5 text-xs text-stone-700 space-y-1">
+            <li><strong>Focus Shutter (Module 1):</strong> Eliminates line re-reading (subvocal regressions) by highlighting one line at a time in a soft yellow lens while dimming peripheral distractors.</li>
+            <li><strong>Morpho-Visual Flasher (Module 2):</strong> Uses Optimal Anchor Point (OAP) targeting underneath a red crosshair, expanding visual span from single letters to 3-word phrase chunks.</li>
+            <li><strong>PQRST Active Reading (Module 3):</strong> Structures metacognitive recall through <em>Preview, Question, Read, Summary Recite, and Test</em> verification.</li>
+          </ul>
+        </section>
+
+        <!-- SECTION 3: PAGE BREAK FOR PRINT -->
+        <section class="space-y-2 print-break-before">
+          <h3 class="font-bold text-sky-950 text-base">3. Weekly 3-Session Implementation Protocol</h3>
+          <table class="w-full text-left text-xs border-collapse border border-stone-300">
+            <thead>
+              <tr class="bg-stone-100 text-stone-700 font-bold border-b border-stone-300">
+                <th class="p-2 border-r border-stone-300">Session</th>
+                <th class="p-2 border-r border-stone-300">Target Module</th>
+                <th class="p-2 border-r border-stone-300">Duration</th>
+                <th class="p-2">Focus Goal</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-stone-200">
+              <tr>
+                <td class="p-2 border-r border-stone-300 font-semibold">Day 1</td>
+                <td class="p-2 border-r border-stone-300">Standardized Sprint + M1</td>
+                <td class="p-2 border-r border-stone-300">15 mins</td>
+                <td class="p-2">Establish baseline ERR on Form A, set Focus Shutter to +10 WPM above baseline.</td>
+              </tr>
+              <tr>
+                <td class="p-2 border-r border-stone-300 font-semibold">Day 2</td>
+                <td class="p-2 border-r border-stone-300">Module 2 (Visual Flasher)</td>
+                <td class="p-2 border-r border-stone-300">12 mins</td>
+                <td class="p-2">Complete 25 flashes at 350ms setting. Lock eye gaze on red target crosshair.</td>
+              </tr>
+              <tr>
+                <td class="p-2 border-r border-stone-300 font-semibold">Day 3</td>
+                <td class="p-2 border-r border-stone-300">Module 3 + Form B Re-Test</td>
+                <td class="p-2 border-r border-stone-300">15 mins</td>
+                <td class="p-2">Complete PQRST active read and execute Form B Re-Test sprint to calculate &Delta;ERR growth.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- SECTION 4 -->
+        <section class="space-y-2">
+          <h3 class="font-bold text-sky-950 text-base">4. Lexile Band Calibration Reference</h3>
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <div class="bg-stone-50 p-3 rounded border border-stone-200">
+              <span class="font-bold text-sky-900">Foundational Band (400L – 550L)</span>
+              <p class="text-stone-600 mt-1">Short sentences, high frequency words. Ideal for 5th grade fluency building or struggling readers.</p>
+            </div>
+            <div class="bg-stone-50 p-3 rounded border border-stone-200">
+              <span class="font-bold text-sky-900">Intermediate Band (600L – 750L)</span>
+              <p class="text-stone-600 mt-1">Standard 6th/7th grade benchmark. Balanced compound sentences with domain vocabulary.</p>
+            </div>
+            <div class="bg-stone-50 p-3 rounded border border-stone-200">
+              <span class="font-bold text-sky-900">Advanced Band (800L – 950L)</span>
+              <p class="text-stone-600 mt-1">7th/8th grade honors target. Multi-clause sentences, high-level vocabulary, non-fiction domain topics.</p>
+            </div>
+            <div class="bg-stone-50 p-3 rounded border border-stone-200">
+              <span class="font-bold text-sky-900">Mastery Band (1000L+)</span>
+              <p class="text-stone-600 mt-1">High school readiness & IXL top band. Complex technical syntax and abstract concepts.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 5 -->
+        <section class="space-y-2 pt-2 border-t border-stone-200">
+          <h3 class="font-bold text-sky-950 text-base">5. Troubleshooting & Support</h3>
+          <p class="text-xs text-stone-600">
+            For school roster adjustments or domain access questions (@avemaria.school or @aveangels.org), contact the Ave Maria Middle School Reading Intervention Team.
+          </p>
+        </section>
+
       </div>
     </div>
   </div>
 
-  <!-- FIREBASE MODULAR SDK -->
+  <!-- FIREBASE SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -660,16 +765,35 @@
 
     loadBenchmarkData();
 
+    // DYNAMIC UI PROGRESS LOADER (CLEAN & ACADEMIC)
     async function generateAIContent() {
       const topic = document.getElementById('topicInput').value.trim();
-      const status = document.getElementById('genStatus');
+      const statusContainer = document.getElementById('genStatusContainer');
+      const stepText = document.getElementById('loaderStepText');
+      const pctText = document.getElementById('loaderPctText');
+      const genBtn = document.getElementById('genBtn');
+      const topicInput = document.getElementById('topicInput');
 
       if (!topic) { alert("Please enter a Topic."); return; }
 
-      status.classList.remove('hidden');
-      document.getElementById('genBtn').disabled = true;
+      statusContainer.classList.remove('hidden');
+      genBtn.disabled = true;
+      topicInput.disabled = true;
+
+      stepText.innerText = "Gathering passage content & historical context...";
+      pctText.innerText = "Step 1 of 3";
 
       const lexileLabel = document.getElementById('lexileSelect').options[document.getElementById('lexileSelect').selectedIndex].text;
+
+      const timer1 = setTimeout(() => {
+        stepText.innerText = "Calibrating Lexile readability & optical chunk array...";
+        pctText.innerText = "Step 2 of 3";
+      }, 1400);
+
+      const timer2 = setTimeout(() => {
+        stepText.innerText = "Building 3-question comprehension check...";
+        pctText.innerText = "Step 3 of 3";
+      }, 2800);
 
       try {
         const response = await fetch('/api/generate', {
@@ -677,6 +801,9 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ topic, lexileLabel })
         });
+
+        clearTimeout(timer1);
+        clearTimeout(timer2);
 
         if (!response.ok) {
           const errData = await response.json();
@@ -688,14 +815,14 @@
           currentData.chunks = buildChunksFromPassage(currentData.passage);
         }
         loadDataIntoModules();
-        alert(`Successfully generated passage & 3 questions for "${currentData.title}"!`);
         switchTab('module1');
       } catch (err) {
         console.error("API Error:", err);
         alert("Generation Error: " + err.message);
       } finally {
-        status.classList.add('hidden');
-        document.getElementById('genBtn').disabled = false;
+        statusContainer.classList.add('hidden');
+        genBtn.disabled = false;
+        topicInput.disabled = false;
       }
     }
 
