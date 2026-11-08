@@ -12,145 +12,310 @@
   </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen font-sans p-6">
-  <div class="max-w-3xl mx-auto space-y-6">
+  <div class="max-w-4xl mx-auto space-y-6">
     
-    <!-- HEADER -->
+    <!-- HEADER & ROLE TOGGLE -->
     <header class="border-b border-slate-700 pb-4 flex justify-between items-center">
       <div>
         <h1 class="text-2xl font-bold text-cyan-400">Cognitive Reading Pacer</h1>
         <p class="text-xs text-slate-400">Catholic Middle School Edition • Powered by IXL Lexile Calibration</p>
       </div>
-      <div class="text-right text-xs bg-slate-800 p-2 rounded border border-slate-700 space-y-1">
-        <div>Baseline ERR: <span id="baselineErrDisplay" class="text-yellow-400 font-bold">Unset</span></div>
-        <div>Current ERR: <span id="currentErrDisplay" class="text-emerald-400 font-bold">Unset</span></div>
+      
+      <!-- USER / ROLE CONTROLS -->
+      <div class="flex items-center space-x-3">
+        <div class="text-right text-xs bg-slate-800 p-2 rounded border border-slate-700 space-y-0.5">
+          <div id="userBadge" class="text-slate-300 font-semibold">Student Mode</div>
+          <div id="domainBadge" class="text-[10px] text-slate-400">@aveangels.org</div>
+        </div>
+        <button id="viewToggleBtn" onclick="toggleRoleView()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs px-3 py-2 rounded text-cyan-300 font-bold">
+          Switch to Teacher Portal
+        </button>
       </div>
     </header>
 
-    <!-- LEXILE LEVEL & AI GENERATOR BAR -->
-    <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-3">
-      <div class="flex justify-between items-center border-b border-slate-700 pb-2">
-        <h2 class="text-sm font-bold text-cyan-300">Target Reading Calibration</h2>
-        <div class="flex items-center space-x-2">
-          <label for="lexileSelect" class="text-xs text-slate-300 font-semibold">IXL Lexile Level:</label>
-          <select id="lexileSelect" onchange="onLexileChange()" class="bg-slate-900 border border-slate-700 text-xs px-2 py-1 rounded text-cyan-400 font-bold">
-            <option value="tier1">400L - 550L (Intervention / Grade 4-5)</option>
-            <option value="tier2" selected>600L - 750L (On-Grade 6-7)</option>
-            <option value="tier3">800L - 950L (On-Grade 8 / Advanced)</option>
-            <option value="tier4">1000L+ (High School Ready)</option>
-          </select>
+    <!-- ================================================================= -->
+    <!-- TEACHER DASHBOARD PORTAL (VISIBLE TO @avemaria.school USERS)       -->
+    <!-- ================================================================= -->
+    <main id="teacherPortal" class="hidden space-y-6">
+      
+      <!-- DASHBOARD OVERVIEW METRICS -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+          <div class="text-xs text-slate-400 font-semibold">Class Avg ERR</div>
+          <div class="text-2xl font-bold text-cyan-400 mt-1">198 <span class="text-xs text-emerald-400 font-normal">(+28 Growth)</span></div>
+        </div>
+        <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+          <div class="text-xs text-slate-400 font-semibold">Avg Comprehension</div>
+          <div class="text-2xl font-bold text-emerald-400 mt-1">87.5%</div>
+        </div>
+        <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+          <div class="text-xs text-slate-400 font-semibold">Active Lexile Span</div>
+          <div class="text-2xl font-bold text-yellow-400 mt-1">500L – 950L</div>
+        </div>
+        <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+          <div class="text-xs text-slate-400 font-semibold">Flagged Interventions</div>
+          <div class="text-2xl font-bold text-rose-400 mt-1">2 Students</div>
         </div>
       </div>
 
-      <h2 class="text-sm font-bold text-cyan-300 pt-1">Generate Custom Practice Passage</h2>
-      <div class="flex space-x-2">
-        <input type="text" id="topicInput" placeholder="Topic (e.g., St. Patrick, Solar System, Roman Aqueducts)" class="bg-slate-900 border border-slate-700 text-xs px-3 py-2 rounded flex-1">
-        <button onclick="generateAIContent()" id="genBtn" class="bg-indigo-600 hover:bg-indigo-500 font-bold px-4 py-2 text-xs rounded text-white">Generate Content</button>
-      </div>
-      <div id="genStatus" class="text-xs text-slate-400 hidden">Generating faith-aligned, Lexile-calibrated passage...</div>
-    </div>
-
-    <!-- MODULE TABS -->
-    <div class="flex space-x-2 border-b border-slate-700 pb-2">
-      <button onclick="switchTab('diagnostic')" class="tab-btn px-4 py-2 text-sm font-semibold rounded bg-cyan-600 text-white">1. Standardized Diagnostic</button>
-      <button onclick="switchTab('module1')" class="tab-btn px-4 py-2 text-sm font-semibold rounded bg-slate-800 text-slate-300">Module 1 (Accelerator)</button>
-      <button onclick="switchTab('module2')" class="tab-btn px-4 py-2 text-sm font-semibold rounded bg-slate-800 text-slate-300">Module 2 (Visual Flasher)</button>
-      <button onclick="switchTab('module3')" class="tab-btn px-4 py-2 text-sm font-semibold rounded bg-slate-800 text-slate-300">Module 3 (PQRST Reader)</button>
-    </div>
-
-    <!-- TAB 1: STANDARDIZED DIAGNOSTIC BASELINE -->
-    <section id="tab-diagnostic" class="tab-content space-y-4">
-      <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-        <div class="flex justify-between items-center mb-2">
-          <h2 class="text-lg font-bold text-cyan-300">Step 1: Standardized Fluency Sprint</h2>
-          <div class="flex space-x-2 text-xs">
-            <button id="formABtn" onclick="setBenchmarkForm('FormA')" class="px-2 py-1 rounded bg-cyan-600 text-white font-bold">Form A (Initial Baseline)</button>
-            <button id="formBBtn" onclick="setBenchmarkForm('FormB')" class="px-2 py-1 rounded bg-slate-700 text-slate-300 font-bold">Form B (Progress Re-Test)</button>
+      <!-- AUTOMATED INSTRUCTIONAL ALERTS -->
+      <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-3">
+        <h2 class="text-sm font-bold text-cyan-300 flex items-center space-x-2">
+          <span>⚡ Automated Instructional Flags</span>
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+          <div class="bg-slate-900/80 p-3 rounded border border-rose-900/50 flex space-x-3 items-start">
+            <span class="text-lg">🚨</span>
+            <div>
+              <div class="font-bold text-rose-300">Skimming Risk: Julian K. (500L)</div>
+              <p class="text-slate-400 mt-0.5">High WPM speed (220 WPM) but low Form B comprehension (50%). System has capped Module 1 speed to 160 WPM.</p>
+            </div>
+          </div>
+          <div class="bg-slate-900/80 p-3 rounded border border-emerald-900/50 flex space-x-3 items-start">
+            <span class="text-lg">🎯</span>
+            <div>
+              <div class="font-bold text-emerald-300">Promotion Ready: Clara M. (750L)</div>
+              <p class="text-slate-400 mt-0.5">Achieved 245 ERR on Form B with 100% comprehension. Ready to advance to Tier 3 (800L-950L).</p>
+            </div>
           </div>
         </div>
-        
-        <p class="text-xs text-slate-400 mb-4">Read the calibrated passage at your normal speed. Click "Finished Reading" when done.</p>
-        
-        <div id="diagText" class="bg-slate-950 p-4 rounded border border-slate-800 text-slate-200 leading-relaxed mb-4 min-h-[120px]"></div>
-
-        <button id="diagStartBtn" onclick="startDiagnostic()" class="w-full bg-cyan-500 hover:bg-cyan-600 font-bold py-2 rounded text-slate-950">Start Diagnostic Sprint</button>
-        <button id="diagFinishBtn" onclick="finishDiagnostic()" class="hidden w-full bg-emerald-500 hover:bg-emerald-600 font-bold py-2 rounded text-slate-950">I Finished Reading!</button>
-
-        <div id="diagQuiz" class="hidden mt-4 space-y-3 pt-4 border-t border-slate-700">
-          <p class="text-sm font-semibold text-yellow-400">Comprehension Verification Check:</p>
-          <p id="diagQuizQ" class="text-sm text-slate-200">Question goes here...</p>
-          <div id="diagQuizOpts" class="space-y-1 text-sm"></div>
-          <button onclick="submitDiagnostic()" class="bg-indigo-600 px-4 py-2 rounded text-sm font-bold mt-2">Calculate ERR & Save Score</button>
-        </div>
       </div>
-    </section>
 
-    <!-- TAB 2: MODULE 1 (ACCELERATOR SHUTTER) -->
-    <section id="tab-module1" class="tab-content hidden space-y-4">
-      <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-        <div class="flex justify-between items-center mb-4">
-          <h2 id="m1Title" class="text-lg font-bold text-cyan-300">Module 1: Focus Shutter</h2>
-          <div class="flex items-center space-x-2">
-            <label for="wpmInput" class="text-xs">Speed (WPM):</label>
-            <input type="number" id="wpmInput" value="180" class="w-16 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-cyan-400 font-bold">
-          </div>
-        </div>
-
-        <div id="shutterContainer" class="bg-slate-950 p-6 rounded border border-slate-800 space-y-3 text-lg leading-loose"></div>
-
-        <div class="flex space-x-2 mt-4">
-          <button onclick="startShutter()" class="flex-1 bg-cyan-500 text-slate-950 font-bold py-2 rounded">Start Shutter Pacer</button>
-          <button onclick="stopShutter()" class="bg-slate-700 px-4 py-2 rounded text-slate-300">Stop</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- TAB 3: MODULE 2 (VISUAL SPAN FLASHER) -->
-    <section id="tab-module2" class="tab-content hidden space-y-4">
-      <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 text-center">
-        <h2 class="text-lg font-bold text-cyan-300 mb-2">Module 2: Morpho-Visual Flasher</h2>
-        <p class="text-xs text-slate-400 mb-6">Fix your eyes on the red target letter to expand your visual attention span.</p>
-
-        <div class="h-32 bg-slate-950 rounded border border-slate-800 flex items-center justify-center mb-4">
-          <div id="flashDisplay" class="text-2xl font-bold tracking-wide">Ready?</div>
-        </div>
-
-        <button onclick="startFlasher()" class="bg-indigo-500 hover:bg-indigo-600 font-bold px-6 py-2 rounded text-white">Start Visual Flashes</button>
-      </div>
-    </section>
-
-    <!-- TAB 4: MODULE 3 (PQRST WORKFLOW) -->
-    <section id="tab-module3" class="tab-content hidden space-y-4">
+      <!-- CLASS ROSTER TABLE -->
       <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-4">
-        <h2 class="text-lg font-bold text-cyan-300">Module 3: PQRST Active Reading</h2>
-        
-        <div id="pqrstStep1" class="space-y-2">
-          <span class="text-xs bg-indigo-900 text-indigo-300 px-2 py-1 rounded">Step 1: Preview & Question</span>
-          <h3 id="pqrstTitle" class="font-bold text-yellow-400">Passage Title</h3>
-          <p id="pqrstPreview" class="text-sm text-slate-300">Preview summary...</p>
-          <div class="bg-slate-900 p-3 rounded border border-slate-800 text-xs text-slate-400">
-            <strong>Guiding Question:</strong> <span id="pqrstQuestion">Guiding question...</span>
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-base font-bold text-cyan-300">St. Jude 7th Grade Roster</h2>
+            <p class="text-xs text-slate-400">Standardized ERR metrics calculated from Form A (Baseline) and Form B (Re-Test)</p>
           </div>
-          <button onclick="pqrstNext(2)" class="bg-cyan-500 text-slate-950 font-bold px-4 py-2 rounded text-sm">Proceed to Paced Read</button>
+          <div class="flex space-x-2">
+            <input type="text" placeholder="Search student..." class="bg-slate-900 border border-slate-700 text-xs px-3 py-1.5 rounded text-slate-200">
+            <button class="bg-cyan-600 text-white text-xs px-3 py-1.5 rounded font-bold">Export Report</button>
+          </div>
         </div>
 
-        <div id="pqrstStep2" class="hidden space-y-2">
-          <span class="text-xs bg-emerald-900 text-emerald-300 px-2 py-1 rounded">Step 2: Read & Recite</span>
-          <div id="pqrstPassageText" class="bg-slate-950 p-4 rounded text-sm leading-relaxed text-slate-200"></div>
-          <button onclick="pqrstNext(3)" class="bg-yellow-500 text-slate-950 font-bold px-4 py-2 rounded text-sm">Recite & Test Knowledge</button>
-        </div>
-
-        <div id="pqrstStep3" class="hidden space-y-2">
-          <span class="text-xs bg-purple-900 text-purple-300 px-2 py-1 rounded">Step 3: Review & Quiz</span>
-          <p id="quizQ" class="text-sm font-semibold">Question</p>
-          <div id="quizOpts" class="space-y-1 text-sm"></div>
-          <button onclick="alert('PQRST Session Completed!')" class="bg-emerald-500 text-slate-950 font-bold px-4 py-2 rounded text-sm">Submit Quiz</button>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-slate-700 text-slate-400 font-semibold bg-slate-900/50">
+                <th class="p-3">Student Name</th>
+                <th class="p-3">IXL Lexile</th>
+                <th class="p-3">Form A (Baseline)</th>
+                <th class="p-3">Form B (Re-Test)</th>
+                <th class="p-3">Growth (&Delta;ERR)</th>
+                <th class="p-3">Module Pacing</th>
+                <th class="p-3 text-right">Status / Action</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-700/60 text-slate-200">
+              <tr class="hover:bg-slate-700/30">
+                <td class="p-3 font-semibold text-white">Clara M.</td>
+                <td class="p-3"><span class="bg-slate-900 text-cyan-300 px-2 py-0.5 rounded font-mono">750L</span></td>
+                <td class="p-3 font-mono text-slate-300">210 ERR</td>
+                <td class="p-3 font-mono text-emerald-400 font-bold">245 ERR</td>
+                <td class="p-3"><span class="text-emerald-400 font-bold">+35 ERR (+16%)</span></td>
+                <td class="p-3 text-slate-300">220 WPM / 4-Chunk</td>
+                <td class="p-3 text-right">
+                  <span class="bg-emerald-950 text-emerald-300 border border-emerald-700 px-2 py-1 rounded text-[10px] font-bold">Ready for Tier 3</span>
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-700/30">
+                <td class="p-3 font-semibold text-white">Leo B.</td>
+                <td class="p-3"><span class="bg-slate-900 text-cyan-300 px-2 py-0.5 rounded font-mono">650L</span></td>
+                <td class="p-3 font-mono text-slate-300">140 ERR</td>
+                <td class="p-3 font-mono text-emerald-400 font-bold">175 ERR</td>
+                <td class="p-3"><span class="text-emerald-400 font-bold">+35 ERR (+25%)</span></td>
+                <td class="p-3 text-slate-300">180 WPM / 3-Chunk</td>
+                <td class="p-3 text-right">
+                  <span class="bg-slate-700 text-slate-300 px-2 py-1 rounded text-[10px] font-bold">On Track</span>
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-700/30">
+                <td class="p-3 font-semibold text-white">Sofia R.</td>
+                <td class="p-3"><span class="bg-slate-900 text-cyan-300 px-2 py-0.5 rounded font-mono">850L</span></td>
+                <td class="p-3 font-mono text-slate-300">260 ERR</td>
+                <td class="p-3 font-mono text-emerald-400 font-bold">290 ERR</td>
+                <td class="p-3"><span class="text-emerald-400 font-bold">+30 ERR (+11%)</span></td>
+                <td class="p-3 text-slate-300">280 WPM / 4-Chunk</td>
+                <td class="p-3 text-right">
+                  <span class="bg-purple-950 text-purple-300 border border-purple-700 px-2 py-1 rounded text-[10px] font-bold">Mastery Level</span>
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-700/30">
+                <td class="p-3 font-semibold text-white">Julian K.</td>
+                <td class="p-3"><span class="bg-slate-900 text-cyan-300 px-2 py-0.5 rounded font-mono">500L</span></td>
+                <td class="p-3 font-mono text-slate-300">110 ERR</td>
+                <td class="p-3 font-mono text-yellow-400 font-bold">115 ERR</td>
+                <td class="p-3"><span class="text-yellow-400 font-bold">+5 ERR (+4%)</span></td>
+                <td class="p-3 text-slate-300">160 WPM / 2-Chunk</td>
+                <td class="p-3 text-right">
+                  <span class="bg-rose-950 text-rose-300 border border-rose-700 px-2 py-1 rounded text-[10px] font-bold">Needs Pacer Support</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
-    </section>
+    </main>
 
+    <!-- ================================================================= -->
+    <!-- STUDENT PORTAL (VISIBLE TO @aveangels.org USERS)                  -->
+    <!-- ================================================================= -->
+    <main id="studentPortal" class="space-y-6">
+      
+      <!-- LEXILE LEVEL & AI GENERATOR BAR -->
+      <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-3">
+        <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+          <h2 class="text-sm font-bold text-cyan-300">Target Reading Calibration</h2>
+          <div class="flex items-center space-x-2">
+            <label for="lexileSelect" class="text-xs text-slate-300 font-semibold">IXL Lexile Level:</label>
+            <select id="lexileSelect" onchange="onLexileChange()" class="bg-slate-900 border border-slate-700 text-xs px-2 py-1 rounded text-cyan-400 font-bold">
+              <option value="tier1">400L - 550L (Intervention / Grade 4-5)</option>
+              <option value="tier2" selected>600L - 750L (On-Grade 6-7)</option>
+              <option value="tier3">800L - 950L (On-Grade 8 / Advanced)</option>
+              <option value="tier4">1000L+ (High School Ready)</option>
+            </select>
+          </div>
+        </div>
+
+        <h2 class="text-sm font-bold text-cyan-300 pt-1">Generate Custom Practice Passage</h2>
+        <div class="flex space-x-2">
+          <input type="text" id="topicInput" placeholder="Topic (e.g., St. Patrick, Solar System, Roman Aqueducts)" class="bg-slate-900 border border-slate-700 text-xs px-3 py-2 rounded flex-1">
+          <button onclick="generateAIContent()" id="genBtn" class="bg-indigo-600 hover:bg-indigo-500 font-bold px-4 py-2 text-xs rounded text-white">Generate Content</button>
+        </div>
+        <div id="genStatus" class="text-xs text-slate-400 hidden">Generating faith-aligned, Lexile-calibrated passage...</div>
+      </div>
+
+      <!-- MODULE TABS -->
+      <div class="flex space-x-2 border-b border-slate-700 pb-2">
+        <button onclick="switchTab('diagnostic')" class="tab-btn px-4 py-2 text-sm font-semibold rounded bg-cyan-600 text-white">1. Standardized Diagnostic</button>
+        <button onclick="switchTab('module1')" class="tab-btn px-4 py-2 text-sm font-semibold rounded bg-slate-800 text-slate-300">Module 1 (Accelerator)</button>
+        <button onclick="switchTab('module2')" class="tab-btn px-4 py-2 text-sm font-semibold rounded bg-slate-800 text-slate-300">Module 2 (Visual Flasher)</button>
+        <button onclick="switchTab('module3')" class="tab-btn px-4 py-2 text-sm font-semibold rounded bg-slate-800 text-slate-300">Module 3 (PQRST Reader)</button>
+      </div>
+
+      <!-- TAB 1: STANDARDIZED DIAGNOSTIC BASELINE -->
+      <section id="tab-diagnostic" class="tab-content space-y-4">
+        <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+          <div class="flex justify-between items-center mb-2">
+            <h2 class="text-lg font-bold text-cyan-300">Step 1: Standardized Fluency Sprint</h2>
+            <div class="flex space-x-2 text-xs">
+              <button id="formABtn" onclick="setBenchmarkForm('FormA')" class="px-2 py-1 rounded bg-cyan-600 text-white font-bold">Form A (Initial Baseline)</button>
+              <button id="formBBtn" onclick="setBenchmarkForm('FormB')" class="px-2 py-1 rounded bg-slate-700 text-slate-300 font-bold">Form B (Progress Re-Test)</button>
+            </div>
+          </div>
+          
+          <p class="text-xs text-slate-400 mb-4">Read the calibrated passage at your normal speed. Click "Finished Reading" when done.</p>
+          
+          <div id="diagText" class="bg-slate-950 p-4 rounded border border-slate-800 text-slate-200 leading-relaxed mb-4 min-h-[120px]"></div>
+
+          <button id="diagStartBtn" onclick="startDiagnostic()" class="w-full bg-cyan-500 hover:bg-cyan-600 font-bold py-2 rounded text-slate-950">Start Diagnostic Sprint</button>
+          <button id="diagFinishBtn" onclick="finishDiagnostic()" class="hidden w-full bg-emerald-500 hover:bg-emerald-600 font-bold py-2 rounded text-slate-950">I Finished Reading!</button>
+
+          <div id="diagQuiz" class="hidden mt-4 space-y-3 pt-4 border-t border-slate-700">
+            <p class="text-sm font-semibold text-yellow-400">Comprehension Verification Check:</p>
+            <p id="diagQuizQ" class="text-sm text-slate-200">Question goes here...</p>
+            <div id="diagQuizOpts" class="space-y-1 text-sm"></div>
+            <button onclick="submitDiagnostic()" class="bg-indigo-600 px-4 py-2 rounded text-sm font-bold mt-2">Calculate ERR & Save Score</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: MODULE 1 (ACCELERATOR SHUTTER) -->
+      <section id="tab-module1" class="tab-content hidden space-y-4">
+        <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+          <div class="flex justify-between items-center mb-4">
+            <h2 id="m1Title" class="text-lg font-bold text-cyan-300">Module 1: Focus Shutter</h2>
+            <div class="flex items-center space-x-2">
+              <label for="wpmInput" class="text-xs">Speed (WPM):</label>
+              <input type="number" id="wpmInput" value="180" class="w-16 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-cyan-400 font-bold">
+            </div>
+          </div>
+
+          <div id="shutterContainer" class="bg-slate-950 p-6 rounded border border-slate-800 space-y-3 text-lg leading-loose"></div>
+
+          <div class="flex space-x-2 mt-4">
+            <button onclick="startShutter()" class="flex-1 bg-cyan-500 text-slate-950 font-bold py-2 rounded">Start Shutter Pacer</button>
+            <button onclick="stopShutter()" class="bg-slate-700 px-4 py-2 rounded text-slate-300">Stop</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: MODULE 2 (VISUAL SPAN FLASHER) -->
+      <section id="tab-module2" class="tab-content hidden space-y-4">
+        <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 text-center">
+          <h2 class="text-lg font-bold text-cyan-300 mb-2">Module 2: Morpho-Visual Flasher</h2>
+          <p class="text-xs text-slate-400 mb-6">Fix your eyes on the red target letter to expand your visual attention span.</p>
+
+          <div class="h-32 bg-slate-950 rounded border border-slate-800 flex items-center justify-center mb-4">
+            <div id="flashDisplay" class="text-2xl font-bold tracking-wide">Ready?</div>
+          </div>
+
+          <button onclick="startFlasher()" class="bg-indigo-500 hover:bg-indigo-600 font-bold px-6 py-2 rounded text-white">Start Visual Flashes</button>
+        </div>
+      </section>
+
+      <!-- TAB 4: MODULE 3 (PQRST WORKFLOW) -->
+      <section id="tab-module3" class="tab-content hidden space-y-4">
+        <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-4">
+          <h2 class="text-lg font-bold text-cyan-300">Module 3: PQRST Active Reading</h2>
+          
+          <div id="pqrstStep1" class="space-y-2">
+            <span class="text-xs bg-indigo-900 text-indigo-300 px-2 py-1 rounded">Step 1: Preview & Question</span>
+            <h3 id="pqrstTitle" class="font-bold text-yellow-400">Passage Title</h3>
+            <p id="pqrstPreview" class="text-sm text-slate-300">Preview summary...</p>
+            <div class="bg-slate-900 p-3 rounded border border-slate-800 text-xs text-slate-400">
+              <strong>Guiding Question:</strong> <span id="pqrstQuestion">Guiding question...</span>
+            </div>
+            <button onclick="pqrstNext(2)" class="bg-cyan-500 text-slate-950 font-bold px-4 py-2 rounded text-sm">Proceed to Paced Read</button>
+          </div>
+
+          <div id="pqrstStep2" class="hidden space-y-2">
+            <span class="text-xs bg-emerald-900 text-emerald-300 px-2 py-1 rounded">Step 2: Read & Recite</span>
+            <div id="pqrstPassageText" class="bg-slate-950 p-4 rounded text-sm leading-relaxed text-slate-200"></div>
+            <button onclick="pqrstNext(3)" class="bg-yellow-500 text-slate-950 font-bold px-4 py-2 rounded text-sm">Recite & Test Knowledge</button>
+          </div>
+
+          <div id="pqrstStep3" class="hidden space-y-2">
+            <span class="text-xs bg-purple-900 text-purple-300 px-2 py-1 rounded">Step 3: Review & Quiz</span>
+            <p id="quizQ" class="text-sm font-semibold">Question</p>
+            <div id="quizOpts" class="space-y-1 text-sm"></div>
+            <button onclick="alert('PQRST Session Completed!')" class="bg-emerald-500 text-slate-950 font-bold px-4 py-2 rounded text-sm">Submit Quiz</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
   </div>
 
   <script>
+    // DOMAIN & ROLE CONTROL ENGINE
+    let isTeacherView = false;
+
+    function toggleRoleView() {
+      isTeacherView = !isTeacherView;
+      const teacherPortal = document.getElementById('teacherPortal');
+      const studentPortal = document.getElementById('studentPortal');
+      const btn = document.getElementById('viewToggleBtn');
+      const userBadge = document.getElementById('userBadge');
+      const domainBadge = document.getElementById('domainBadge');
+
+      if (isTeacherView) {
+        teacherPortal.classList.remove('hidden');
+        studentPortal.classList.add('hidden');
+        btn.innerText = "Switch to Student Portal";
+        userBadge.innerText = "Faculty Mode";
+        domainBadge.innerText = "@avemaria.school";
+      } else {
+        teacherPortal.classList.add('hidden');
+        studentPortal.classList.remove('hidden');
+        btn.innerText = "Switch to Teacher Portal";
+        userBadge.innerText = "Student Mode";
+        domainBadge.innerText = "@aveangels.org";
+      }
+    }
+
+    // BENCHMARK DATA BANK
     const benchmarkBank = {
       tier1: {
         FormA: { wordCount: 110, passage: "Lighthouses are tall towers built near coasts and harbors. They shine bright beams of light to guide ships safely through dark waters. Long ago, lighthouse keepers had to trim oil lamps every night. Today, most lighthouses use electric bulbs and automatic timers. Warnings from lighthouses prevent boats from hitting sharp rocks near the shore during stormy weather.", quiz: { question: "What was a task for lighthouse keepers long ago?", options: ["Fixing electric bulbs", "Trimming oil lamps every night", "Building new harbors"], correctIndex: 1 } },
@@ -224,7 +389,6 @@
 
     loadBenchmarkData();
 
-    // SERVERLESS API CALL TO ROUTE /api/generate
     async function generateAIContent() {
       const topic = document.getElementById('topicInput').value.trim();
       const status = document.getElementById('genStatus');
@@ -285,11 +449,9 @@
 
       if (currentBenchmarkForm === 'FormA') {
         baselineERR = calculatedERR;
-        document.getElementById('baselineErrDisplay').innerText = baselineERR + " ERR";
         alert(`Baseline Score Saved!\nSpeed: ${window.rawWpm} WPM\nComprehension: ${accuracy * 100}%\nBaseline ERR: ${baselineERR}`);
       } else {
         currentERR = calculatedERR;
-        document.getElementById('currentErrDisplay').innerText = currentERR + " ERR";
         const delta = baselineERR !== null ? (currentERR - baselineERR) : 0;
         alert(`Re-Test Completed!\nNew ERR: ${currentERR}\nGrowth vs Baseline: ${delta >= 0 ? '+' + delta : delta} ERR`);
       }
