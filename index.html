@@ -18,7 +18,7 @@
     <header class="border-b border-slate-700 pb-4 flex justify-between items-center">
       <div>
         <h1 class="text-2xl font-bold text-cyan-400">Cognitive Reading Pacer</h1>
-        <p class="text-xs text-slate-400">Powered by IXL Lexile Calibration & Google AI Studio</p>
+        <p class="text-xs text-slate-400">Catholic Middle School Edition • Powered by IXL Lexile Calibration</p>
       </div>
       <div class="text-right text-xs bg-slate-800 p-2 rounded border border-slate-700 space-y-1">
         <div>Baseline ERR: <span id="baselineErrDisplay" class="text-yellow-400 font-bold">Unset</span></div>
@@ -41,13 +41,12 @@
         </div>
       </div>
 
-      <h2 class="text-sm font-bold text-cyan-300 pt-1">Generate Custom Practice Passage (Gemini API)</h2>
+      <h2 class="text-sm font-bold text-cyan-300 pt-1">Generate Custom Practice Passage</h2>
       <div class="flex space-x-2">
-        <input type="password" id="apiKeyInput" placeholder="Paste Gemini API Key" class="bg-slate-900 border border-slate-700 text-xs px-3 py-2 rounded flex-1">
-        <input type="text" id="topicInput" placeholder="Topic (e.g., Mars Rovers, Volcanoes)" class="bg-slate-900 border border-slate-700 text-xs px-3 py-2 rounded flex-1">
+        <input type="text" id="topicInput" placeholder="Topic (e.g., St. Patrick, Solar System, Roman Aqueducts)" class="bg-slate-900 border border-slate-700 text-xs px-3 py-2 rounded flex-1">
         <button onclick="generateAIContent()" id="genBtn" class="bg-indigo-600 hover:bg-indigo-500 font-bold px-4 py-2 text-xs rounded text-white">Generate Content</button>
       </div>
-      <div id="genStatus" class="text-xs text-slate-400 hidden">Generating Lexile-calibrated passage & visual chunks...</div>
+      <div id="genStatus" class="text-xs text-slate-400 hidden">Generating faith-aligned, Lexile-calibrated passage...</div>
     </div>
 
     <!-- MODULE TABS -->
@@ -71,9 +70,7 @@
         
         <p class="text-xs text-slate-400 mb-4">Read the calibrated passage at your normal speed. Click "Finished Reading" when done.</p>
         
-        <div id="diagText" class="bg-slate-950 p-4 rounded border border-slate-800 text-slate-200 leading-relaxed mb-4 min-h-[120px]">
-          <!-- Loaded dynamically via benchmark bank -->
-        </div>
+        <div id="diagText" class="bg-slate-950 p-4 rounded border border-slate-800 text-slate-200 leading-relaxed mb-4 min-h-[120px]"></div>
 
         <button id="diagStartBtn" onclick="startDiagnostic()" class="w-full bg-cyan-500 hover:bg-cyan-600 font-bold py-2 rounded text-slate-950">Start Diagnostic Sprint</button>
         <button id="diagFinishBtn" onclick="finishDiagnostic()" class="hidden w-full bg-emerald-500 hover:bg-emerald-600 font-bold py-2 rounded text-slate-950">I Finished Reading!</button>
@@ -154,59 +151,25 @@
   </div>
 
   <script>
-    // STANDARDIZED BENCHMARK BANK (Controlled passage length & complexity)
     const benchmarkBank = {
       tier1: {
-        FormA: {
-          wordCount: 110,
-          passage: "Lighthouses are tall towers built near coasts and harbors. They shine bright beams of light to guide ships safely through dark waters. Long ago, lighthouse keepers had to trim oil lamps every night. Today, most lighthouses use electric bulbs and automatic timers. Warnings from lighthouses prevent boats from hitting sharp rocks near the shore during stormy weather.",
-          quiz: { question: "What was a task for lighthouse keepers long ago?", options: ["Fixing electric bulbs", "Trimming oil lamps every night", "Building new harbors"], correctIndex: 1 }
-        },
-        FormB: {
-          wordCount: 115,
-          passage: "Coral reefs are underwater structures made by tiny sea creatures called polyps. These reefs provide homes for one quarter of all marine life in the ocean. Bright fish, sea turtles, and crabs rely on corals for food and shelter. Ocean pollution and warm water can harm these fragile ecosystems. Scientists work to protect reefs by creating ocean sanctuaries.",
-          quiz: { question: "What creatures build coral reefs?", options: ["Sea turtles", "Tiny polyps", "Electric eels"], correctIndex: 1 }
-        }
+        FormA: { wordCount: 110, passage: "Lighthouses are tall towers built near coasts and harbors. They shine bright beams of light to guide ships safely through dark waters. Long ago, lighthouse keepers had to trim oil lamps every night. Today, most lighthouses use electric bulbs and automatic timers. Warnings from lighthouses prevent boats from hitting sharp rocks near the shore during stormy weather.", quiz: { question: "What was a task for lighthouse keepers long ago?", options: ["Fixing electric bulbs", "Trimming oil lamps every night", "Building new harbors"], correctIndex: 1 } },
+        FormB: { wordCount: 115, passage: "Coral reefs are underwater structures made by tiny sea creatures called polyps. These reefs provide homes for one quarter of all marine life in the ocean. Bright fish, sea turtles, and crabs rely on corals for food and shelter. Ocean pollution and warm water can harm these fragile ecosystems. Scientists work to protect reefs by creating ocean sanctuaries.", quiz: { question: "What creatures build coral reefs?", options: ["Sea turtles", "Tiny polyps", "Electric eels"], correctIndex: 1 } }
       },
       tier2: {
-        FormA: {
-          wordCount: 165,
-          passage: "Volcanoes are openings in the Earth's crust that allow molten rock, ash, and gases to escape onto the surface. When magma builds up pressure beneath a volcano, an eruption can occur. Some eruptions are explosive and send ash high into the atmosphere, while others produce gentle flows of liquid lava. Scientists monitor volcanic activity by measuring seismic waves, gas emissions, and ground deformation. Understanding these signs helps warning systems protect nearby communities from unexpected hazards.",
-          quiz: { question: "What allows scientists to monitor volcanic activity?", options: ["Weather forecasts", "Seismic waves and gas emissions", "Ocean tides"], correctIndex: 1 }
-        },
-        FormB: {
-          wordCount: 170,
-          passage: "Glaciers are massive sheets of dense ice that move slowly across land under their own weight. Formed over hundreds of years from accumulated snow, glaciers hold most of the world's freshwater. As climate temperatures rise, glaciers melt faster than new snow can collect. Scientists track glacier movement using satellite imagery and aerial radar. Shrinking glaciers cause rising sea levels and alter river habitats around the world.",
-          quiz: { question: "How do scientists track glacier movement?", options: ["Using satellite imagery and aerial radar", "By measuring rainwater", "Through deep sea diving"], correctIndex: 0 }
-        }
+        FormA: { wordCount: 165, passage: "Volcanoes are openings in the Earth's crust that allow molten rock, ash, and gases to escape onto the surface. When magma builds up pressure beneath a volcano, an eruption can occur. Some eruptions are explosive and send ash high into the atmosphere, while others produce gentle flows of liquid lava. Scientists monitor volcanic activity by measuring seismic waves, gas emissions, and ground deformation. Understanding these signs helps warning systems protect nearby communities from unexpected hazards.", quiz: { question: "What allows scientists to monitor volcanic activity?", options: ["Weather forecasts", "Seismic waves and gas emissions", "Ocean tides"], correctIndex: 1 } },
+        FormB: { wordCount: 170, passage: "Glaciers are massive sheets of dense ice that move slowly across land under their own weight. Formed over hundreds of years from accumulated snow, glaciers hold most of the world's freshwater. As climate temperatures rise, glaciers melt faster than new snow can collect. Scientists track glacier movement using satellite imagery and aerial radar. Shrinking glaciers cause rising sea levels and alter river habitats around the world.", quiz: { question: "How do scientists track glacier movement?", options: ["Using satellite imagery and aerial radar", "By measuring rainwater", "Through deep sea diving"], correctIndex: 0 } }
       },
       tier3: {
-        FormA: {
-          wordCount: 210,
-          passage: "Hydrothermal vents are fissures on the ocean floor where geothermally heated water emerges. Located near volcanically active oceanic ridges, these vents discharge mineral-rich fluids exceeding four hundred degrees Celsius. Despite the total absence of sunlight and extreme hydrostatic pressure, complex ecosystems thrive surrounding hydrothermal vents. Chemosynthetic bacteria convert chemical compounds like hydrogen sulfide into organic energy, serving as the primary producers for specialized sea life including giant tube worms and blind shrimp.",
-          quiz: { question: "What process do bacteria near hydrothermal vents use to generate energy?", options: ["Photosynthesis", "Chemosynthesis using chemical compounds", "Nuclear decay"], correctIndex: 1 }
-        },
-        FormB: {
-          wordCount: 215,
-          passage: "Bioluminescence is the biochemical emission of light by living organisms, occurring predominantly among marine species. This physiological reaction requires the enzyme luciferase to catalyze the oxidation of luciferin, generating light without heat. Organisms utilize bioluminescence for diverse evolutionary adaptations, including camouflage through counterillumination, attracting prey, and deterring potential predators. Marine biologists study these molecular mechanisms to develop advanced medical imaging technologies.",
-          quiz: { question: "What enzyme catalyzes the light-producing reaction in bioluminescence?", options: ["Luciferase", "Amylase", "Hemoglobin"], correctIndex: 0 }
-        }
+        FormA: { wordCount: 210, passage: "Hydrothermal vents are fissures on the ocean floor where geothermally heated water emerges. Located near volcanically active oceanic ridges, these vents discharge mineral-rich fluids exceeding four hundred degrees Celsius. Despite the total absence of sunlight and extreme hydrostatic pressure, complex ecosystems thrive surrounding hydrothermal vents. Chemosynthetic bacteria convert chemical compounds like hydrogen sulfide into organic energy, serving as the primary producers for specialized sea life including giant tube worms and blind shrimp.", quiz: { question: "What process do bacteria near hydrothermal vents use to generate energy?", options: ["Photosynthesis", "Chemosynthesis using chemical compounds", "Nuclear decay"], correctIndex: 1 } },
+        FormB: { wordCount: 215, passage: "Bioluminescence is the biochemical emission of light by living organisms, occurring predominantly among marine species. This physiological reaction requires the enzyme luciferase to catalyze the oxidation of luciferin, generating light without heat. Organisms utilize bioluminescence for diverse evolutionary adaptations, including camouflage through counterillumination, attracting prey, and deterring potential predators. Marine biologists study these molecular mechanisms to develop advanced medical imaging technologies.", quiz: { question: "What enzyme catalyzes the light-producing reaction in bioluminescence?", options: ["Luciferase", "Amylase", "Hemoglobin"], correctIndex: 0 } }
       },
       tier4: {
-        FormA: {
-          wordCount: 235,
-          passage: "Quantum computing represents a paradigm shift from classical computation, leveraging the principles of quantum mechanics to process information. Unlike classical bits that exist in definitive binary states of zero or one, quantum bits or qubits exhibit superposition, enabling simultaneous representation of multiple state combinations. Furthermore, quantum entanglement allows qubits to remain interconnected regardless of spatial distance, exponentially accelerating complex calculations in cryptography, material science, and algorithmic simulation.",
-          quiz: { question: "What property allows qubits to represent multiple states simultaneously?", options: ["Binary compilation", "Superposition", "Thermal conductivity"], correctIndex: 1 }
-        },
-        FormB: {
-          wordCount: 240,
-          passage: "The CRISPR-Cas9 system is a revolutionary genome-editing tool derived from bacterial adaptive immune mechanisms. Bacteria employ CRISPR sequences to recognize and destroy recurring viral DNA using the endonuclease Cas9 as molecular scissors. Researchers have repurposed this precision mechanism to introduce targeted alterations within complex eukaryotic genomes, opening unprecedented avenues for treating hereditary genetic disorders, enhancing agricultural resilience, and elucidating fundamental cellular pathways.",
-          quiz: { question: "What is the function of the Cas9 protein in CRISPR editing?", options: ["Synthesizing sugars", "Acting as molecular scissors to cut DNA", "Storing lipids"], correctIndex: 1 }
-        }
+        FormA: { wordCount: 235, passage: "Quantum computing represents a paradigm shift from classical computation, leveraging the principles of quantum mechanics to process information. Unlike classical bits that exist in definitive binary states of zero or one, quantum bits or qubits exhibit superposition, enabling simultaneous representation of multiple state combinations. Furthermore, quantum entanglement allows qubits to remain interconnected regardless of spatial distance, exponentially accelerating complex calculations in cryptography, material science, and algorithmic simulation.", quiz: { question: "What property allows qubits to represent multiple states simultaneously?", options: ["Binary compilation", "Superposition", "Thermal conductivity"], correctIndex: 1 } },
+        FormB: { wordCount: 240, passage: "The CRISPR-Cas9 system is a revolutionary genome-editing tool derived from bacterial adaptive immune mechanisms. Bacteria employ CRISPR sequences to recognize and destroy recurring viral DNA using the endonuclease Cas9 as molecular scissors. Researchers have repurposed this precision mechanism to introduce targeted alterations within complex eukaryotic genomes, opening unprecedented avenues for treating hereditary genetic disorders, enhancing agricultural resilience, and elucidating fundamental cellular pathways.", quiz: { question: "What is the function of the Cas9 protein in CRISPR editing?", options: ["Synthesizing sugars", "Acting as molecular scissors to cut DNA", "Storing lipids"], correctIndex: 1 } }
       }
     };
 
-    // ACTIVE SESSION STATE
     let currentLexileTier = 'tier2';
     let currentBenchmarkForm = 'FormA';
     let baselineERR = null;
@@ -219,18 +182,12 @@
       guiding_question: "How do scientists monitor volcanic eruptions?",
       chunks: [
         { text: "Volcanoes are openings", oap: 5 },
-        { text: "in the Earth's crust", oap: 4 },
-        { text: "that allow molten rock", oap: 6 }
+        { text: "in the Earth's crust", oap: 4 }
       ],
       quiz: benchmarkBank.tier2.FormA.quiz
     };
 
-    // LEXILE ROUTING & BENCHMARK LOADING
-    function onLexileChange() {
-      currentLexileTier = document.getElementById('lexileSelect').value;
-      loadBenchmarkData();
-    }
-
+    function onLexileChange() { currentLexileTier = document.getElementById('lexileSelect').value; loadBenchmarkData(); }
     function setBenchmarkForm(form) {
       currentBenchmarkForm = form;
       document.getElementById('formABtn').className = form === 'FormA' ? 'px-2 py-1 rounded bg-cyan-600 text-white font-bold' : 'px-2 py-1 rounded bg-slate-700 text-slate-300 font-bold';
@@ -245,20 +202,16 @@
       document.getElementById('diagQuizOpts').innerHTML = benchmark.quiz.options.map((opt, i) => 
         `<label class="block"><input type="radio" name="diagQ" value="${i}"> ${opt}</label>`
       ).join('');
-      
-      // Sync initial data for Modules 1-3 if no custom AI generation has occurred yet
       currentData.passage = benchmark.passage;
       currentData.quiz = benchmark.quiz;
       loadDataIntoModules();
     }
 
     function loadDataIntoModules() {
-      // Load Module 1
       const sentences = currentData.passage.match(/[^.!?]+[.!?]+/g) || [currentData.passage];
       document.getElementById('shutterContainer').innerHTML = sentences.map((s, i) => `<div id="line-${i}" class="dimmed">${s.trim()}</div>`).join('');
       document.getElementById('m1Title').innerText = "Module 1: " + (currentData.title || "Paced Reader");
 
-      // Load Module 3
       document.getElementById('pqrstTitle').innerText = currentData.title || "Custom Reading Practice";
       document.getElementById('pqrstPreview').innerText = currentData.preview || "Preview main ideas before reading.";
       document.getElementById('pqrstQuestion').innerText = currentData.guiding_question || "What are the main concepts?";
@@ -269,93 +222,53 @@
       ).join('');
     }
 
-    // INITIAL LOAD
     loadBenchmarkData();
 
-    // DYNAMIC AI GENERATION (PASSES LEXILE LEVEL TO GEMINI)
+    // SERVERLESS API CALL TO ROUTE /api/generate
     async function generateAIContent() {
-      const apiKey = document.getElementById('apiKeyInput').value.trim();
       const topic = document.getElementById('topicInput').value.trim();
       const status = document.getElementById('genStatus');
 
-      if (!apiKey || !topic) { 
-        alert("Please enter both your API Key and a Topic."); 
-        return; 
-      }
+      if (!topic) { alert("Please enter a Topic."); return; }
 
       status.classList.remove('hidden');
       document.getElementById('genBtn').disabled = true;
 
       const lexileLabel = document.getElementById('lexileSelect').options[document.getElementById('lexileSelect').selectedIndex].text;
 
-      const promptText = `Generate a middle school reading package about "${topic}".
-CALIBRATION INSTRUCTION: Calibrate the vocabulary and sentence structure specifically for a student at the "${lexileLabel}" reading level.
-
-Output ONLY a raw JSON object (no markdown, no backticks, no explanatory text) with this exact structure:
-{
-  "title": "Passage Title",
-  "passage": "A 150-200 word informative passage about ${topic}.",
-  "preview": "A 2-sentence summary of the main idea.",
-  "guiding_question": "A key question to think about while reading.",
-  "chunks": [
-    {"text": "Short phrase 1", "oap": 3},
-    {"text": "Short phrase 2", "oap": 2}
-  ],
-  "quiz": {
-    "question": "Comprehension question about the passage?",
-    "options": ["Option A", "Option B", "Option C"],
-    "correctIndex": 1
-  }
-}`;
-
       try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`, {
+        const response = await fetch('/api/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: promptText }] }]
-          })
+          body: JSON.stringify({ topic, lexileLabel })
         });
 
         if (!response.ok) {
           const errData = await response.json();
-          throw new Error(errData.error?.message || `HTTP ${response.status}`);
+          throw new Error(errData.error || `HTTP ${response.status}`);
         }
 
-        const data = await response.json();
-        let rawText = data.candidates[0].content.parts[0].text;
-        
-        // Clean markdown quotes
-        rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
-        
-        currentData = JSON.parse(rawText);
+        currentData = await response.json();
         loadDataIntoModules();
-        alert(`Successfully generated content for "${currentData.title}" calibrated to ${lexileLabel}!`);
+        alert(`Successfully generated passage for "${currentData.title}"!`);
         switchTab('module1');
       } catch (err) {
-        console.error("Gemini API Error:", err);
-        alert("API Error: " + err.message);
+        console.error("API Error:", err);
+        alert("Generation Error: " + err.message);
       } finally {
         status.classList.add('hidden');
         document.getElementById('genBtn').disabled = false;
       }
     }
 
-    // TAB NAVIGATION
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.replace('bg-cyan-600', 'bg-slate-800'));
       document.getElementById('tab-' + tabId).classList.remove('hidden');
     }
 
-    // DIAGNOSTIC SPRINT ENGINE
     let diagStartTime;
-    function startDiagnostic() { 
-      diagStartTime = Date.now(); 
-      document.getElementById('diagStartBtn').classList.add('hidden'); 
-      document.getElementById('diagFinishBtn').classList.remove('hidden'); 
-    }
-
+    function startDiagnostic() { diagStartTime = Date.now(); document.getElementById('diagStartBtn').classList.add('hidden'); document.getElementById('diagFinishBtn').classList.remove('hidden'); }
     function finishDiagnostic() { 
       const elapsed = (Date.now() - diagStartTime) / 1000; 
       const wordCount = benchmarkBank[currentLexileTier][currentBenchmarkForm].wordCount;
@@ -367,29 +280,25 @@ Output ONLY a raw JSON object (no markdown, no backticks, no explanatory text) w
     function submitDiagnostic() { 
       const selected = document.querySelector('input[name="diagQ"]:checked'); 
       const correctIdx = benchmarkBank[currentLexileTier][currentBenchmarkForm].quiz.correctIndex;
-      
       const accuracy = (selected && parseInt(selected.value) === correctIdx) ? 1.0 : 0.5; 
       const calculatedERR = Math.round(window.rawWpm * accuracy);
 
       if (currentBenchmarkForm === 'FormA') {
         baselineERR = calculatedERR;
         document.getElementById('baselineErrDisplay').innerText = baselineERR + " ERR";
-        alert(`Initial Baseline Recorded!\nRaw Speed: ${window.rawWpm} WPM\nComprehension: ${accuracy * 100}%\nBaseline ERR: ${baselineERR}`);
+        alert(`Baseline Score Saved!\nSpeed: ${window.rawWpm} WPM\nComprehension: ${accuracy * 100}%\nBaseline ERR: ${baselineERR}`);
       } else {
         currentERR = calculatedERR;
         document.getElementById('currentErrDisplay').innerText = currentERR + " ERR";
         const delta = baselineERR !== null ? (currentERR - baselineERR) : 0;
-        const deltaStr = delta >= 0 ? `+${delta}` : `${delta}`;
-        alert(`Progress Re-Test Completed!\nNew ERR: ${currentERR}\nGrowth vs Initial Baseline: ${deltaStr} ERR`);
+        alert(`Re-Test Completed!\nNew ERR: ${currentERR}\nGrowth vs Baseline: ${delta >= 0 ? '+' + delta : delta} ERR`);
       }
 
-      // Reset diagnostic UI for next run
       document.getElementById('diagQuiz').classList.add('hidden');
       document.getElementById('diagStartBtn').classList.remove('hidden');
       switchTab('module1');
     }
 
-    // MODULE 1: FOCUS SHUTTER ENGINE
     let shutterIdx = 0, shutterInterval;
     function startShutter() {
       clearInterval(shutterInterval);
@@ -397,7 +306,6 @@ Output ONLY a raw JSON object (no markdown, no backticks, no explanatory text) w
       const lines = document.querySelectorAll('#shutterContainer > div');
       const wpm = parseInt(document.getElementById('wpmInput').value);
       const delay = (60 / (wpm / 10)) * 1000;
-
       shutterInterval = setInterval(() => {
         lines.forEach((el, i) => el.className = i === shutterIdx ? 'focused p-2 rounded' : 'dimmed');
         shutterIdx++;
@@ -406,28 +314,19 @@ Output ONLY a raw JSON object (no markdown, no backticks, no explanatory text) w
     }
     function stopShutter() { clearInterval(shutterInterval); }
 
-    // MODULE 2: MORPHO-VISUAL FLASHER ENGINE
     function startFlasher() {
       let i = 0;
       const display = document.getElementById('flashDisplay');
-      const chunks = currentData.chunks || [
-        { text: "Volcanoes are openings", oap: 5 },
-        { text: "in the Earth's crust", oap: 4 }
-      ];
-
+      const chunks = currentData.chunks || [{ text: "Volcanoes are openings", oap: 5 }];
       const interval = setInterval(() => {
         if (i >= chunks.length) { clearInterval(interval); display.innerText = "Done!"; return; }
         const item = chunks[i];
         const oap = item.oap || 2;
-        const before = item.text.slice(0, oap);
-        const target = item.text[oap] || item.text[0];
-        const after = item.text.slice(oap + 1);
-        display.innerHTML = `${before}<span class="oap-target">${target}</span>${after}`;
+        display.innerHTML = `${item.text.slice(0, oap)}<span class="oap-target">${item.text[oap] || item.text[0]}</span>${item.text.slice(oap + 1)}`;
         i++;
       }, 350);
     }
 
-    // MODULE 3: PQRST STEP NAVIGATION
     function pqrstNext(step) {
       document.getElementById('pqrstStep1').classList.add('hidden');
       document.getElementById('pqrstStep2').classList.add('hidden');
