@@ -9,6 +9,14 @@
     .dimmed { opacity: 0.25; filter: blur(1px); transition: opacity 0.3s; }
     .focused { opacity: 1; filter: blur(0px); font-weight: 600; background: #fef08a; color: #0f172a; }
     .oap-target { color: #dc2626; font-weight: 800; text-decoration: underline; }
+
+    /* Print Stylesheet for PDF Export */
+    @media print {
+      body * { visibility: hidden; }
+      #printableGuide, #printableGuide * { visibility: visible; }
+      #printableGuide { position: absolute; left: 0; top: 0; width: 100%; color: black !important; background: white !important; }
+      .no-print { display: none !important; }
+    }
   </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen font-sans p-6">
@@ -21,8 +29,11 @@
         <p class="text-xs text-slate-400">Catholic Middle School Edition • Powered by IXL Lexile Calibration</p>
       </div>
       
-      <!-- USER / ROLE CONTROLS -->
+      <!-- USER / ROLE CONTROLS & GUIDE BUTTON -->
       <div class="flex items-center space-x-3">
+        <button onclick="openGuideModal()" class="bg-indigo-600 hover:bg-indigo-500 border border-indigo-500 text-xs px-3 py-2 rounded text-white font-bold flex items-center space-x-1">
+          <span>📖 Educator Guide</span>
+        </button>
         <div class="text-right text-xs bg-slate-800 p-2 rounded border border-slate-700 space-y-0.5">
           <div id="userBadge" class="text-slate-300 font-semibold">Student Mode</div>
           <div id="domainBadge" class="text-[10px] text-slate-400">@aveangels.org</div>
@@ -33,12 +44,8 @@
       </div>
     </header>
 
-    <!-- ================================================================= -->
-    <!-- TEACHER DASHBOARD PORTAL (VISIBLE TO @avemaria.school USERS)       -->
-    <!-- ================================================================= -->
+    <!-- TEACHER DASHBOARD PORTAL -->
     <main id="teacherPortal" class="hidden space-y-6">
-      
-      <!-- DASHBOARD OVERVIEW METRICS -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
           <div class="text-xs text-slate-400 font-semibold">Class Avg ERR</div>
@@ -58,7 +65,6 @@
         </div>
       </div>
 
-      <!-- AUTOMATED INSTRUCTIONAL ALERTS -->
       <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-3">
         <h2 class="text-sm font-bold text-cyan-300 flex items-center space-x-2">
           <span>⚡ Automated Instructional Flags</span>
@@ -67,21 +73,20 @@
           <div class="bg-slate-900/80 p-3 rounded border border-rose-900/50 flex space-x-3 items-start">
             <span class="text-lg">🚨</span>
             <div>
-              <div class="font-bold text-rose-300">Skimming Risk: Julian K. (500L)</div>
+              <div class="font-bold text-rose-300">Skimming Risk: Julian K. (Foundational Band)</div>
               <p class="text-slate-400 mt-0.5">High WPM speed (220 WPM) but low Form B comprehension (50%). System has capped Module 1 speed to 160 WPM.</p>
             </div>
           </div>
           <div class="bg-slate-900/80 p-3 rounded border border-emerald-900/50 flex space-x-3 items-start">
             <span class="text-lg">🎯</span>
             <div>
-              <div class="font-bold text-emerald-300">Promotion Ready: Clara M. (750L)</div>
-              <p class="text-slate-400 mt-0.5">Achieved 245 ERR on Form B with 100% comprehension. Ready to advance to Tier 3 (800L-950L).</p>
+              <div class="font-bold text-emerald-300">Promotion Ready: Clara M. (Intermediate Band)</div>
+              <p class="text-slate-400 mt-0.5">Achieved 245 ERR on Form B with 100% comprehension. Ready to advance to Advanced Band (800L-950L).</p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- CLASS ROSTER TABLE -->
       <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-4">
         <div class="flex justify-between items-center">
           <div>
@@ -90,7 +95,7 @@
           </div>
           <div class="flex space-x-2">
             <input type="text" placeholder="Search student..." class="bg-slate-900 border border-slate-700 text-xs px-3 py-1.5 rounded text-slate-200">
-            <button class="bg-cyan-600 text-white text-xs px-3 py-1.5 rounded font-bold">Export Report</button>
+            <button onclick="downloadPDFGuide()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-1.5 rounded font-bold">Export Educator Guide (PDF)</button>
           </div>
         </div>
 
@@ -99,7 +104,7 @@
             <thead>
               <tr class="border-b border-slate-700 text-slate-400 font-semibold bg-slate-900/50">
                 <th class="p-3">Student Name</th>
-                <th class="p-3">IXL Lexile</th>
+                <th class="p-3">Lexile Reading Band</th>
                 <th class="p-3">Form A (Baseline)</th>
                 <th class="p-3">Form B (Re-Test)</th>
                 <th class="p-3">Growth (&Delta;ERR)</th>
@@ -110,20 +115,18 @@
             <tbody class="divide-y divide-slate-700/60 text-slate-200">
               <tr class="hover:bg-slate-700/30">
                 <td class="p-3 font-semibold text-white">Clara M.</td>
-                <td class="p-3"><span class="bg-slate-900 text-cyan-300 px-2 py-0.5 rounded font-mono">750L</span></td>
+                <td class="p-3"><span class="bg-slate-900 text-cyan-300 px-2 py-0.5 rounded font-mono">Intermediate (750L)</span></td>
                 <td class="p-3 font-mono text-slate-300">210 ERR</td>
                 <td class="p-3 font-mono text-emerald-400 font-bold">245 ERR</td>
                 <td class="p-3"><span class="text-emerald-400 font-bold">+35 ERR (+16%)</span></td>
                 <td class="p-3 text-slate-300">220 WPM / 4-Chunk</td>
                 <td class="p-3 text-right">
-                  <span class="bg-emerald-950 text-emerald-300 border border-emerald-700 px-2 py-1 rounded text-[10px] font-bold">
-                    Ready for Advanced Band (800L)
-                  </span>               
+                  <span class="bg-emerald-950 text-emerald-300 border border-emerald-700 px-2 py-1 rounded text-[10px] font-bold">Ready for Advanced Band</span>
                 </td>
               </tr>
               <tr class="hover:bg-slate-700/30">
                 <td class="p-3 font-semibold text-white">Leo B.</td>
-                <td class="p-3"><span class="bg-slate-900 text-cyan-300 px-2 py-0.5 rounded font-mono">650L</span></td>
+                <td class="p-3"><span class="bg-slate-900 text-cyan-300 px-2 py-0.5 rounded font-mono">Intermediate (650L)</span></td>
                 <td class="p-3 font-mono text-slate-300">140 ERR</td>
                 <td class="p-3 font-mono text-emerald-400 font-bold">175 ERR</td>
                 <td class="p-3"><span class="text-emerald-400 font-bold">+35 ERR (+25%)</span></td>
@@ -134,7 +137,7 @@
               </tr>
               <tr class="hover:bg-slate-700/30">
                 <td class="p-3 font-semibold text-white">Sofia R.</td>
-                <td class="p-3"><span class="bg-slate-900 text-cyan-300 px-2 py-0.5 rounded font-mono">850L</span></td>
+                <td class="p-3"><span class="bg-slate-900 text-cyan-300 px-2 py-0.5 rounded font-mono">Advanced (850L)</span></td>
                 <td class="p-3 font-mono text-slate-300">260 ERR</td>
                 <td class="p-3 font-mono text-emerald-400 font-bold">290 ERR</td>
                 <td class="p-3"><span class="text-emerald-400 font-bold">+30 ERR (+11%)</span></td>
@@ -145,15 +148,13 @@
               </tr>
               <tr class="hover:bg-slate-700/30">
                 <td class="p-3 font-semibold text-white">Julian K.</td>
-                <td class="p-3"><span class="bg-slate-900 text-cyan-300 px-2 py-0.5 rounded font-mono">500L</span></td>
+                <td class="p-3"><span class="bg-slate-900 text-cyan-300 px-2 py-0.5 rounded font-mono">Foundational (500L)</span></td>
                 <td class="p-3 font-mono text-slate-300">110 ERR</td>
                 <td class="p-3 font-mono text-yellow-400 font-bold">115 ERR</td>
                 <td class="p-3"><span class="text-yellow-400 font-bold">+5 ERR (+4%)</span></td>
                 <td class="p-3 text-slate-300">160 WPM / 2-Chunk</td>
                 <td class="p-3 text-right">
-                  <span class="bg-rose-950 text-rose-300 border border-rose-700 px-2 py-1 rounded text-[10px] font-bold">
-                    Tier 2 RTI Support (Pacer Capped)
-                  </span>
+                  <span class="bg-rose-950 text-rose-300 border border-rose-700 px-2 py-1 rounded text-[10px] font-bold">Tier 2 RTI Support</span>
                 </td>
               </tr>
             </tbody>
@@ -162,17 +163,13 @@
       </div>
     </main>
 
-    <!-- ================================================================= -->
-    <!-- STUDENT PORTAL (VISIBLE TO @aveangels.org USERS)                  -->
-    <!-- ================================================================= -->
+    <!-- STUDENT PORTAL -->
     <main id="studentPortal" class="space-y-6">
-      
-      <!-- LEXILE LEVEL & AI GENERATOR BAR -->
       <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-3">
         <div class="flex justify-between items-center border-b border-slate-700 pb-2">
           <h2 class="text-sm font-bold text-cyan-300">Target Reading Calibration</h2>
           <div class="flex items-center space-x-2">
-            <label for="lexileSelect" class="text-xs text-slate-300 font-semibold">IXL Lexile Level:</label>
+            <label for="lexileSelect" class="text-xs text-slate-300 font-semibold">IXL Reading Band:</label>
             <select id="lexileSelect" onchange="onLexileChange()" class="bg-slate-900 border border-slate-700 text-xs px-2 py-1 rounded text-cyan-400 font-bold">
               <option value="tier1">Foundational Band (400L - 550L)</option>
               <option value="tier2" selected>Intermediate Band (600L - 750L)</option>
@@ -190,7 +187,6 @@
         <div id="genStatus" class="text-xs text-slate-400 hidden">Generating faith-aligned, Lexile-calibrated passage...</div>
       </div>
 
-      <!-- MODULE TABS -->
       <div class="flex space-x-2 border-b border-slate-700 pb-2">
         <button onclick="switchTab('diagnostic')" class="tab-btn px-4 py-2 text-sm font-semibold rounded bg-cyan-600 text-white">1. Standardized Diagnostic</button>
         <button onclick="switchTab('module1')" class="tab-btn px-4 py-2 text-sm font-semibold rounded bg-slate-800 text-slate-300">Module 1 (Accelerator)</button>
@@ -198,7 +194,6 @@
         <button onclick="switchTab('module3')" class="tab-btn px-4 py-2 text-sm font-semibold rounded bg-slate-800 text-slate-300">Module 3 (PQRST Reader)</button>
       </div>
 
-      <!-- TAB 1: STANDARDIZED DIAGNOSTIC BASELINE -->
       <section id="tab-diagnostic" class="tab-content space-y-4">
         <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
           <div class="flex justify-between items-center mb-2">
@@ -225,7 +220,6 @@
         </div>
       </section>
 
-      <!-- TAB 2: MODULE 1 (ACCELERATOR SHUTTER) -->
       <section id="tab-module1" class="tab-content hidden space-y-4">
         <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
           <div class="flex justify-between items-center mb-4">
@@ -245,7 +239,6 @@
         </div>
       </section>
 
-      <!-- TAB 3: MODULE 2 (VISUAL SPAN FLASHER) -->
       <section id="tab-module2" class="tab-content hidden space-y-4">
         <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 text-center">
           <h2 class="text-lg font-bold text-cyan-300 mb-2">Module 2: Morpho-Visual Flasher</h2>
@@ -259,7 +252,6 @@
         </div>
       </section>
 
-      <!-- TAB 4: MODULE 3 (PQRST WORKFLOW) -->
       <section id="tab-module3" class="tab-content hidden space-y-4">
         <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-4">
           <h2 class="text-lg font-bold text-cyan-300">Module 3: PQRST Active Reading</h2>
@@ -292,10 +284,112 @@
     </main>
   </div>
 
+  <!-- EDUCATOR & PARENT FIELD GUIDE MODAL -->
+  <div id="guideModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-700 rounded-xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl">
+      
+      <!-- MODAL HEADER -->
+      <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800/50 rounded-t-xl">
+        <h2 class="text-lg font-bold text-cyan-300 flex items-center space-x-2">
+          <span>📖 Educator & Parent Field Guide</span>
+        </h2>
+        <div class="flex items-center space-x-2">
+          <button onclick="downloadPDFGuide()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-1.5 rounded font-bold">
+            Download PDF
+          </button>
+          <button onclick="closeGuideModal()" class="text-slate-400 hover:text-white text-lg font-bold px-2">✕</button>
+        </div>
+      </div>
+
+      <!-- MODAL BODY (PRINTABLE CONTAINER) -->
+      <div id="printableGuide" class="p-6 overflow-y-auto space-y-6 text-slate-200 text-sm leading-relaxed">
+        
+        <!-- TITLE BLOCK -->
+        <div class="border-b border-slate-700 pb-3">
+          <h1 class="text-xl font-bold text-cyan-400">Cognitive Reading Pacer — Field Manual</h1>
+          <p class="text-xs text-slate-400 mt-1">Catholic Middle School Edition • Research-Backed Fluency & Comprehension Protocol</p>
+        </div>
+
+        <!-- SECTION 1: METRICS -->
+        <section class="space-y-2">
+          <h3 class="font-bold text-cyan-300 text-base">1. Key Metrics & Definitions</h3>
+          <div class="bg-slate-950 p-3 rounded border border-slate-800 space-y-2 text-xs">
+            <p><strong>WPM (Words Per Minute):</strong> Pure physical eye tracking speed across lines of text.</p>
+            <p><strong>Comprehension %:</strong> Accuracy score on post-reading verification quiz ($100\%$ or $50\%$).</p>
+            <p><strong>ERR (Effective Reading Rate):</strong> Calculated as $\text{WPM} \times \text{Comprehension \%}$. This core metric prevents skimming by penalizing speed without retention.</p>
+            <p><strong>&Delta;ERR (Growth Delta):</strong> True cognitive growth measured between standardized Form A and Form B benchmarks.</p>
+          </div>
+        </section>
+
+        <!-- SECTION 2: READING BANDS VS RTI -->
+        <section class="space-y-2">
+          <h3 class="font-bold text-cyan-300 text-base">2. Lexile Bands vs. RTI Support Tiers</h3>
+          <p class="text-xs text-slate-300">To avoid confusion with school Multi-Tiered System of Support (MTSS/RTI) frameworks, the app separates instructional support tiers from text readability bands:</p>
+          <ul class="list-disc list-inside text-xs space-y-1 text-slate-300">
+            <li><strong>Foundational Band (400L – 550L):</strong> Grade 4–5 readability; builds core decoding confidence.</li>
+            <li><strong>Intermediate Band (600L – 750L):</strong> On-grade Grade 6–7 readability; standard targets.</li>
+            <li><strong>Advanced Band (800L – 950L):</strong> Grade 8 / Honors readability; complex syntax.</li>
+            <li><strong>Mastery Band (1000L+):</strong> High School / College Ready readability.</li>
+            <li><strong>RTI Tiers (School Level):</strong> Tier 1 (Universal 100%), Tier 2 (Targeted 10-15%), Tier 3 (Intensive 5%).</li>
+          </ul>
+        </section>
+
+        <!-- SECTION 3: 4 MODULE FRAMEWORK -->
+        <section class="space-y-2">
+          <h3 class="font-bold text-cyan-300 text-base">3. The 4 Pacing Modules</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+            <div class="bg-slate-950 p-3 rounded border border-slate-800">
+              <div class="font-bold text-yellow-400">1. Standardized Diagnostic (Tab 1)</div>
+              <p class="text-slate-400 mt-1">Establishes baseline ERR using locked static benchmark texts (Form A/B) matching IXL Lexile bands.</p>
+            </div>
+            <div class="bg-slate-950 p-3 rounded border border-slate-800">
+              <div class="font-bold text-cyan-400">2. Accelerator Focus Shutter</div>
+              <p class="text-slate-400 mt-1">Eliminates line regression and vocalization by pacing eyes forward with a moving focus window.</p>
+            </div>
+            <div class="bg-slate-950 p-3 rounded border border-slate-800">
+              <div class="font-bold text-indigo-400">3. Morpho-Visual Flasher</div>
+              <p class="text-slate-400 mt-1">Expands peripheral visual span and foveal fixation width using phrase flashes centered on anchor target letters.</p>
+            </div>
+            <div class="bg-slate-950 p-3 rounded border border-slate-800">
+              <div class="font-bold text-emerald-400">4. PQRST Active Reader</div>
+              <p class="text-slate-400 mt-1">Guides Preview, Question, Read, State, and Test steps for high comprehension retention on faith-aligned AI topics.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 4: CLASSROOM PROTOCOL -->
+        <section class="space-y-2">
+          <h3 class="font-bold text-cyan-300 text-base">4. 15-Minute Classroom Protocol</h3>
+          <ol class="list-decimal list-inside text-xs space-y-1 text-slate-300">
+            <li><strong>Diagnostic / Re-Test (3 Mins):</strong> Complete Form A (Day 1) or Form B (Progress Check) on Tab 1.</li>
+            <li><strong>Ocular Span Warmup (3 Mins):</strong> Run 20–30 flashes on Module 2 (Visual Flasher).</li>
+            <li><strong>Speed Pacing (5 Mins):</strong> Set Module 1 Focus Shutter to +20 WPM above baseline on a custom topic.</li>
+            <li><strong>Active Recall & Quiz (4 Mins):</strong> Complete Module 3 (PQRST Reader) preview and quiz.</li>
+          </ol>
+        </section>
+
+      </div>
+      
+      <!-- MODAL FOOTER -->
+      <div class="p-4 border-t border-slate-700 bg-slate-800/50 rounded-b-xl flex justify-between items-center">
+        <span class="text-xs text-slate-400">Catholic Middle School Educational Protocol</span>
+        <button onclick="closeGuideModal()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs px-4 py-2 rounded font-bold">Close Guide</button>
+      </div>
+
+    </div>
+  </div>
+
   <script>
+    // MODAL & PRINT ENGINE
+    function openGuideModal() { document.getElementById('guideModal').classList.remove('hidden'); }
+    function closeGuideModal() { document.getElementById('guideModal').classList.add('hidden'); }
+    function downloadPDFGuide() {
+      openGuideModal();
+      setTimeout(() => { window.print(); }, 300);
+    }
+
     // DOMAIN & ROLE CONTROL ENGINE
     let isTeacherView = false;
-
     function toggleRoleView() {
       isTeacherView = !isTeacherView;
       const teacherPortal = document.getElementById('teacherPortal');
@@ -319,7 +413,7 @@
       }
     }
 
-    // BENCHMARK DATA BANK
+    // BENCHMARK BANK
     const benchmarkBank = {
       tier1: {
         FormA: { wordCount: 110, passage: "Lighthouses are tall towers built near coasts and harbors. They shine bright beams of light to guide ships safely through dark waters. Long ago, lighthouse keepers had to trim oil lamps every night. Today, most lighthouses use electric bulbs and automatic timers. Warnings from lighthouses prevent boats from hitting sharp rocks near the shore during stormy weather.", quiz: { question: "What was a task for lighthouse keepers long ago?", options: ["Fixing electric bulbs", "Trimming oil lamps every night", "Building new harbors"], correctIndex: 1 } },
