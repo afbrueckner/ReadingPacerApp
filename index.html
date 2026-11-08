@@ -1,14 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reading Pacer App - Ave Maria Edition</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            daylight: {
+              bg: '#f8fafc',
+              card: '#ffffff',
+              border: '#cbd5e1',
+              text: '#0f172a',
+              muted: '#64748b'
+            }
+          }
+        }
+      }
+    }
+  </script>
   <style>
-    .dimmed { opacity: 0.25; filter: blur(1px); transition: opacity 0.3s; }
-    .focused { opacity: 1; filter: blur(0px); font-weight: 600; background: #fef08a; color: #0f172a; }
-    .oap-target { color: #dc2626; font-weight: 800; text-decoration: underline; }
+    /* Theme Transition Setup */
+    body { transition: background-color 0.3s, color 0.3s; }
+    
+    /* Module 1 Focus Shutter Animations */
+    .shutter-line { transition: all 0.25s ease-in-out; }
+    .dimmed { opacity: 0.2; filter: blur(1px); }
+    .dark .focused { 
+      opacity: 1; 
+      filter: blur(0px); 
+      font-weight: 700; 
+      background: #fef08a; 
+      color: #0f172a; 
+      box-shadow: 0 4px 12px rgba(254, 240, 138, 0.2); 
+    }
+    .light .focused { 
+      opacity: 1; 
+      filter: blur(0px); 
+      font-weight: 700; 
+      background: #0284c7; 
+      color: #ffffff; 
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25); 
+    }
+
+    /* Module 2 Optical Target Styling */
+    .oap-target { color: #dc2626; font-weight: 900; text-decoration: underline; text-underline-offset: 4px; }
 
     /* PERFECT 2-PAGE PRINT STYLESHEET */
     @media print {
@@ -49,7 +89,6 @@
       }
 
       .no-print { display: none !important; }
-      
       .print-break-before { 
         page-break-before: always !important; 
         break-before: page !important; 
@@ -57,17 +96,22 @@
     }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen font-sans p-6">
+<body id="appBody" class="bg-slate-900 text-slate-100 min-h-screen font-sans p-6">
   <div class="max-w-4xl mx-auto space-y-6">
     
-    <!-- HEADER & GOOGLE AUTH CONTROLS -->
-    <header class="border-b border-slate-700 pb-4 flex justify-between items-center">
+    <!-- HEADER & THEME TOGGLE CONTROLS -->
+    <header class="border-b border-slate-700 dark:border-slate-700 pb-4 flex justify-between items-center">
       <div>
-        <h1 class="text-2xl font-bold text-cyan-400">Cognitive Reading Pacer</h1>
+        <h1 class="text-2xl font-bold text-cyan-400 dark:text-cyan-400 light:text-cyan-700">Cognitive Reading Pacer</h1>
         <p class="text-xs text-slate-400">Ave Maria Middle School Edition • IXL Lexile & Firebase Connected</p>
       </div>
       
       <div class="flex items-center space-x-3">
+        <!-- DAYLIGHT / DARK THEME TOGGLE BUTTON -->
+        <button onclick="toggleAppTheme()" id="themeToggleBtn" class="bg-slate-800 dark:bg-slate-800 border border-slate-700 text-xs px-3 py-2 rounded text-yellow-300 font-bold flex items-center space-x-1">
+          <span id="themeIcon">☀️</span> <span id="themeText">Daylight Theme</span>
+        </button>
+
         <button onclick="openGuideModal()" class="bg-indigo-600 hover:bg-indigo-500 text-xs px-3 py-2 rounded text-white font-bold">
           📖 Educator Guide
         </button>
@@ -84,7 +128,7 @@
     </header>
 
     <!-- SIGN-IN PROMPT SCREEN -->
-    <div id="loggedOutState" class="bg-slate-800 p-8 rounded-xl border border-slate-700 text-center space-y-4 max-w-md mx-auto my-12">
+    <div id="loggedOutState" class="bg-slate-800 dark:bg-slate-800 p-8 rounded-xl border border-slate-700 text-center space-y-4 max-w-md mx-auto my-12">
       <div class="text-4xl">⛪</div>
       <h2 class="text-lg font-bold text-cyan-300">Catholic School Portal Sign-In</h2>
       <p class="text-xs text-slate-300 leading-relaxed">
@@ -149,7 +193,6 @@
             <p class="text-xs text-slate-400">Standardized ERR metrics calculated from Form A (Baseline) and Form B (Re-Test)</p>
           </div>
           <div class="flex space-x-2">
-            <!-- TEACHER DEMO TOGGLE BUTTON -->
             <button onclick="toggleTeacherDemoView()" id="demoToggleBtn" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3 py-1.5 rounded font-bold">
               👁️ Preview Student Experience (Demo Mode)
             </button>
@@ -181,9 +224,22 @@
 
     <!-- STUDENT PORTAL -->
     <main id="studentPortal" class="hidden space-y-6">
+      
       <div id="demoBanner" class="hidden bg-emerald-950 border border-emerald-700 text-emerald-300 p-3 rounded text-xs flex justify-between items-center">
         <span><strong>Faculty Demo Mode Active:</strong> You are previewing student practice modules. Benchmark saves are in test mode.</span>
         <button onclick="toggleTeacherDemoView()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-1 rounded font-bold">Return to Teacher Dashboard</button>
+      </div>
+
+      <!-- STUDENT PROFILE PROGRESS TRACKER BAR -->
+      <div class="bg-slate-800 dark:bg-slate-800 p-3 rounded-lg border border-slate-700 flex justify-between items-center text-xs">
+        <div class="flex items-center space-x-3">
+          <span class="bg-indigo-900 text-indigo-300 px-2.5 py-1 rounded font-bold">Student Active Goal</span>
+          <span class="text-slate-300">Target Lexile: <strong id="studentLexileBadge" class="text-cyan-400">600L - 750L</strong></span>
+        </div>
+        <div class="flex items-center space-x-4">
+          <div>Weekly Sprints: <strong class="text-emerald-400">2 / 3 Completed</strong></div>
+          <div>Baseline ERR: <strong id="studentBaselineDisplay" class="text-yellow-400">180 ERR</strong></div>
+        </div>
       </div>
 
       <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-3">
@@ -215,6 +271,7 @@
         <button onclick="switchTab('module3')" class="tab-btn px-4 py-2 text-sm font-semibold rounded bg-slate-800 text-slate-300">Module 3 (PQRST Reader)</button>
       </div>
 
+      <!-- TAB 1: DIAGNOSTIC -->
       <section id="tab-diagnostic" class="tab-content space-y-4">
         <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
           <div class="flex justify-between items-center mb-2">
@@ -241,63 +298,88 @@
         </div>
       </section>
 
+      <!-- TAB 2: MODULE 1 (ACCELERATOR FOCUS SHUTTER - ENHANCED VISUALS) -->
       <section id="tab-module1" class="tab-content hidden space-y-4">
-        <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-          <div class="flex justify-between items-center mb-4">
-            <h2 id="m1Title" class="text-lg font-bold text-cyan-300">Module 1: Focus Shutter</h2>
+        <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-3">
+          <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+            <div>
+              <h2 id="m1Title" class="text-lg font-bold text-cyan-300">Module 1: Focus Shutter Accelerator</h2>
+              <p class="text-xs text-slate-400">💡 <strong>How to practice:</strong> Keep your gaze inside the moving highlight window to eliminate line re-reading.</p>
+            </div>
             <div class="flex items-center space-x-2">
               <label for="wpmInput" class="text-xs">Speed (WPM):</label>
               <input type="number" id="wpmInput" value="180" class="w-16 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-cyan-400 font-bold">
             </div>
           </div>
 
-          <div id="shutterContainer" class="bg-slate-950 p-6 rounded border border-slate-800 space-y-3 text-lg leading-loose"></div>
+          <!-- ENHANCED VIEWPORT CONTAINER WITH HIGH-CONTRAST HIGHLIGHT -->
+          <div id="shutterViewport" class="bg-slate-950 p-6 rounded-xl border border-slate-800 h-80 overflow-y-auto space-y-4 text-xl leading-[2.5] relative scroll-smooth">
+            <div id="shutterContainer" class="space-y-4"></div>
+          </div>
 
           <div class="flex space-x-2 mt-4">
-            <button onclick="startShutter()" class="flex-1 bg-cyan-500 text-slate-950 font-bold py-2 rounded">Start Shutter Pacer</button>
-            <button onclick="stopShutter()" class="bg-slate-700 px-4 py-2 rounded text-slate-300">Stop</button>
+            <button onclick="startShutter()" class="flex-1 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2.5 rounded">Start Shutter Pacer</button>
+            <button onclick="stopShutter()" class="bg-slate-700 hover:bg-slate-600 px-4 py-2.5 rounded text-slate-300">Stop</button>
           </div>
         </div>
       </section>
 
+      <!-- TAB 3: MODULE 2 (MORPHO-VISUAL FLASHER - ENHANCED FIXATION CROSSHAIR) -->
       <section id="tab-module2" class="tab-content hidden space-y-4">
-        <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 text-center">
-          <h2 class="text-lg font-bold text-cyan-300 mb-2">Module 2: Morpho-Visual Flasher</h2>
-          <p class="text-xs text-slate-400 mb-6">Fix your eyes on the red target letter to expand your visual attention span.</p>
-
-          <div class="h-32 bg-slate-950 rounded border border-slate-800 flex items-center justify-center mb-4">
-            <div id="flashDisplay" class="text-2xl font-bold tracking-wide">Ready?</div>
+        <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-4 text-center">
+          <div class="border-b border-slate-700 pb-2 text-left">
+            <h2 class="text-lg font-bold text-cyan-300">Module 2: Morpho-Visual Flasher</h2>
+            <p class="text-xs text-slate-400">🎯 <strong>How to practice:</strong> Fix your eyes strictly on the red target letter below the crosshair to expand your peripheral attention span.</p>
           </div>
 
-          <button onclick="startFlasher()" class="bg-indigo-500 hover:bg-indigo-600 font-bold px-6 py-2 rounded text-white">Start Visual Flashes</button>
+          <!-- OPTICAL FLASH CONTROLS -->
+          <div class="flex justify-center items-center space-x-3 text-xs">
+            <span class="text-slate-400">Flash Interval:</span>
+            <button onclick="setFlashSpeed(500)" id="spd500" class="px-3 py-1 rounded bg-slate-700 text-slate-300 font-bold">500ms (Slow)</button>
+            <button onclick="setFlashSpeed(350)" id="spd350" class="px-3 py-1 rounded bg-indigo-600 text-white font-bold">350ms (Medium)</button>
+            <button onclick="setFlashSpeed(200)" id="spd200" class="px-3 py-1 rounded bg-slate-700 text-slate-300 font-bold">200ms (Fast)</button>
+          </div>
+
+          <!-- TARGET FIXATION CANVAS -->
+          <div class="h-40 bg-slate-950 rounded-xl border border-slate-800 flex flex-col items-center justify-center relative overflow-hidden">
+            <!-- PERSISTENT FIXATION CROSSHAIR -->
+            <div class="text-red-500 font-bold text-lg mb-1 pointer-events-none">┼</div>
+            <div id="flashDisplay" class="text-2xl font-bold tracking-wider">Ready?</div>
+          </div>
+
+          <button onclick="startFlasher()" class="bg-indigo-500 hover:bg-indigo-400 font-bold px-8 py-2.5 rounded text-white text-sm">Start Optical Flashes</button>
         </div>
       </section>
 
+      <!-- TAB 4: MODULE 3 (PQRST WORKFLOW) -->
       <section id="tab-module3" class="tab-content hidden space-y-4">
         <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-4">
-          <h2 class="text-lg font-bold text-cyan-300">Module 3: PQRST Active Reading</h2>
+          <div class="border-b border-slate-700 pb-2">
+            <h2 class="text-lg font-bold text-cyan-300">Module 3: PQRST Active Reading</h2>
+            <p class="text-xs text-slate-400">📘 <strong>How to practice:</strong> Preview key ideas, answer guiding questions, and verify comprehension.</p>
+          </div>
           
           <div id="pqrstStep1" class="space-y-2">
-            <span class="text-xs bg-indigo-900 text-indigo-300 px-2 py-1 rounded">Step 1: Preview & Question</span>
-            <h3 id="pqrstTitle" class="font-bold text-yellow-400">Passage Title</h3>
-            <p id="pqrstPreview" class="text-sm text-slate-300">Preview summary...</p>
-            <div class="bg-slate-900 p-3 rounded border border-slate-800 text-xs text-slate-400">
+            <span class="text-xs bg-indigo-900 text-indigo-300 px-2 py-1 rounded font-bold">Step 1: Preview & Question</span>
+            <h3 id="pqrstTitle" class="font-bold text-yellow-400 text-base">Passage Title</h3>
+            <p id="pqrstPreview" class="text-sm text-slate-300 leading-relaxed">Preview summary...</p>
+            <div class="bg-slate-900 p-3 rounded border border-slate-800 text-xs text-slate-300">
               <strong>Guiding Question:</strong> <span id="pqrstQuestion">Guiding question...</span>
             </div>
-            <button onclick="pqrstNext(2)" class="bg-cyan-500 text-slate-950 font-bold px-4 py-2 rounded text-sm">Proceed to Paced Read</button>
+            <button onclick="pqrstNext(2)" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-4 py-2 rounded text-sm mt-2">Proceed to Paced Read</button>
           </div>
 
           <div id="pqrstStep2" class="hidden space-y-2">
-            <span class="text-xs bg-emerald-900 text-emerald-300 px-2 py-1 rounded">Step 2: Read & Recite</span>
+            <span class="text-xs bg-emerald-900 text-emerald-300 px-2 py-1 rounded font-bold">Step 2: Read & Recite</span>
             <div id="pqrstPassageText" class="bg-slate-950 p-4 rounded text-sm leading-relaxed text-slate-200"></div>
-            <button onclick="pqrstNext(3)" class="bg-yellow-500 text-slate-950 font-bold px-4 py-2 rounded text-sm">Recite & Test Knowledge</button>
+            <button onclick="pqrstNext(3)" class="bg-yellow-500 hover:bg-yellow-400 text-slate-950 font-bold px-4 py-2 rounded text-sm mt-2">Recite & Test Knowledge</button>
           </div>
 
           <div id="pqrstStep3" class="hidden space-y-2">
-            <span class="text-xs bg-purple-900 text-purple-300 px-2 py-1 rounded">Step 3: Review & Quiz</span>
-            <p id="quizQ" class="text-sm font-semibold">Question</p>
+            <span class="text-xs bg-purple-900 text-purple-300 px-2 py-1 rounded font-bold">Step 3: Review & Quiz</span>
+            <p id="quizQ" class="text-sm font-semibold text-yellow-400">Question</p>
             <div id="quizOpts" class="space-y-1 text-sm"></div>
-            <button onclick="alert('PQRST Session Completed!')" class="bg-emerald-500 text-slate-950 font-bold px-4 py-2 rounded text-sm">Submit Quiz</button>
+            <button onclick="alert('PQRST Session Completed!')" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-4 py-2 rounded text-sm mt-2">Submit Quiz</button>
           </div>
         </div>
       </section>
@@ -524,6 +606,7 @@
         const data = snap.data();
         if (data.baselineERR) {
           window.baselineERR = data.baselineERR;
+          document.getElementById('studentBaselineDisplay').innerText = `${data.baselineERR} ERR`;
         }
       }
     }
@@ -543,6 +626,7 @@
         updateData.formA_ERR = calculatedERR;
         updateData.baselineERR = calculatedERR;
         window.baselineERR = calculatedERR;
+        document.getElementById('studentBaselineDisplay').innerText = `${calculatedERR} ERR`;
       } else {
         updateData.formB_ERR = calculatedERR;
       }
@@ -584,7 +668,7 @@
     }
   </script>
 
-  <!-- PACER ENGINE & TEACHER DEMO SCRIPT -->
+  <!-- PACER ENGINE, DAYLIGHT THEME & MODULE VISUAL SCRIPT -->
   <script>
     function openGuideModal() { document.getElementById('guideModal').classList.remove('hidden'); }
     function closeGuideModal() { document.getElementById('guideModal').classList.add('hidden'); }
@@ -592,6 +676,25 @@
     function downloadPDFGuide() { 
       openGuideModal(); 
       setTimeout(() => { window.print(); }, 200); 
+    }
+
+    // DAYLIGHT / DARK THEME TOGGLE LOGIC
+    let isDarkTheme = true;
+    function toggleAppTheme() {
+      isDarkTheme = !isDarkTheme;
+      const body = document.body;
+      const icon = document.getElementById('themeIcon');
+      const text = document.getElementById('themeText');
+
+      if (isDarkTheme) {
+        body.className = "bg-slate-900 text-slate-100 min-h-screen font-sans p-6 dark";
+        icon.innerText = "☀️";
+        text.innerText = "Daylight Theme";
+      } else {
+        body.className = "bg-slate-100 text-slate-900 min-h-screen font-sans p-6 light";
+        icon.innerText = "🌙";
+        text.innerText = "Dark Theme";
+      }
     }
 
     // TEACHER DEMO TOGGLE LOGIC
@@ -643,11 +746,20 @@
       passage: benchmarkBank.tier2.FormA.passage,
       preview: "Volcanoes are dangerous crustal vents caused by magma pressure.",
       guiding_question: "How do scientists monitor volcanic eruptions?",
-      chunks: [{ text: "Volcanoes are openings", oap: 5 }],
+      chunks: [
+        { text: "Volcanoes are openings", oap: 5 },
+        { text: "in the Earth's crust", oap: 4 }
+      ],
       quiz: benchmarkBank.tier2.FormA.quiz
     };
 
-    function onLexileChange() { window.currentLexileTier = document.getElementById('lexileSelect').value; loadBenchmarkData(); }
+    function onLexileChange() { 
+      window.currentLexileTier = document.getElementById('lexileSelect').value; 
+      const selText = document.getElementById('lexileSelect').options[document.getElementById('lexileSelect').selectedIndex].text;
+      document.getElementById('studentLexileBadge').innerText = selText.split('(')[1].replace(')', '');
+      loadBenchmarkData(); 
+    }
+
     function setBenchmarkForm(form) {
       window.currentBenchmarkForm = form;
       document.getElementById('formABtn').className = form === 'FormA' ? 'px-2 py-1 rounded bg-cyan-600 text-white font-bold' : 'px-2 py-1 rounded bg-slate-700 text-slate-300 font-bold';
@@ -660,7 +772,7 @@
       document.getElementById('diagText').innerText = benchmark.passage;
       document.getElementById('diagQuizQ').innerText = benchmark.quiz.question;
       document.getElementById('diagQuizOpts').innerHTML = benchmark.quiz.options.map((opt, i) => 
-        `<label class="block"><input type="radio" name="diagQ" value="${i}"> ${opt}</label>`
+        `<label class="block cursor-pointer"><input type="radio" name="diagQ" value="${i}"> ${opt}</label>`
       ).join('');
       currentData.passage = benchmark.passage;
       currentData.quiz = benchmark.quiz;
@@ -669,8 +781,8 @@
 
     function loadDataIntoModules() {
       const sentences = currentData.passage.match(/[^.!?]+[.!?]+/g) || [currentData.passage];
-      document.getElementById('shutterContainer').innerHTML = sentences.map((s, i) => `<div id="line-${i}" class="dimmed">${s.trim()}</div>`).join('');
-      document.getElementById('m1Title').innerText = "Module 1: " + (currentData.title || "Paced Reader");
+      document.getElementById('shutterContainer').innerHTML = sentences.map((s, i) => `<div id="line-${i}" class="shutter-line dimmed p-3 rounded-lg">${s.trim()}</div>`).join('');
+      document.getElementById('m1Title').innerText = "Module 1: " + (currentData.title || "Focus Shutter Accelerator");
 
       document.getElementById('pqrstTitle').innerText = currentData.title || "Custom Reading Practice";
       document.getElementById('pqrstPreview').innerText = currentData.preview || "Preview main ideas before reading.";
@@ -678,7 +790,7 @@
       document.getElementById('pqrstPassageText').innerText = currentData.passage;
       document.getElementById('quizQ').innerText = currentData.quiz.question;
       document.getElementById('quizOpts').innerHTML = currentData.quiz.options.map((opt, i) => 
-        `<label class="block"><input type="radio" name="pqrstQ" value="${i}"> ${opt}</label>`
+        `<label class="block cursor-pointer"><input type="radio" name="pqrstQ" value="${i}"> ${opt}</label>`
       ).join('');
     }
 
@@ -757,32 +869,54 @@
       switchTab('module1');
     }
 
+    // ENHANCED FOCUS SHUTTER WITH SMOOTH VIEWPORT SCROLLING
     let shutterIdx = 0, shutterInterval;
     function startShutter() {
       clearInterval(shutterInterval);
       shutterIdx = 0;
       const lines = document.querySelectorAll('#shutterContainer > div');
+      const viewport = document.getElementById('shutterViewport');
       const wpm = parseInt(document.getElementById('wpmInput').value);
       const delay = (60 / (wpm / 10)) * 1000;
+      
       shutterInterval = setInterval(() => {
-        lines.forEach((el, i) => el.className = i === shutterIdx ? 'focused p-2 rounded' : 'dimmed');
+        lines.forEach((el, i) => {
+          if (i === shutterIdx) {
+            el.className = 'shutter-line focused p-3 rounded-lg';
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else {
+            el.className = 'shutter-line dimmed p-3 rounded-lg';
+          }
+        });
         shutterIdx++;
         if (shutterIdx >= lines.length) clearInterval(shutterInterval);
       }, delay);
     }
     function stopShutter() { clearInterval(shutterInterval); }
 
+    // ENHANCED VISUAL FLASHER WITH ADJUSTABLE SPEED INTERVALS
+    let currentFlashDelay = 350;
+    function setFlashSpeed(speedMs) {
+      currentFlashDelay = speedMs;
+      document.getElementById('spd500').className = speedMs === 500 ? 'px-3 py-1 rounded bg-indigo-600 text-white font-bold' : 'px-3 py-1 rounded bg-slate-700 text-slate-300 font-bold';
+      document.getElementById('spd350').className = speedMs === 350 ? 'px-3 py-1 rounded bg-indigo-600 text-white font-bold' : 'px-3 py-1 rounded bg-slate-700 text-slate-300 font-bold';
+      document.getElementById('spd200').className = speedMs === 200 ? 'px-3 py-1 rounded bg-indigo-600 text-white font-bold' : 'px-3 py-1 rounded bg-slate-700 text-slate-300 font-bold';
+    }
+
     function startFlasher() {
       let i = 0;
       const display = document.getElementById('flashDisplay');
-      const chunks = currentData.chunks || [{ text: "Volcanoes are openings", oap: 5 }];
+      const chunks = currentData.chunks || [
+        { text: "Volcanoes are openings", oap: 5 },
+        { text: "in the Earth's crust", oap: 4 }
+      ];
       const interval = setInterval(() => {
         if (i >= chunks.length) { clearInterval(interval); display.innerText = "Done!"; return; }
         const item = chunks[i];
         const oap = item.oap || 2;
         display.innerHTML = `${item.text.slice(0, oap)}<span class="oap-target">${item.text[oap] || item.text[0]}</span>${item.text.slice(oap + 1)}`;
         i++;
-      }, 350);
+      }, currentFlashDelay);
     }
 
     function pqrstNext(step) {
