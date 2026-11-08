@@ -9,26 +9,56 @@
     .dimmed { opacity: 0.25; filter: blur(1px); transition: opacity 0.3s; }
     .focused { opacity: 1; filter: blur(0px); font-weight: 600; background: #fef08a; color: #0f172a; }
     .oap-target { color: #dc2626; font-weight: 800; text-decoration: underline; }
-
-    /* OPTIMIZED PRINT STYLESHEET FOR PDF EXPORT */
+  
+    /* PRINT STYLESHEET FOR PERFECT 2-PAGE PDF EXPORT */
     @media print {
-      body * { visibility: hidden; }
-      #printableGuide, #printableGuide * { visibility: visible; }
-      #printableGuide {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        max-height: none !important;
-        overflow: visible !important;
-        color: black !important;
+      /* Hide everything on the screen */
+      body * { visibility: hidden !important; }
+      
+      /* Make modal overlay position clean for print */
+      #guideModal {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        height: auto !important;
         background: white !important;
-        font-size: 11pt !important;
-        line-height: 1.4 !important;
+        display: block !important;
       }
+  
+      /* Target modal inner content container */
+      #guideModal > div {
+        max-height: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        width: 100% !important;
+        max-w: 100% !important;
+        background: white !important;
+      }
+  
+      #printableGuide, #printableGuide * { 
+        visibility: visible !important; 
+      }
+  
+      #printableGuide {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        color: #0f172a !important;
+        background: white !important;
+        font-size: 10pt !important;
+        line-height: 1.35 !important;
+        padding: 0 !important;
+      }
+  
       .no-print { display: none !important; }
-      .page-break-before { page-break-before: always; break-before: page; }
-      .avoid-break { page-break-inside: avoid; break-inside: avoid; }
+      
+      /* Enforce exact Page 2 split at Section 4 */
+      .print-break-before { 
+        page-break-before: always !important; 
+        break-before: page !important; 
+      }
     }
   </style>
 </head>
@@ -39,7 +69,7 @@
     <header class="border-b border-slate-700 pb-4 flex justify-between items-center">
       <div>
         <h1 class="text-2xl font-bold text-cyan-400">Cognitive Reading Pacer</h1>
-        <p class="text-xs text-slate-400">Catholic Middle School Edition • IXL Lexile & Firebase Connected</p>
+        <p class="text-xs text-slate-400">Ave Maria Middle School Edition • IXL Lexile & Firebase Connected</p>
       </div>
       
       <div class="flex items-center space-x-3">
@@ -61,7 +91,7 @@
     <!-- SIGN-IN PROMPT SCREEN -->
     <div id="loggedOutState" class="bg-slate-800 p-8 rounded-xl border border-slate-700 text-center space-y-4 max-w-md mx-auto my-12">
       <div class="text-4xl">⛪</div>
-      <h2 class="text-lg font-bold text-cyan-300">Catholic School Portal Sign-In</h2>
+      <h2 class="text-lg font-bold text-cyan-300">Ave Maria Catholic School Portal Sign-In</h2>
       <p class="text-xs text-slate-300 leading-relaxed">
         Please sign in using your school Google account to access your reading modules or classroom dashboard.
       </p>
@@ -76,6 +106,21 @@
 
     <!-- TEACHER DASHBOARD PORTAL -->
     <main id="teacherPortal" class="hidden space-y-6">
+      <div class="flex justify-between items-center bg-slate-800 p-4 rounded-lg border border-slate-700">
+        <div>
+          <h2 class="text-base font-bold text-cyan-300">Live Roster Analytics</h2>
+          <p class="text-xs text-slate-400">Standardized ERR metrics calculated from Form A and Form B</p>
+        </div>
+        <div class="flex space-x-2">
+          <!-- STUDENT DEMO VIEW BUTTON FOR FACULTY -->
+          <button onclick="toggleTeacherDemoView()" id="demoToggleBtn" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3 py-1.5 rounded font-bold">
+            👁️ Preview Student Experience (Demo Mode)
+          </button>
+          <button onclick="downloadPDFGuide()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-1.5 rounded font-bold">
+            Export Educator Guide (PDF)
+          </button>
+        </div>
+      </div>
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
           <div class="text-xs text-slate-400 font-semibold">Class Avg ERR</div>
@@ -558,8 +603,13 @@
   <script>
     function openGuideModal() { document.getElementById('guideModal').classList.remove('hidden'); }
     function closeGuideModal() { document.getElementById('guideModal').classList.add('hidden'); }
-    function downloadPDFGuide() { openGuideModal(); setTimeout(() => { window.print(); }, 300); }
-
+    function downloadPDFGuide() {
+  openGuideModal();
+  // Allow DOM to adjust before triggering print dialog
+  setTimeout(() => {
+    window.print();
+  }, 200);
+}
     const benchmarkBank = {
       tier1: {
         FormA: { wordCount: 110, passage: "Lighthouses are tall towers built near coasts and harbors. They shine bright beams of light to guide ships safely through dark waters. Long ago, lighthouse keepers had to trim oil lamps every night. Today, most lighthouses use electric bulbs and automatic timers. Warnings from lighthouses prevent boats from hitting sharp rocks near the shore during stormy weather.", quiz: { question: "What was a task for lighthouse keepers long ago?", options: ["Fixing electric bulbs", "Trimming oil lamps every night", "Building new harbors"], correctIndex: 1 } },
@@ -735,6 +785,24 @@
       document.getElementById('pqrstStep3').classList.add('hidden');
       document.getElementById(`pqrstStep${step}`).classList.remove('hidden');
     }
+    let isTeacherDemoActive = false;
+
+function toggleTeacherDemoView() {
+  isTeacherDemoActive = !isTeacherDemoActive;
+  const teacherPortal = document.getElementById('teacherPortal');
+  const studentPortal = document.getElementById('studentPortal');
+  const demoBtn = document.getElementById('demoToggleBtn');
+
+  if (isTeacherDemoActive) {
+    teacherPortal.classList.add('hidden');
+    studentPortal.classList.remove('hidden');
+    demoBtn.innerText = "🔙 Return to Teacher Dashboard";
+  } else {
+    studentPortal.classList.add('hidden');
+    teacherPortal.classList.remove('hidden');
+    demoBtn.innerText = "👁️ Preview Student Experience (Demo Mode)";
+  }
+}
   </script>
 </body>
 </html>
