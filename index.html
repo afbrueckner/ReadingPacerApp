@@ -9,13 +9,11 @@
     .dimmed { opacity: 0.25; filter: blur(1px); transition: opacity 0.3s; }
     .focused { opacity: 1; filter: blur(0px); font-weight: 600; background: #fef08a; color: #0f172a; }
     .oap-target { color: #dc2626; font-weight: 800; text-decoration: underline; }
-  
-    /* PRINT STYLESHEET FOR PERFECT 2-PAGE PDF EXPORT */
+
+    /* PERFECT 2-PAGE PRINT STYLESHEET */
     @media print {
-      /* Hide everything on the screen */
       body * { visibility: hidden !important; }
       
-      /* Make modal overlay position clean for print */
       #guideModal {
         position: absolute !important;
         left: 0 !important;
@@ -25,21 +23,19 @@
         background: white !important;
         display: block !important;
       }
-  
-      /* Target modal inner content container */
+
       #guideModal > div {
         max-height: none !important;
         border: none !important;
         box-shadow: none !important;
         width: 100% !important;
-        max-w: 100% !important;
         background: white !important;
       }
-  
+
       #printableGuide, #printableGuide * { 
         visibility: visible !important; 
       }
-  
+
       #printableGuide {
         position: absolute !important;
         left: 0 !important;
@@ -51,10 +47,9 @@
         line-height: 1.35 !important;
         padding: 0 !important;
       }
-  
+
       .no-print { display: none !important; }
       
-      /* Enforce exact Page 2 split at Section 4 */
       .print-break-before { 
         page-break-before: always !important; 
         break-before: page !important; 
@@ -91,7 +86,7 @@
     <!-- SIGN-IN PROMPT SCREEN -->
     <div id="loggedOutState" class="bg-slate-800 p-8 rounded-xl border border-slate-700 text-center space-y-4 max-w-md mx-auto my-12">
       <div class="text-4xl">⛪</div>
-      <h2 class="text-lg font-bold text-cyan-300">Ave Maria Catholic School Portal Sign-In</h2>
+      <h2 class="text-lg font-bold text-cyan-300">Catholic School Portal Sign-In</h2>
       <p class="text-xs text-slate-300 leading-relaxed">
         Please sign in using your school Google account to access your reading modules or classroom dashboard.
       </p>
@@ -106,21 +101,6 @@
 
     <!-- TEACHER DASHBOARD PORTAL -->
     <main id="teacherPortal" class="hidden space-y-6">
-      <div class="flex justify-between items-center bg-slate-800 p-4 rounded-lg border border-slate-700">
-        <div>
-          <h2 class="text-base font-bold text-cyan-300">Live Roster Analytics</h2>
-          <p class="text-xs text-slate-400">Standardized ERR metrics calculated from Form A and Form B</p>
-        </div>
-        <div class="flex space-x-2">
-          <!-- STUDENT DEMO VIEW BUTTON FOR FACULTY -->
-          <button onclick="toggleTeacherDemoView()" id="demoToggleBtn" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3 py-1.5 rounded font-bold">
-            👁️ Preview Student Experience (Demo Mode)
-          </button>
-          <button onclick="downloadPDFGuide()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-1.5 rounded font-bold">
-            Export Educator Guide (PDF)
-          </button>
-        </div>
-      </div>
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
           <div class="text-xs text-slate-400 font-semibold">Class Avg ERR</div>
@@ -168,7 +148,15 @@
             <h2 class="text-base font-bold text-cyan-300">Live Roster Analytics (Firestore Connected)</h2>
             <p class="text-xs text-slate-400">Standardized ERR metrics calculated from Form A (Baseline) and Form B (Re-Test)</p>
           </div>
-          <button onclick="downloadPDFGuide()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-1.5 rounded font-bold">Export Educator Guide (PDF)</button>
+          <div class="flex space-x-2">
+            <!-- TEACHER DEMO TOGGLE BUTTON -->
+            <button onclick="toggleTeacherDemoView()" id="demoToggleBtn" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3 py-1.5 rounded font-bold">
+              👁️ Preview Student Experience (Demo Mode)
+            </button>
+            <button onclick="downloadPDFGuide()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-1.5 rounded font-bold">
+              Export Educator Guide (PDF)
+            </button>
+          </div>
         </div>
 
         <div class="overflow-x-auto">
@@ -193,6 +181,11 @@
 
     <!-- STUDENT PORTAL -->
     <main id="studentPortal" class="hidden space-y-6">
+      <div id="demoBanner" class="hidden bg-emerald-950 border border-emerald-700 text-emerald-300 p-3 rounded text-xs flex justify-between items-center">
+        <span><strong>Faculty Demo Mode Active:</strong> You are previewing student practice modules. Benchmark saves are in test mode.</span>
+        <button onclick="toggleTeacherDemoView()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-1 rounded font-bold">Return to Teacher Dashboard</button>
+      </div>
+
       <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-3">
         <div class="flex justify-between items-center border-b border-slate-700 pb-2">
           <h2 class="text-sm font-bold text-cyan-300">Target Reading Calibration</h2>
@@ -312,11 +305,10 @@
 
   </div>
 
-  <!-- EDUCATOR & PARENT FIELD GUIDE MODAL (CLEANED HTML BOLDING & PAGE BREAKS) -->
+  <!-- EDUCATOR & PARENT FIELD GUIDE MODAL -->
   <div id="guideModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-700 rounded-xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl">
       
-      <!-- MODAL HEADER -->
       <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800/50 rounded-t-xl no-print">
         <h2 class="text-lg font-bold text-cyan-300 flex items-center space-x-2">
           <span>📖 Educator & Parent Field Guide</span>
@@ -329,17 +321,14 @@
         </div>
       </div>
 
-      <!-- MODAL BODY -->
       <div id="printableGuide" class="p-6 overflow-y-auto space-y-6 text-slate-200 text-sm leading-relaxed">
         
-        <!-- TITLE BLOCK -->
-        <div class="border-b border-slate-700 pb-3 avoid-break">
+        <div class="border-b border-slate-700 pb-3">
           <h1 class="text-xl font-bold text-cyan-400">Cognitive Reading Pacer — Field Manual</h1>
           <p class="text-xs text-slate-400 mt-1">Catholic Middle School Edition • Research-Backed Fluency & Comprehension Protocol</p>
         </div>
 
-        <!-- SECTION 1: METRICS -->
-        <section class="space-y-2 avoid-break">
+        <section class="space-y-2">
           <h3 class="font-bold text-cyan-300 text-base">1. Key Metrics & Definitions</h3>
           <div class="bg-slate-950 p-3 rounded border border-slate-800 space-y-2 text-xs">
             <p><strong>WPM (Words Per Minute):</strong> Pure physical tracking speed across lines of text (Words / Seconds × 60).</p>
@@ -352,8 +341,7 @@
           </div>
         </section>
 
-        <!-- SECTION 2: READING BANDS VS RTI -->
-        <section class="space-y-2 avoid-break">
+        <section class="space-y-2">
           <h3 class="font-bold text-cyan-300 text-base">2. Lexile Bands vs. RTI Support Tiers</h3>
           <p class="text-xs text-slate-300">To avoid confusion with school Multi-Tiered System of Support (MTSS/RTI) frameworks, the app separates instructional support tiers from text readability bands:</p>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
@@ -373,8 +361,7 @@
           </div>
         </section>
 
-        <!-- SECTION 3: 4 MODULE FRAMEWORK -->
-        <section class="space-y-2 avoid-break">
+        <section class="space-y-2">
           <h3 class="font-bold text-cyan-300 text-base">3. The 4 Pacing Modules</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
             <div class="bg-slate-950 p-3 rounded border border-slate-800">
@@ -396,8 +383,8 @@
           </div>
         </section>
 
-        <!-- SECTION 4: CLASSROOM PROTOCOL (FORCED PRINT PAGE BREAK BEFORE HERE) -->
-        <section class="space-y-2 page-break-before avoid-break">
+        <!-- STRICT PAGE BREAK BEFORE SECTION 4 FOR PRINT -->
+        <section class="space-y-2 print-break-before">
           <h3 class="font-bold text-cyan-300 text-base">4. Recommended 15-Minute Classroom Protocol</h3>
           <ol class="list-decimal list-inside text-xs space-y-1.5 text-slate-300 bg-slate-950 p-3 rounded border border-slate-800">
             <li><strong>Diagnostic / Re-Test (3 Mins - Mondays/Fridays):</strong> Complete Form A (Day 1) or Form B (Progress Check) on Tab 1 to log ERR.</li>
@@ -407,8 +394,7 @@
           </ol>
         </section>
 
-        <!-- SECTION 5: INTERVENTION MATRIX -->
-        <section class="space-y-2 avoid-break">
+        <section class="space-y-2">
           <h3 class="font-bold text-cyan-300 text-base">5. Teacher Troubleshooting & Intervention Matrix</h3>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs border-collapse border border-slate-800 bg-slate-950">
@@ -442,7 +428,6 @@
 
       </div>
       
-      <!-- MODAL FOOTER -->
       <div class="p-4 border-t border-slate-700 bg-slate-800/50 rounded-b-xl flex justify-between items-center no-print">
         <span class="text-xs text-slate-400">Catholic Middle School Educational Protocol</span>
         <button onclick="closeGuideModal()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs px-4 py-2 rounded font-bold">Close Guide</button>
@@ -544,7 +529,7 @@
     }
 
     window.saveStudentAssessment = async (formType, rawWpm, accuracy, calculatedERR) => {
-      if (!currentUser) return;
+      if (!currentUser || window.isTeacherDemoActive) return;
       
       const studentRef = doc(db, 'students', currentUser.uid);
       const updateData = {
@@ -599,17 +584,38 @@
     }
   </script>
 
-  <!-- PACER ENGINE SCRIPT -->
+  <!-- PACER ENGINE & TEACHER DEMO SCRIPT -->
   <script>
     function openGuideModal() { document.getElementById('guideModal').classList.remove('hidden'); }
     function closeGuideModal() { document.getElementById('guideModal').classList.add('hidden'); }
-    function downloadPDFGuide() {
-  openGuideModal();
-  // Allow DOM to adjust before triggering print dialog
-  setTimeout(() => {
-    window.print();
-  }, 200);
-}
+    
+    function downloadPDFGuide() { 
+      openGuideModal(); 
+      setTimeout(() => { window.print(); }, 200); 
+    }
+
+    // TEACHER DEMO TOGGLE LOGIC
+    window.isTeacherDemoActive = false;
+    function toggleTeacherDemoView() {
+      window.isTeacherDemoActive = !window.isTeacherDemoActive;
+      const teacherPortal = document.getElementById('teacherPortal');
+      const studentPortal = document.getElementById('studentPortal');
+      const demoBanner = document.getElementById('demoBanner');
+      const demoBtn = document.getElementById('demoToggleBtn');
+
+      if (window.isTeacherDemoActive) {
+        teacherPortal.classList.add('hidden');
+        studentPortal.classList.remove('hidden');
+        demoBanner.classList.remove('hidden');
+        demoBtn.innerText = "🔙 Return to Teacher Dashboard";
+      } else {
+        studentPortal.classList.add('hidden');
+        teacherPortal.classList.remove('hidden');
+        demoBanner.classList.add('hidden');
+        demoBtn.innerText = "👁️ Preview Student Experience (Demo Mode)";
+      }
+    }
+
     const benchmarkBank = {
       tier1: {
         FormA: { wordCount: 110, passage: "Lighthouses are tall towers built near coasts and harbors. They shine bright beams of light to guide ships safely through dark waters. Long ago, lighthouse keepers had to trim oil lamps every night. Today, most lighthouses use electric bulbs and automatic timers. Warnings from lighthouses prevent boats from hitting sharp rocks near the shore during stormy weather.", quiz: { question: "What was a task for lighthouse keepers long ago?", options: ["Fixing electric bulbs", "Trimming oil lamps every night", "Building new harbors"], correctIndex: 1 } },
@@ -741,9 +747,9 @@
       }
 
       if (window.currentBenchmarkForm === 'FormA') {
-        alert(`Baseline Score Saved to Firebase!\nSpeed: ${window.rawWpm} WPM\nComprehension: ${accuracy * 100}%\nBaseline ERR: ${calculatedERR}`);
+        alert(`Baseline Score Saved!\nSpeed: ${window.rawWpm} WPM\nComprehension: ${accuracy * 100}%\nBaseline ERR: ${calculatedERR}`);
       } else {
-        alert(`Re-Test Score Saved to Firebase!\nNew ERR: ${calculatedERR}`);
+        alert(`Re-Test Score Saved!\nNew ERR: ${calculatedERR}`);
       }
 
       document.getElementById('diagQuiz').classList.add('hidden');
@@ -785,24 +791,6 @@
       document.getElementById('pqrstStep3').classList.add('hidden');
       document.getElementById(`pqrstStep${step}`).classList.remove('hidden');
     }
-    let isTeacherDemoActive = false;
-
-function toggleTeacherDemoView() {
-  isTeacherDemoActive = !isTeacherDemoActive;
-  const teacherPortal = document.getElementById('teacherPortal');
-  const studentPortal = document.getElementById('studentPortal');
-  const demoBtn = document.getElementById('demoToggleBtn');
-
-  if (isTeacherDemoActive) {
-    teacherPortal.classList.add('hidden');
-    studentPortal.classList.remove('hidden');
-    demoBtn.innerText = "🔙 Return to Teacher Dashboard";
-  } else {
-    studentPortal.classList.add('hidden');
-    teacherPortal.classList.remove('hidden');
-    demoBtn.innerText = "👁️ Preview Student Experience (Demo Mode)";
-  }
-}
   </script>
 </body>
 </html>
