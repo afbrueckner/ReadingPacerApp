@@ -126,7 +126,6 @@
               </tr>
             </thead>
             <tbody id="teacherRosterBody" class="divide-y divide-slate-700/60 text-slate-200">
-              <!-- Live data populated from Firestore -->
               <tr><td colspan="6" class="p-4 text-center text-slate-400">Loading student roster data...</td></tr>
             </tbody>
           </table>
@@ -255,31 +254,142 @@
 
   </div>
 
-  <!-- EDUCATOR & PARENT FIELD GUIDE MODAL -->
+  <!-- EDUCATOR & PARENT FIELD GUIDE MODAL (RESTORED WITH ALL 5 SECTIONS) -->
   <div id="guideModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-700 rounded-xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl">
+      
+      <!-- MODAL HEADER -->
       <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800/50 rounded-t-xl">
-        <h2 class="text-lg font-bold text-cyan-300">📖 Educator & Parent Field Guide</h2>
+        <h2 class="text-lg font-bold text-cyan-300 flex items-center space-x-2">
+          <span>📖 Educator & Parent Field Guide</span>
+        </h2>
         <div class="flex items-center space-x-2">
-          <button onclick="downloadPDFGuide()" class="bg-indigo-600 text-white text-xs px-3 py-1.5 rounded font-bold">Download PDF</button>
+          <button onclick="downloadPDFGuide()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-1.5 rounded font-bold">
+            Download PDF
+          </button>
           <button onclick="closeGuideModal()" class="text-slate-400 hover:text-white text-lg font-bold px-2">✕</button>
         </div>
       </div>
+
+      <!-- MODAL BODY (FULL PRINTABLE CONTAINER) -->
       <div id="printableGuide" class="p-6 overflow-y-auto space-y-6 text-slate-200 text-sm leading-relaxed">
+        
+        <!-- TITLE BLOCK -->
         <div class="border-b border-slate-700 pb-3">
           <h1 class="text-xl font-bold text-cyan-400">Cognitive Reading Pacer — Field Manual</h1>
-          <p class="text-xs text-slate-400 mt-1">Catholic Middle School Edition • Fluency Protocol</p>
+          <p class="text-xs text-slate-400 mt-1">Catholic Middle School Edition • Research-Backed Fluency & Comprehension Protocol</p>
         </div>
+
+        <!-- SECTION 1: METRICS -->
         <section class="space-y-2">
           <h3 class="font-bold text-cyan-300 text-base">1. Key Metrics & Definitions</h3>
           <div class="bg-slate-950 p-3 rounded border border-slate-800 space-y-2 text-xs">
-            <p><strong>WPM:</strong> Words Per Minute (Physical tracking speed).</p>
-            <p><strong>Comprehension %:</strong> Quiz accuracy score.</p>
-            <p><strong>ERR:</strong> Effective Reading Rate ($\text{WPM} \times \text{Comprehension \%}$).</p>
-            <p><strong>&Delta;ERR:</strong> Growth delta measured between Form A and Form B.</p>
+            <p><strong>WPM (Words Per Minute):</strong> Pure physical tracking speed across lines of text ($W / T_{sec} \times 60$).</p>
+            <p><strong>Comprehension %:</strong> Accuracy score on post-reading verification quiz ($100\%$ or $50\%$).</p>
+            <p><strong>ERR (Effective Reading Rate):</strong> Calculated as $\text{WPM} \times \text{Comprehension \%}$. This core metric prevents skimming by penalizing fast reading without retention.</p>
+            <p><strong>&Delta;ERR (Growth Delta):</strong> True cognitive growth measured between standardized Form A (Baseline) and Form B (Re-Test) benchmarks.</p>
+          </div>
+          <div class="text-xs bg-slate-900/60 p-2.5 rounded border border-yellow-500/30 text-yellow-300">
+            <strong>The Golden Rule of ERR:</strong> A student reading at 300 WPM with 50% comprehension has an ERR of <strong>150</strong>. A student reading at 180 WPM with 100% comprehension has an ERR of <strong>180</strong>. Higher comprehension always wins.
           </div>
         </section>
+
+        <!-- SECTION 2: READING BANDS VS RTI -->
+        <section class="space-y-2">
+          <h3 class="font-bold text-cyan-300 text-base">2. Lexile Bands vs. RTI Support Tiers</h3>
+          <p class="text-xs text-slate-300">To avoid confusion with school Multi-Tiered System of Support (MTSS/RTI) frameworks, the app separates instructional support tiers from text readability bands:</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+            <div class="bg-slate-950 p-3 rounded border border-slate-800 space-y-1">
+              <div class="font-bold text-yellow-400">RTI Support Tiers (School Level)</div>
+              <p>• <strong>Tier 1:</strong> Universal core classroom instruction ($100\%$ of students).</p>
+              <p>• <strong>Tier 2:</strong> Targeted small-group intervention ($10–15\%$ needing pacer support).</p>
+              <p>• <strong>Tier 3:</strong> Intensive individualized intervention ($5\%$ specialized support).</p>
+            </div>
+            <div class="bg-slate-950 p-3 rounded border border-slate-800 space-y-1">
+              <div class="font-bold text-cyan-400">App Lexile Reading Bands</div>
+              <p>• <strong>Foundational Band (400L–550L):</strong> Grade 4–5 readability.</p>
+              <p>• <strong>Intermediate Band (600L–750L):</strong> On-grade Grade 6–7 readability.</p>
+              <p>• <strong>Advanced Band (800L–950L):</strong> Grade 8 / Honors readability.</p>
+              <p>• <strong>Mastery Band (1000L+):</strong> High School / College Ready readability.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 3: 4 MODULE FRAMEWORK -->
+        <section class="space-y-2">
+          <h3 class="font-bold text-cyan-300 text-base">3. The 4 Pacing Modules</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+            <div class="bg-slate-950 p-3 rounded border border-slate-800">
+              <div class="font-bold text-yellow-400">1. Standardized Diagnostic (Tab 1)</div>
+              <p class="text-slate-400 mt-1">Establishes true baseline ERR using pre-calibrated static benchmark texts (Form A/B) matching IXL Lexile bands.</p>
+            </div>
+            <div class="bg-slate-950 p-3 rounded border border-slate-800">
+              <div class="font-bold text-cyan-400">2. Accelerator Focus Shutter (Module 1)</div>
+              <p class="text-slate-400 mt-1">Eliminates line regression and sub-vocalization by pacing eyes forward with a moving highlight shutter window.</p>
+            </div>
+            <div class="bg-slate-950 p-3 rounded border border-slate-800">
+              <div class="font-bold text-indigo-400">3. Morpho-Visual Flasher (Module 2)</div>
+              <p class="text-slate-400 mt-1">Expands peripheral visual attention span and foveal fixation width using phrase flashes centered on anchor target letters.</p>
+            </div>
+            <div class="bg-slate-950 p-3 rounded border border-slate-800">
+              <div class="font-bold text-emerald-400">4. PQRST Active Reader (Module 3)</div>
+              <p class="text-slate-400 mt-1">Guides Preview, Question, Read, State/Recite, and Test steps for high comprehension retention on faith-aligned AI topics.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 4: CLASSROOM PROTOCOL -->
+        <section class="space-y-2">
+          <h3 class="font-bold text-cyan-300 text-base">4. Recommended 15-Minute Classroom Protocol</h3>
+          <ol class="list-decimal list-inside text-xs space-y-1.5 text-slate-300 bg-slate-950 p-3 rounded border border-slate-800">
+            <li><strong>Diagnostic / Re-Test (3 Mins - Mondays/Fridays):</strong> Complete Form A (Day 1) or Form B (Progress Check) on Tab 1 to log ERR.</li>
+            <li><strong>Ocular Span Warmup (3 Mins):</strong> Run 20–30 flashes on Module 2 (Visual Flasher) to expand peripheral fixation span.</li>
+            <li><strong>Speed Pacing (5 Mins):</strong> Set Module 1 Focus Shutter to +20 WPM above baseline on a custom topic (e.g., St. Patrick, Solar System).</li>
+            <li><strong>Active Recall & Quiz (4 Mins):</strong> Complete Module 3 (PQRST Reader) preview, read, and verification quiz.</li>
+          </ol>
+        </section>
+
+        <!-- SECTION 5: INTERVENTION MATRIX -->
+        <section class="space-y-2">
+          <h3 class="font-bold text-cyan-300 text-base">5. Teacher Troubleshooting & Intervention Matrix</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse border border-slate-800 bg-slate-950">
+              <thead>
+                <tr class="border-b border-slate-800 bg-slate-900 text-slate-300">
+                  <th class="p-2 border-r border-slate-800">Observed Behavior</th>
+                  <th class="p-2 border-r border-slate-800">Root Cognitive Cause</th>
+                  <th class="p-2">Recommended Action</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800 text-slate-300">
+                <tr>
+                  <td class="p-2 font-bold text-rose-300 border-r border-slate-800">High Speed / Low Quiz Score</td>
+                  <td class="p-2 border-r border-slate-800"><strong>The Skimmer:</strong> Eye movement outpaces cognitive comprehension.</td>
+                  <td class="p-2">Lower Module 1 WPM by 30 points. Require 90%+ quiz score before increasing speed.</td>
+                </tr>
+                <tr>
+                  <td class="p-2 font-bold text-yellow-300 border-r border-slate-800">Slow Speed / 100% Quiz Score</td>
+                  <td class="p-2 border-r border-slate-800"><strong>The Perfectionist:</strong> Sub-vocalizes every word; frequent line regression.</td>
+                  <td class="p-2">Increase Module 1 Focus Shutter speed by +20 WPM to force comfortable forward movement.</td>
+                </tr>
+                <tr>
+                  <td class="p-2 font-bold text-emerald-300 border-r border-slate-800">Consistent +30 ERR Growth</td>
+                  <td class="p-2 border-r border-slate-800"><strong>Mastery Achieved:</strong> Expanded optical span and pacing capacity.</td>
+                  <td class="p-2"><strong>Promote Student:</strong> Switch Lexile selector to the next higher reading band!</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
       </div>
+      
+      <!-- MODAL FOOTER -->
+      <div class="p-4 border-t border-slate-700 bg-slate-800/50 rounded-b-xl flex justify-between items-center">
+        <span class="text-xs text-slate-400">Catholic Middle School Educational Protocol</span>
+        <button onclick="closeGuideModal()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs px-4 py-2 rounded font-bold">Close Guide</button>
+      </div>
+
     </div>
   </div>
 
@@ -289,7 +399,6 @@
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // YOUR FIREBASE CONFIGURATION
     const firebaseConfig = {
       apiKey: "AIzaSyAI-HxstOGHjbCxldCJw6RBSosU2kpcs7s",
       authDomain: "readingpacerapp.firebaseapp.com",
@@ -300,7 +409,6 @@
       measurementId: "G-HMLNRLEQGB"
     };
 
-    // INITIALIZE FIREBASE & FIRESTORE
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
@@ -308,7 +416,6 @@
 
     let currentUser = null;
 
-    // GLOBAL AUTH FUNCTIONS
     window.loginWithGoogle = async () => {
       try {
         await signInWithPopup(auth, provider);
@@ -325,7 +432,6 @@
       }
     };
 
-    // AUTH STATE LISTENER & DOMAIN ROUTER
     onAuthStateChanged(auth, async (user) => {
       const loggedOutState = document.getElementById('loggedOutState');
       const teacherPortal = document.getElementById('teacherPortal');
@@ -343,7 +449,6 @@
         authBtn.className = "bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs px-3 py-2 rounded text-slate-300 font-bold";
         loggedOutState.classList.add('hidden');
 
-        // ROUTE BY DOMAIN
         if (email.endsWith('@avemaria.school')) {
           teacherPortal.classList.remove('hidden');
           studentPortal.classList.add('hidden');
@@ -353,7 +458,6 @@
           teacherPortal.classList.add('hidden');
           loadStudentProfile(user);
         } else {
-          // PROTOTYPE OVERRIDE: DEFAULT ALL OTHER GOOGLE EMAILS TO STUDENT VIEW WITH ALERT
           alert(`Logged in as ${email}. (Note: Standard accounts default to Student View. Faculty domain is @avemaria.school).`);
           studentPortal.classList.remove('hidden');
           teacherPortal.classList.add('hidden');
@@ -370,7 +474,6 @@
       }
     });
 
-    // FIRESTORE READ/WRITE HELPERS
     async function loadStudentProfile(user) {
       const userRef = doc(db, 'students', user.uid);
       const snap = await getDoc(userRef);
@@ -570,7 +673,6 @@
       const accuracy = (selected && parseInt(selected.value) === correctIdx) ? 1.0 : 0.5; 
       const calculatedERR = Math.round(window.rawWpm * accuracy);
 
-      // SAVE SCORE TO FIRESTORE
       if (window.saveStudentAssessment) {
         window.saveStudentAssessment(window.currentBenchmarkForm, window.rawWpm, accuracy, calculatedERR);
       }
