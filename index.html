@@ -3,14 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reading App - Prototype Engine</title>
+  <title>Reading App - Catholic Edition</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .dimmed { opacity: 0.25; filter: blur(1px); transition: opacity 0.3s; }
     .focused { opacity: 1; filter: blur(0px); font-weight: 600; background: #fef08a; color: #0f172a; }
     .oap-target { color: #dc2626; font-weight: 800; text-decoration: underline; }
 
-    /* Print Stylesheet for PDF Export */
     @media print {
       body * { visibility: hidden; }
       #printableGuide, #printableGuide * { visibility: visible; }
@@ -22,29 +21,47 @@
 <body class="bg-slate-900 text-slate-100 min-h-screen font-sans p-6">
   <div class="max-w-4xl mx-auto space-y-6">
     
-    <!-- HEADER & ROLE TOGGLE -->
+    <!-- HEADER & GOOGLE AUTH CONTROLS -->
     <header class="border-b border-slate-700 pb-4 flex justify-between items-center">
       <div>
         <h1 class="text-2xl font-bold text-cyan-400">Cognitive Reading Pacer</h1>
-        <p class="text-xs text-slate-400">Catholic Middle School Edition • Powered by IXL Lexile Calibration</p>
+        <p class="text-xs text-slate-400">Catholic Middle School Edition • IXL Lexile & Firebase Connected</p>
       </div>
       
-      <!-- USER / ROLE CONTROLS & GUIDE BUTTON -->
+      <!-- AUTHENTICATION STATE & BUTTONS -->
       <div class="flex items-center space-x-3">
-        <button onclick="openGuideModal()" class="bg-indigo-600 hover:bg-indigo-500 border border-indigo-500 text-xs px-3 py-2 rounded text-white font-bold flex items-center space-x-1">
-          <span>📖 Educator Guide</span>
+        <button onclick="openGuideModal()" class="bg-indigo-600 hover:bg-indigo-500 text-xs px-3 py-2 rounded text-white font-bold">
+          📖 Educator Guide
         </button>
-        <div class="text-right text-xs bg-slate-800 p-2 rounded border border-slate-700 space-y-0.5">
-          <div id="userBadge" class="text-slate-300 font-semibold">Student Mode</div>
-          <div id="domainBadge" class="text-[10px] text-slate-400">@aveangels.org</div>
+
+        <div id="userInfoBox" class="hidden text-right text-xs bg-slate-800 p-2 rounded border border-slate-700 space-y-0.5">
+          <div id="userNameDisplay" class="text-slate-200 font-semibold">User Name</div>
+          <div id="userDomainDisplay" class="text-[10px] text-cyan-400 font-mono">user@domain</div>
         </div>
-        <button id="viewToggleBtn" onclick="toggleRoleView()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs px-3 py-2 rounded text-cyan-300 font-bold">
-          Switch to Teacher Portal
+
+        <button id="authBtn" onclick="handleAuthAction()" class="bg-emerald-600 hover:bg-emerald-500 text-xs px-3 py-2 rounded text-white font-bold flex items-center space-x-1">
+          <span>Sign In with Google</span>
         </button>
       </div>
     </header>
 
-    <!-- TEACHER DASHBOARD PORTAL -->
+    <!-- SIGN-IN PROMPT SCREEN (WHEN NOT LOGGED IN) -->
+    <div id="loggedOutState" class="bg-slate-800 p-8 rounded-xl border border-slate-700 text-center space-y-4 max-w-md mx-auto my-12">
+      <div class="text-4xl">⛪</div>
+      <h2 class="text-lg font-bold text-cyan-300">Catholic School Portal Sign-In</h2>
+      <p class="text-xs text-slate-300 leading-relaxed">
+        Please sign in using your school Google account to access your reading modules or classroom dashboard.
+      </p>
+      <div class="text-xs bg-slate-900 p-3 rounded text-left border border-slate-700 space-y-1 font-mono">
+        <div>• Faculty (@avemaria.school): <span class="text-emerald-400">Teacher Dashboard</span></div>
+        <div>• Students (@aveangels.org): <span class="text-cyan-400">Practice Modules</span></div>
+      </div>
+      <button onclick="loginWithGoogle()" class="w-full bg-emerald-600 hover:bg-emerald-500 font-bold py-2.5 rounded text-xs text-white">
+        Sign In with Google SSO
+      </button>
+    </div>
+
+    <!-- TEACHER DASHBOARD PORTAL (@avemaria.school) -->
     <main id="teacherPortal" class="hidden space-y-6">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
@@ -90,13 +107,10 @@
       <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-4">
         <div class="flex justify-between items-center">
           <div>
-            <h2 class="text-base font-bold text-cyan-300">St. Jude 7th Grade Roster</h2>
+            <h2 class="text-base font-bold text-cyan-300">Live Roster Analytics (Firestore Connected)</h2>
             <p class="text-xs text-slate-400">Standardized ERR metrics calculated from Form A (Baseline) and Form B (Re-Test)</p>
           </div>
-          <div class="flex space-x-2">
-            <input type="text" placeholder="Search student..." class="bg-slate-900 border border-slate-700 text-xs px-3 py-1.5 rounded text-slate-200">
-            <button onclick="downloadPDFGuide()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-1.5 rounded font-bold">Export Educator Guide (PDF)</button>
-          </div>
+          <button onclick="downloadPDFGuide()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-1.5 rounded font-bold">Export Educator Guide (PDF)</button>
         </div>
 
         <div class="overflow-x-auto">
@@ -108,63 +122,20 @@
                 <th class="p-3">Form A (Baseline)</th>
                 <th class="p-3">Form B (Re-Test)</th>
                 <th class="p-3">Growth (&Delta;ERR)</th>
-                <th class="p-3">Module Pacing</th>
                 <th class="p-3 text-right">Status / Action</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-slate-700/60 text-slate-200">
-              <tr class="hover:bg-slate-700/30">
-                <td class="p-3 font-semibold text-white">Clara M.</td>
-                <td class="p-3"><span class="bg-slate-900 text-cyan-300 px-2 py-0.5 rounded font-mono">Intermediate (750L)</span></td>
-                <td class="p-3 font-mono text-slate-300">210 ERR</td>
-                <td class="p-3 font-mono text-emerald-400 font-bold">245 ERR</td>
-                <td class="p-3"><span class="text-emerald-400 font-bold">+35 ERR (+16%)</span></td>
-                <td class="p-3 text-slate-300">220 WPM / 4-Chunk</td>
-                <td class="p-3 text-right">
-                  <span class="bg-emerald-950 text-emerald-300 border border-emerald-700 px-2 py-1 rounded text-[10px] font-bold">Ready for Advanced Band</span>
-                </td>
-              </tr>
-              <tr class="hover:bg-slate-700/30">
-                <td class="p-3 font-semibold text-white">Leo B.</td>
-                <td class="p-3"><span class="bg-slate-900 text-cyan-300 px-2 py-0.5 rounded font-mono">Intermediate (650L)</span></td>
-                <td class="p-3 font-mono text-slate-300">140 ERR</td>
-                <td class="p-3 font-mono text-emerald-400 font-bold">175 ERR</td>
-                <td class="p-3"><span class="text-emerald-400 font-bold">+35 ERR (+25%)</span></td>
-                <td class="p-3 text-slate-300">180 WPM / 3-Chunk</td>
-                <td class="p-3 text-right">
-                  <span class="bg-slate-700 text-slate-300 px-2 py-1 rounded text-[10px] font-bold">On Track</span>
-                </td>
-              </tr>
-              <tr class="hover:bg-slate-700/30">
-                <td class="p-3 font-semibold text-white">Sofia R.</td>
-                <td class="p-3"><span class="bg-slate-900 text-cyan-300 px-2 py-0.5 rounded font-mono">Advanced (850L)</span></td>
-                <td class="p-3 font-mono text-slate-300">260 ERR</td>
-                <td class="p-3 font-mono text-emerald-400 font-bold">290 ERR</td>
-                <td class="p-3"><span class="text-emerald-400 font-bold">+30 ERR (+11%)</span></td>
-                <td class="p-3 text-slate-300">280 WPM / 4-Chunk</td>
-                <td class="p-3 text-right">
-                  <span class="bg-purple-950 text-purple-300 border border-purple-700 px-2 py-1 rounded text-[10px] font-bold">Mastery Level</span>
-                </td>
-              </tr>
-              <tr class="hover:bg-slate-700/30">
-                <td class="p-3 font-semibold text-white">Julian K.</td>
-                <td class="p-3"><span class="bg-slate-900 text-cyan-300 px-2 py-0.5 rounded font-mono">Foundational (500L)</span></td>
-                <td class="p-3 font-mono text-slate-300">110 ERR</td>
-                <td class="p-3 font-mono text-yellow-400 font-bold">115 ERR</td>
-                <td class="p-3"><span class="text-yellow-400 font-bold">+5 ERR (+4%)</span></td>
-                <td class="p-3 text-slate-300">160 WPM / 2-Chunk</td>
-                <td class="p-3 text-right">
-                  <span class="bg-rose-950 text-rose-300 border border-rose-700 px-2 py-1 rounded text-[10px] font-bold">Tier 2 RTI Support</span>
-                </td>
-              </tr>
+            <tbody id="teacherRosterBody" class="divide-y divide-slate-700/60 text-slate-200">
+              <!-- Live data populated from Firestore -->
+              <tr><td colspan="6" class="p-4 text-center text-slate-400">Loading student roster data...</td></tr>
             </tbody>
           </table>
         </div>
       </div>
     </main>
 
-    <!-- STUDENT PORTAL -->
-    <main id="studentPortal" class="space-y-6">
+    <!-- STUDENT PORTAL (@aveangels.org) -->
+    <main id="studentPortal" class="hidden space-y-6">
       <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-3">
         <div class="flex justify-between items-center border-b border-slate-700 pb-2">
           <h2 class="text-sm font-bold text-cyan-300">Target Reading Calibration</h2>
@@ -280,140 +251,199 @@
           </div>
         </div>
       </section>
-
     </main>
+
   </div>
 
   <!-- EDUCATOR & PARENT FIELD GUIDE MODAL -->
   <div id="guideModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-700 rounded-xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl">
-      
-      <!-- MODAL HEADER -->
       <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800/50 rounded-t-xl">
-        <h2 class="text-lg font-bold text-cyan-300 flex items-center space-x-2">
-          <span>📖 Educator & Parent Field Guide</span>
-        </h2>
+        <h2 class="text-lg font-bold text-cyan-300">📖 Educator & Parent Field Guide</h2>
         <div class="flex items-center space-x-2">
-          <button onclick="downloadPDFGuide()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-1.5 rounded font-bold">
-            Download PDF
-          </button>
+          <button onclick="downloadPDFGuide()" class="bg-indigo-600 text-white text-xs px-3 py-1.5 rounded font-bold">Download PDF</button>
           <button onclick="closeGuideModal()" class="text-slate-400 hover:text-white text-lg font-bold px-2">✕</button>
         </div>
       </div>
-
-      <!-- MODAL BODY (PRINTABLE CONTAINER) -->
       <div id="printableGuide" class="p-6 overflow-y-auto space-y-6 text-slate-200 text-sm leading-relaxed">
-        
-        <!-- TITLE BLOCK -->
         <div class="border-b border-slate-700 pb-3">
           <h1 class="text-xl font-bold text-cyan-400">Cognitive Reading Pacer — Field Manual</h1>
-          <p class="text-xs text-slate-400 mt-1">Catholic Middle School Edition • Research-Backed Fluency & Comprehension Protocol</p>
+          <p class="text-xs text-slate-400 mt-1">Catholic Middle School Edition • Fluency Protocol</p>
         </div>
-
-        <!-- SECTION 1: METRICS -->
         <section class="space-y-2">
           <h3 class="font-bold text-cyan-300 text-base">1. Key Metrics & Definitions</h3>
           <div class="bg-slate-950 p-3 rounded border border-slate-800 space-y-2 text-xs">
-            <p><strong>WPM (Words Per Minute):</strong> Pure physical eye tracking speed across lines of text.</p>
-            <p><strong>Comprehension %:</strong> Accuracy score on post-reading verification quiz ($100\%$ or $50\%$).</p>
-            <p><strong>ERR (Effective Reading Rate):</strong> Calculated as $\text{WPM} \times \text{Comprehension \%}$. This core metric prevents skimming by penalizing speed without retention.</p>
-            <p><strong>&Delta;ERR (Growth Delta):</strong> True cognitive growth measured between standardized Form A and Form B benchmarks.</p>
+            <p><strong>WPM:</strong> Words Per Minute (Physical tracking speed).</p>
+            <p><strong>Comprehension %:</strong> Quiz accuracy score.</p>
+            <p><strong>ERR:</strong> Effective Reading Rate ($\text{WPM} \times \text{Comprehension \%}$).</p>
+            <p><strong>&Delta;ERR:</strong> Growth delta measured between Form A and Form B.</p>
           </div>
         </section>
-
-        <!-- SECTION 2: READING BANDS VS RTI -->
-        <section class="space-y-2">
-          <h3 class="font-bold text-cyan-300 text-base">2. Lexile Bands vs. RTI Support Tiers</h3>
-          <p class="text-xs text-slate-300">To avoid confusion with school Multi-Tiered System of Support (MTSS/RTI) frameworks, the app separates instructional support tiers from text readability bands:</p>
-          <ul class="list-disc list-inside text-xs space-y-1 text-slate-300">
-            <li><strong>Foundational Band (400L – 550L):</strong> Grade 4–5 readability; builds core decoding confidence.</li>
-            <li><strong>Intermediate Band (600L – 750L):</strong> On-grade Grade 6–7 readability; standard targets.</li>
-            <li><strong>Advanced Band (800L – 950L):</strong> Grade 8 / Honors readability; complex syntax.</li>
-            <li><strong>Mastery Band (1000L+):</strong> High School / College Ready readability.</li>
-            <li><strong>RTI Tiers (School Level):</strong> Tier 1 (Universal 100%), Tier 2 (Targeted 10-15%), Tier 3 (Intensive 5%).</li>
-          </ul>
-        </section>
-
-        <!-- SECTION 3: 4 MODULE FRAMEWORK -->
-        <section class="space-y-2">
-          <h3 class="font-bold text-cyan-300 text-base">3. The 4 Pacing Modules</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-            <div class="bg-slate-950 p-3 rounded border border-slate-800">
-              <div class="font-bold text-yellow-400">1. Standardized Diagnostic (Tab 1)</div>
-              <p class="text-slate-400 mt-1">Establishes baseline ERR using locked static benchmark texts (Form A/B) matching IXL Lexile bands.</p>
-            </div>
-            <div class="bg-slate-950 p-3 rounded border border-slate-800">
-              <div class="font-bold text-cyan-400">2. Accelerator Focus Shutter</div>
-              <p class="text-slate-400 mt-1">Eliminates line regression and vocalization by pacing eyes forward with a moving focus window.</p>
-            </div>
-            <div class="bg-slate-950 p-3 rounded border border-slate-800">
-              <div class="font-bold text-indigo-400">3. Morpho-Visual Flasher</div>
-              <p class="text-slate-400 mt-1">Expands peripheral visual span and foveal fixation width using phrase flashes centered on anchor target letters.</p>
-            </div>
-            <div class="bg-slate-950 p-3 rounded border border-slate-800">
-              <div class="font-bold text-emerald-400">4. PQRST Active Reader</div>
-              <p class="text-slate-400 mt-1">Guides Preview, Question, Read, State, and Test steps for high comprehension retention on faith-aligned AI topics.</p>
-            </div>
-          </div>
-        </section>
-
-        <!-- SECTION 4: CLASSROOM PROTOCOL -->
-        <section class="space-y-2">
-          <h3 class="font-bold text-cyan-300 text-base">4. 15-Minute Classroom Protocol</h3>
-          <ol class="list-decimal list-inside text-xs space-y-1 text-slate-300">
-            <li><strong>Diagnostic / Re-Test (3 Mins):</strong> Complete Form A (Day 1) or Form B (Progress Check) on Tab 1.</li>
-            <li><strong>Ocular Span Warmup (3 Mins):</strong> Run 20–30 flashes on Module 2 (Visual Flasher).</li>
-            <li><strong>Speed Pacing (5 Mins):</strong> Set Module 1 Focus Shutter to +20 WPM above baseline on a custom topic.</li>
-            <li><strong>Active Recall & Quiz (4 Mins):</strong> Complete Module 3 (PQRST Reader) preview and quiz.</li>
-          </ol>
-        </section>
-
       </div>
-      
-      <!-- MODAL FOOTER -->
-      <div class="p-4 border-t border-slate-700 bg-slate-800/50 rounded-b-xl flex justify-between items-center">
-        <span class="text-xs text-slate-400">Catholic Middle School Educational Protocol</span>
-        <button onclick="closeGuideModal()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs px-4 py-2 rounded font-bold">Close Guide</button>
-      </div>
-
     </div>
   </div>
 
-  <script>
-    // MODAL & PRINT ENGINE
-    function openGuideModal() { document.getElementById('guideModal').classList.remove('hidden'); }
-    function closeGuideModal() { document.getElementById('guideModal').classList.add('hidden'); }
-    function downloadPDFGuide() {
-      openGuideModal();
-      setTimeout(() => { window.print(); }, 300);
-    }
+  <!-- FIREBASE MODULAR SDK INGESTION -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // DOMAIN & ROLE CONTROL ENGINE
-    let isTeacherView = false;
-    function toggleRoleView() {
-      isTeacherView = !isTeacherView;
+    // YOUR FIREBASE CONFIGURATION
+    const firebaseConfig = {
+      apiKey: "AIzaSyAI-HxstOGHjbCxldCJw6RBSosU2kpcs7s",
+      authDomain: "readingpacerapp.firebaseapp.com",
+      projectId: "readingpacerapp",
+      storageBucket: "readingpacerapp.firebasestorage.app",
+      messagingSenderId: "279318284121",
+      appId: "1:279318284121:web:ccb12cb9c95393f42d6e48",
+      measurementId: "G-HMLNRLEQGB"
+    };
+
+    // INITIALIZE FIREBASE & FIRESTORE
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
+
+    let currentUser = null;
+
+    // GLOBAL AUTH FUNCTIONS
+    window.loginWithGoogle = async () => {
+      try {
+        await signInWithPopup(auth, provider);
+      } catch (err) {
+        alert("Authentication Error: " + err.message);
+      }
+    };
+
+    window.handleAuthAction = () => {
+      if (currentUser) {
+        signOut(auth);
+      } else {
+        window.loginWithGoogle();
+      }
+    };
+
+    // AUTH STATE LISTENER & DOMAIN ROUTER
+    onAuthStateChanged(auth, async (user) => {
+      const loggedOutState = document.getElementById('loggedOutState');
       const teacherPortal = document.getElementById('teacherPortal');
       const studentPortal = document.getElementById('studentPortal');
-      const btn = document.getElementById('viewToggleBtn');
-      const userBadge = document.getElementById('userBadge');
-      const domainBadge = document.getElementById('domainBadge');
+      const authBtn = document.getElementById('authBtn');
+      const userInfoBox = document.getElementById('userInfoBox');
 
-      if (isTeacherView) {
-        teacherPortal.classList.remove('hidden');
-        studentPortal.classList.add('hidden');
-        btn.innerText = "Switch to Student Portal";
-        userBadge.innerText = "Faculty Mode";
-        domainBadge.innerText = "@avemaria.school";
+      if (user) {
+        currentUser = user;
+        const email = user.email || '';
+        document.getElementById('userNameDisplay').innerText = user.displayName || 'User';
+        document.getElementById('userDomainDisplay').innerText = email;
+        userInfoBox.classList.remove('hidden');
+        authBtn.innerText = "Sign Out";
+        authBtn.className = "bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs px-3 py-2 rounded text-slate-300 font-bold";
+        loggedOutState.classList.add('hidden');
+
+        // ROUTE BY DOMAIN
+        if (email.endsWith('@avemaria.school')) {
+          teacherPortal.classList.remove('hidden');
+          studentPortal.classList.add('hidden');
+          listenToTeacherRoster();
+        } else if (email.endsWith('@aveangels.org')) {
+          studentPortal.classList.remove('hidden');
+          teacherPortal.classList.add('hidden');
+          loadStudentProfile(user);
+        } else {
+          // PROTOTYPE OVERRIDE: DEFAULT ALL OTHER GOOGLE EMAILS TO STUDENT VIEW WITH ALERT
+          alert(`Logged in as ${email}. (Note: Standard accounts default to Student View. Faculty domain is @avemaria.school).`);
+          studentPortal.classList.remove('hidden');
+          teacherPortal.classList.add('hidden');
+          loadStudentProfile(user);
+        }
       } else {
+        currentUser = null;
+        userInfoBox.classList.add('hidden');
+        authBtn.innerText = "Sign In with Google";
+        authBtn.className = "bg-emerald-600 hover:bg-emerald-500 text-xs px-3 py-2 rounded text-white font-bold";
+        loggedOutState.classList.remove('hidden');
         teacherPortal.classList.add('hidden');
-        studentPortal.classList.remove('hidden');
-        btn.innerText = "Switch to Teacher Portal";
-        userBadge.innerText = "Student Mode";
-        domainBadge.innerText = "@aveangels.org";
+        studentPortal.classList.add('hidden');
+      }
+    });
+
+    // FIRESTORE READ/WRITE HELPERS
+    async function loadStudentProfile(user) {
+      const userRef = doc(db, 'students', user.uid);
+      const snap = await getDoc(userRef);
+      if (snap.exists()) {
+        const data = snap.data();
+        if (data.baselineERR) {
+          window.baselineERR = data.baselineERR;
+        }
       }
     }
 
-    // BENCHMARK BANK
+    window.saveStudentAssessment = async (formType, rawWpm, accuracy, calculatedERR) => {
+      if (!currentUser) return;
+      
+      const studentRef = doc(db, 'students', currentUser.uid);
+      const updateData = {
+        name: currentUser.displayName,
+        email: currentUser.email,
+        lexileTier: window.currentLexileTier || 'tier2',
+        lastUpdated: new Date()
+      };
+
+      if (formType === 'FormA') {
+        updateData.formA_ERR = calculatedERR;
+        updateData.baselineERR = calculatedERR;
+        window.baselineERR = calculatedERR;
+      } else {
+        updateData.formB_ERR = calculatedERR;
+      }
+
+      await setDoc(studentRef, updateData, { merge: true });
+    };
+
+    function listenToTeacherRoster() {
+      const rosterBody = document.getElementById('teacherRosterBody');
+      onSnapshot(collection(db, 'students'), (snapshot) => {
+        if (snapshot.empty) {
+          rosterBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">No student assessments recorded yet in Firestore.</td></tr>`;
+          return;
+        }
+
+        let html = '';
+        snapshot.forEach(docSnap => {
+          const s = docSnap.data();
+          const formA = s.formA_ERR ? `${s.formA_ERR} ERR` : 'Unset';
+          const formB = s.formB_ERR ? `${s.formB_ERR} ERR` : 'Unset';
+          const delta = (s.formA_ERR && s.formB_ERR) ? (s.formB_ERR - s.formA_ERR) : null;
+          const deltaStr = delta !== null ? (delta >= 0 ? `+${delta} ERR` : `${delta} ERR`) : 'N/A';
+
+          html += `
+            <tr class="hover:bg-slate-700/30">
+              <td class="p-3 font-semibold text-white">${s.name || 'Student'}</td>
+              <td class="p-3"><span class="bg-slate-900 text-cyan-300 px-2 py-0.5 rounded font-mono">${s.lexileTier || 'tier2'}</span></td>
+              <td class="p-3 font-mono text-slate-300">${formA}</td>
+              <td class="p-3 font-mono text-emerald-400 font-bold">${formB}</td>
+              <td class="p-3"><span class="text-emerald-400 font-bold">${deltaStr}</span></td>
+              <td class="p-3 text-right">
+                <span class="bg-slate-700 text-slate-300 px-2 py-1 rounded text-[10px] font-bold">Active</span>
+              </td>
+            </tr>
+          `;
+        });
+        rosterBody.innerHTML = html;
+      });
+    }
+  </script>
+
+  <!-- LEGACY APP SCRIPT (MODULE & PACER LOGIC) -->
+  <script>
+    function openGuideModal() { document.getElementById('guideModal').classList.remove('hidden'); }
+    function closeGuideModal() { document.getElementById('guideModal').classList.add('hidden'); }
+    function downloadPDFGuide() { openGuideModal(); setTimeout(() => { window.print(); }, 300); }
+
     const benchmarkBank = {
       tier1: {
         FormA: { wordCount: 110, passage: "Lighthouses are tall towers built near coasts and harbors. They shine bright beams of light to guide ships safely through dark waters. Long ago, lighthouse keepers had to trim oil lamps every night. Today, most lighthouses use electric bulbs and automatic timers. Warnings from lighthouses prevent boats from hitting sharp rocks near the shore during stormy weather.", quiz: { question: "What was a task for lighthouse keepers long ago?", options: ["Fixing electric bulbs", "Trimming oil lamps every night", "Building new harbors"], correctIndex: 1 } },
@@ -433,33 +463,28 @@
       }
     };
 
-    let currentLexileTier = 'tier2';
-    let currentBenchmarkForm = 'FormA';
-    let baselineERR = null;
-    let currentERR = null;
+    window.currentLexileTier = 'tier2';
+    window.currentBenchmarkForm = 'FormA';
 
     let currentData = {
       title: "Volcanoes",
       passage: benchmarkBank.tier2.FormA.passage,
       preview: "Volcanoes are dangerous crustal vents caused by magma pressure.",
       guiding_question: "How do scientists monitor volcanic eruptions?",
-      chunks: [
-        { text: "Volcanoes are openings", oap: 5 },
-        { text: "in the Earth's crust", oap: 4 }
-      ],
+      chunks: [{ text: "Volcanoes are openings", oap: 5 }],
       quiz: benchmarkBank.tier2.FormA.quiz
     };
 
-    function onLexileChange() { currentLexileTier = document.getElementById('lexileSelect').value; loadBenchmarkData(); }
+    function onLexileChange() { window.currentLexileTier = document.getElementById('lexileSelect').value; loadBenchmarkData(); }
     function setBenchmarkForm(form) {
-      currentBenchmarkForm = form;
+      window.currentBenchmarkForm = form;
       document.getElementById('formABtn').className = form === 'FormA' ? 'px-2 py-1 rounded bg-cyan-600 text-white font-bold' : 'px-2 py-1 rounded bg-slate-700 text-slate-300 font-bold';
       document.getElementById('formBBtn').className = form === 'FormB' ? 'px-2 py-1 rounded bg-cyan-600 text-white font-bold' : 'px-2 py-1 rounded bg-slate-700 text-slate-300 font-bold';
       loadBenchmarkData();
     }
 
     function loadBenchmarkData() {
-      const benchmark = benchmarkBank[currentLexileTier][currentBenchmarkForm];
+      const benchmark = benchmarkBank[window.currentLexileTier][window.currentBenchmarkForm];
       document.getElementById('diagText').innerText = benchmark.passage;
       document.getElementById('diagQuizQ').innerText = benchmark.quiz.question;
       document.getElementById('diagQuizOpts').innerHTML = benchmark.quiz.options.map((opt, i) => 
@@ -533,7 +558,7 @@
     function startDiagnostic() { diagStartTime = Date.now(); document.getElementById('diagStartBtn').classList.add('hidden'); document.getElementById('diagFinishBtn').classList.remove('hidden'); }
     function finishDiagnostic() { 
       const elapsed = (Date.now() - diagStartTime) / 1000; 
-      const wordCount = benchmarkBank[currentLexileTier][currentBenchmarkForm].wordCount;
+      const wordCount = benchmarkBank[window.currentLexileTier][window.currentBenchmarkForm].wordCount;
       window.rawWpm = Math.round((wordCount / elapsed) * 60); 
       document.getElementById('diagFinishBtn').classList.add('hidden'); 
       document.getElementById('diagQuiz').classList.remove('hidden'); 
@@ -541,17 +566,19 @@
 
     function submitDiagnostic() { 
       const selected = document.querySelector('input[name="diagQ"]:checked'); 
-      const correctIdx = benchmarkBank[currentLexileTier][currentBenchmarkForm].quiz.correctIndex;
+      const correctIdx = benchmarkBank[window.currentLexileTier][window.currentBenchmarkForm].quiz.correctIndex;
       const accuracy = (selected && parseInt(selected.value) === correctIdx) ? 1.0 : 0.5; 
       const calculatedERR = Math.round(window.rawWpm * accuracy);
 
-      if (currentBenchmarkForm === 'FormA') {
-        baselineERR = calculatedERR;
-        alert(`Baseline Score Saved!\nSpeed: ${window.rawWpm} WPM\nComprehension: ${accuracy * 100}%\nBaseline ERR: ${baselineERR}`);
+      // SAVE SCORE TO FIRESTORE
+      if (window.saveStudentAssessment) {
+        window.saveStudentAssessment(window.currentBenchmarkForm, window.rawWpm, accuracy, calculatedERR);
+      }
+
+      if (window.currentBenchmarkForm === 'FormA') {
+        alert(`Baseline Score Saved to Firebase!\nSpeed: ${window.rawWpm} WPM\nComprehension: ${accuracy * 100}%\nBaseline ERR: ${calculatedERR}`);
       } else {
-        currentERR = calculatedERR;
-        const delta = baselineERR !== null ? (currentERR - baselineERR) : 0;
-        alert(`Re-Test Completed!\nNew ERR: ${currentERR}\nGrowth vs Baseline: ${delta >= 0 ? '+' + delta : delta} ERR`);
+        alert(`Re-Test Score Saved to Firebase!\nNew ERR: ${calculatedERR}`);
       }
 
       document.getElementById('diagQuiz').classList.add('hidden');
