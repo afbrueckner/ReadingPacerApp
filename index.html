@@ -3,18 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reading App - Catholic Edition</title>
+  <title>Reading Pacer App - Ave Maria Edition</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .dimmed { opacity: 0.25; filter: blur(1px); transition: opacity 0.3s; }
     .focused { opacity: 1; filter: blur(0px); font-weight: 600; background: #fef08a; color: #0f172a; }
     .oap-target { color: #dc2626; font-weight: 800; text-decoration: underline; }
 
+    /* OPTIMIZED PRINT STYLESHEET FOR PDF EXPORT */
     @media print {
       body * { visibility: hidden; }
       #printableGuide, #printableGuide * { visibility: visible; }
-      #printableGuide { position: absolute; left: 0; top: 0; width: 100%; color: black !important; background: white !important; }
+      #printableGuide {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        max-height: none !important;
+        overflow: visible !important;
+        color: black !important;
+        background: white !important;
+        font-size: 11pt !important;
+        line-height: 1.4 !important;
+      }
       .no-print { display: none !important; }
+      .page-break-before { page-break-before: always; break-before: page; }
+      .avoid-break { page-break-inside: avoid; break-inside: avoid; }
     }
   </style>
 </head>
@@ -28,7 +42,6 @@
         <p class="text-xs text-slate-400">Catholic Middle School Edition • IXL Lexile & Firebase Connected</p>
       </div>
       
-      <!-- AUTHENTICATION STATE & BUTTONS -->
       <div class="flex items-center space-x-3">
         <button onclick="openGuideModal()" class="bg-indigo-600 hover:bg-indigo-500 text-xs px-3 py-2 rounded text-white font-bold">
           📖 Educator Guide
@@ -45,7 +58,7 @@
       </div>
     </header>
 
-    <!-- SIGN-IN PROMPT SCREEN (WHEN NOT LOGGED IN) -->
+    <!-- SIGN-IN PROMPT SCREEN -->
     <div id="loggedOutState" class="bg-slate-800 p-8 rounded-xl border border-slate-700 text-center space-y-4 max-w-md mx-auto my-12">
       <div class="text-4xl">⛪</div>
       <h2 class="text-lg font-bold text-cyan-300">Catholic School Portal Sign-In</h2>
@@ -61,7 +74,7 @@
       </button>
     </div>
 
-    <!-- TEACHER DASHBOARD PORTAL (@avemaria.school) -->
+    <!-- TEACHER DASHBOARD PORTAL -->
     <main id="teacherPortal" class="hidden space-y-6">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
@@ -133,7 +146,7 @@
       </div>
     </main>
 
-    <!-- STUDENT PORTAL (@aveangels.org) -->
+    <!-- STUDENT PORTAL -->
     <main id="studentPortal" class="hidden space-y-6">
       <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 space-y-3">
         <div class="flex justify-between items-center border-b border-slate-700 pb-2">
@@ -254,12 +267,12 @@
 
   </div>
 
-  <!-- EDUCATOR & PARENT FIELD GUIDE MODAL (RESTORED WITH ALL 5 SECTIONS) -->
+  <!-- EDUCATOR & PARENT FIELD GUIDE MODAL (CLEANED HTML BOLDING & PAGE BREAKS) -->
   <div id="guideModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-700 rounded-xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl">
       
       <!-- MODAL HEADER -->
-      <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800/50 rounded-t-xl">
+      <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800/50 rounded-t-xl no-print">
         <h2 class="text-lg font-bold text-cyan-300 flex items-center space-x-2">
           <span>📖 Educator & Parent Field Guide</span>
         </h2>
@@ -271,23 +284,23 @@
         </div>
       </div>
 
-      <!-- MODAL BODY (FULL PRINTABLE CONTAINER) -->
+      <!-- MODAL BODY -->
       <div id="printableGuide" class="p-6 overflow-y-auto space-y-6 text-slate-200 text-sm leading-relaxed">
         
         <!-- TITLE BLOCK -->
-        <div class="border-b border-slate-700 pb-3">
+        <div class="border-b border-slate-700 pb-3 avoid-break">
           <h1 class="text-xl font-bold text-cyan-400">Cognitive Reading Pacer — Field Manual</h1>
           <p class="text-xs text-slate-400 mt-1">Catholic Middle School Edition • Research-Backed Fluency & Comprehension Protocol</p>
         </div>
 
         <!-- SECTION 1: METRICS -->
-        <section class="space-y-2">
+        <section class="space-y-2 avoid-break">
           <h3 class="font-bold text-cyan-300 text-base">1. Key Metrics & Definitions</h3>
           <div class="bg-slate-950 p-3 rounded border border-slate-800 space-y-2 text-xs">
-            <p><strong>WPM (Words Per Minute):</strong> Pure physical tracking speed across lines of text ($W / T_{sec} \times 60$).</p>
-            <p><strong>Comprehension %:</strong> Accuracy score on post-reading verification quiz ($100\%$ or $50\%$).</p>
-            <p><strong>ERR (Effective Reading Rate):</strong> Calculated as $\text{WPM} \times \text{Comprehension \%}$. This core metric prevents skimming by penalizing fast reading without retention.</p>
-            <p><strong>&Delta;ERR (Growth Delta):</strong> True cognitive growth measured between standardized Form A (Baseline) and Form B (Re-Test) benchmarks.</p>
+            <p><strong>WPM (Words Per Minute):</strong> Pure physical tracking speed across lines of text (Words / Seconds × 60).</p>
+            <p><strong>Comprehension %:</strong> Accuracy score on post-reading verification quiz (100% or 50%).</p>
+            <p><strong>ERR (Effective Reading Rate):</strong> Calculated as <strong>WPM × Comprehension %</strong>. This core metric prevents skimming by penalizing fast reading without retention.</p>
+            <p><strong>ΔERR (Growth Delta):</strong> True cognitive growth measured between standardized Form A (Baseline) and Form B (Re-Test) benchmarks.</p>
           </div>
           <div class="text-xs bg-slate-900/60 p-2.5 rounded border border-yellow-500/30 text-yellow-300">
             <strong>The Golden Rule of ERR:</strong> A student reading at 300 WPM with 50% comprehension has an ERR of <strong>150</strong>. A student reading at 180 WPM with 100% comprehension has an ERR of <strong>180</strong>. Higher comprehension always wins.
@@ -295,15 +308,15 @@
         </section>
 
         <!-- SECTION 2: READING BANDS VS RTI -->
-        <section class="space-y-2">
+        <section class="space-y-2 avoid-break">
           <h3 class="font-bold text-cyan-300 text-base">2. Lexile Bands vs. RTI Support Tiers</h3>
           <p class="text-xs text-slate-300">To avoid confusion with school Multi-Tiered System of Support (MTSS/RTI) frameworks, the app separates instructional support tiers from text readability bands:</p>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
             <div class="bg-slate-950 p-3 rounded border border-slate-800 space-y-1">
               <div class="font-bold text-yellow-400">RTI Support Tiers (School Level)</div>
-              <p>• <strong>Tier 1:</strong> Universal core classroom instruction ($100\%$ of students).</p>
-              <p>• <strong>Tier 2:</strong> Targeted small-group intervention ($10–15\%$ needing pacer support).</p>
-              <p>• <strong>Tier 3:</strong> Intensive individualized intervention ($5\%$ specialized support).</p>
+              <p>• <strong>Tier 1:</strong> Universal core classroom instruction (100% of students).</p>
+              <p>• <strong>Tier 2:</strong> Targeted small-group intervention (10–15% needing pacer support).</p>
+              <p>• <strong>Tier 3:</strong> Intensive individualized intervention (5% specialized support).</p>
             </div>
             <div class="bg-slate-950 p-3 rounded border border-slate-800 space-y-1">
               <div class="font-bold text-cyan-400">App Lexile Reading Bands</div>
@@ -316,7 +329,7 @@
         </section>
 
         <!-- SECTION 3: 4 MODULE FRAMEWORK -->
-        <section class="space-y-2">
+        <section class="space-y-2 avoid-break">
           <h3 class="font-bold text-cyan-300 text-base">3. The 4 Pacing Modules</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
             <div class="bg-slate-950 p-3 rounded border border-slate-800">
@@ -338,8 +351,8 @@
           </div>
         </section>
 
-        <!-- SECTION 4: CLASSROOM PROTOCOL -->
-        <section class="space-y-2">
+        <!-- SECTION 4: CLASSROOM PROTOCOL (FORCED PRINT PAGE BREAK BEFORE HERE) -->
+        <section class="space-y-2 page-break-before avoid-break">
           <h3 class="font-bold text-cyan-300 text-base">4. Recommended 15-Minute Classroom Protocol</h3>
           <ol class="list-decimal list-inside text-xs space-y-1.5 text-slate-300 bg-slate-950 p-3 rounded border border-slate-800">
             <li><strong>Diagnostic / Re-Test (3 Mins - Mondays/Fridays):</strong> Complete Form A (Day 1) or Form B (Progress Check) on Tab 1 to log ERR.</li>
@@ -350,7 +363,7 @@
         </section>
 
         <!-- SECTION 5: INTERVENTION MATRIX -->
-        <section class="space-y-2">
+        <section class="space-y-2 avoid-break">
           <h3 class="font-bold text-cyan-300 text-base">5. Teacher Troubleshooting & Intervention Matrix</h3>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs border-collapse border border-slate-800 bg-slate-950">
@@ -385,7 +398,7 @@
       </div>
       
       <!-- MODAL FOOTER -->
-      <div class="p-4 border-t border-slate-700 bg-slate-800/50 rounded-b-xl flex justify-between items-center">
+      <div class="p-4 border-t border-slate-700 bg-slate-800/50 rounded-b-xl flex justify-between items-center no-print">
         <span class="text-xs text-slate-400">Catholic Middle School Educational Protocol</span>
         <button onclick="closeGuideModal()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs px-4 py-2 rounded font-bold">Close Guide</button>
       </div>
@@ -541,7 +554,7 @@
     }
   </script>
 
-  <!-- LEGACY APP SCRIPT (MODULE & PACER LOGIC) -->
+  <!-- PACER ENGINE SCRIPT -->
   <script>
     function openGuideModal() { document.getElementById('guideModal').classList.remove('hidden'); }
     function closeGuideModal() { document.getElementById('guideModal').classList.add('hidden'); }
