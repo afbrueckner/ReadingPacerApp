@@ -1,581 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reading Pacer App - Ave Maria Edition</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cognitive Reading Pacer</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="./css/styles.css" />
 </head>
-<body id="appBody" class="min-h-screen p-6">
-  <div class="max-w-4xl mx-auto space-y-6">
-    
-    <!-- HEADER -->
-    <header class="border-b border-stone-300 pb-4 flex justify-between items-center font-sans-ui">
-      <div>
-        <h1 class="text-2xl font-bold text-sky-900">Cognitive Reading Pacer</h1>
-        <p class="text-xs text-stone-600">Ave Maria Middle School Edition • IXL Lexile & Firebase Connected</p>
-      </div>
-      
+<body id="appBody" class="min-h-screen bg-stone-50 text-stone-900 flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="bg-white border-b border-stone-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <button onclick="openGuideModal()" class="bg-indigo-700 hover:bg-indigo-800 text-xs px-3 py-2 rounded text-white font-bold shadow-sm">
-          📖 Educator Guide
-        </button>
-
-        <div id="userInfoBox" class="hidden text-right text-xs bg-white p-2 rounded border border-stone-300 space-y-0.5 shadow-sm">
-          <div id="userNameDisplay" class="text-slate-800 font-semibold">User Name</div>
-          <div id="userDomainDisplay" class="text-[10px] text-sky-700 font-mono">user@domain</div>
+        <div class="h-9 w-9 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-lg shadow">
+          P
         </div>
+        <div>
+          <h1 class="text-lg font-bold tracking-tight text-stone-900 leading-none">Cognitive Reading Pacer</h1>
+          <p class="text-xs text-stone-500 font-medium">Ave Maria Middle School Edition • IXL Lexile & Firebase Connected</p>
+        </div>
+      </div>
 
-        <button id="authBtn" onclick="handleAuthAction()" class="bg-emerald-700 hover:bg-emerald-800 text-xs px-3 py-2 rounded text-white font-bold shadow-sm flex items-center space-x-1">
-          <span>Sign In with Google</span>
+      <div class="flex items-center space-x-3">
+        <button id="guideBtn" onclick="openGuideModal()" class="inline-flex items-center space-x-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-semibold py-2 px-3 rounded-lg transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          <span>Educator Guide</span>
+        </button>
+
+        <button id="demoToggleBtn" onclick="toggleTeacherDemoView()" class="inline-flex items-center space-x-1 bg-stone-800 hover:bg-stone-900 text-white text-xs font-semibold py-2 px-3 rounded-lg transition-colors">
+          <span>Faculty Demo Mode</span>
         </button>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <!-- SIGN-IN PROMPT SCREEN -->
-    <div id="loggedOutState" class="bg-white p-8 rounded-xl border border-stone-300 text-center space-y-4 max-w-md mx-auto my-12 shadow-sm font-sans-ui">
-      <div class="text-4xl">⛪</div>
-      <h2 class="text-lg font-bold text-sky-950">Ave Maria Catholic School Portal Sign-In</h2>
-      <p class="text-xs text-stone-600 leading-relaxed">
-        Please sign in using your school Google account to access your reading modules or classroom dashboard.
-      </p>
-      <div class="text-xs bg-stone-50 p-3 rounded text-left border border-stone-200 space-y-1 font-mono">
-        <div>• Faculty (@avemaria.school): <span class="text-emerald-700 font-bold">Teacher Dashboard</span></div>
-        <div>• Students (@aveangels.org): <span class="text-sky-700 font-bold">Practice Modules</span></div>
+  <!-- FACULTY DEMO BANNER -->
+  <div id="demoBanner" class="hidden bg-amber-500 text-amber-950 px-4 py-2 text-xs font-semibold flex items-center justify-between border-b border-amber-600">
+    <div class="flex items-center space-x-2 max-w-7xl mx-auto w-full">
+      <span class="bg-amber-700 text-white px-2 py-0.5 rounded text-[10px] tracking-wide uppercase">Faculty Demo Mode Active</span>
+      <span>You are previewing student practice modules. Benchmark saves are in test mode.</span>
+    </div>
+    <button onclick="toggleTeacherDemoView()" class="bg-amber-950 text-amber-100 hover:bg-black px-3 py-1 rounded text-xs transition-colors">
+      Return to Dashboard
+    </button>
+  </div>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full space-y-6">
+
+    <!-- STUDENT DASHBOARD HEADER -->
+    <div class="bg-white rounded-xl border border-stone-200 p-5 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div>
+        <span class="text-xs font-semibold text-indigo-600 tracking-wider uppercase">Active Goal</span>
+        <h2 class="text-xl font-bold text-stone-900">Target Readability: 600L - 750L</h2>
       </div>
-      <button onclick="loginWithGoogle()" class="w-full bg-emerald-700 hover:bg-emerald-800 font-bold py-2.5 rounded text-xs text-white shadow-sm">
-        Sign In with Google SSO
-      </button>
+      <div class="flex items-center space-x-6 text-xs text-stone-600">
+        <div><span class="font-semibold text-stone-900">Weekly Training:</span> 2 / 3 Completed</div>
+        <div><span class="font-semibold text-stone-900">Baseline ERR:</span> 180 ERR</div>
+      </div>
     </div>
 
-    <!-- TEACHER DASHBOARD PORTAL -->
-    <main id="teacherPortal" class="hidden space-y-6 font-sans-ui">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="bg-white p-4 rounded-lg border border-stone-300 shadow-sm">
-          <div class="text-xs text-stone-500 font-semibold">Class Avg ERR</div>
-          <div class="text-2xl font-bold text-sky-900 mt-1">198 <span class="text-xs text-emerald-700 font-normal">(+28 Growth)</span></div>
+    <!-- CALIBRATION & GENERATION CARD -->
+    <div class="bg-white rounded-xl border border-stone-200 p-6 shadow-sm space-y-5">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-stone-100 pb-4">
+        <div>
+          <h3 class="text-base font-bold text-stone-900">Target Reading Calibration</h3>
         </div>
-        <div class="bg-white p-4 rounded-lg border border-stone-300 shadow-sm">
-          <div class="text-xs text-stone-500 font-semibold">Avg Comprehension</div>
-          <div class="text-2xl font-bold text-emerald-700 mt-1">87.5%</div>
-        </div>
-        <div class="bg-white p-4 rounded-lg border border-stone-300 shadow-sm">
-          <div class="text-xs text-stone-500 font-semibold">Active Lexile Span</div>
-          <div class="text-2xl font-bold text-amber-700 mt-1">500L – 950L</div>
-        </div>
-        <div class="bg-white p-4 rounded-lg border border-stone-300 shadow-sm">
-          <div class="text-xs text-stone-500 font-semibold">Flagged Interventions</div>
-          <div class="text-2xl font-bold text-rose-700 mt-1">2 Students</div>
-        </div>
-      </div>
-
-      <div class="bg-white p-4 rounded-lg border border-stone-300 space-y-3 shadow-sm">
-        <h2 class="text-sm font-bold text-sky-950 flex items-center space-x-2">
-          <span>⚡ Automated Instructional Flags</span>
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-          <div class="bg-rose-50 p-3 rounded border border-rose-200 flex space-x-3 items-start">
-            <span class="text-lg">🚨</span>
-            <div>
-              <div class="font-bold text-rose-900">Skimming Risk: Julian K. (Foundational Band)</div>
-              <p class="text-rose-800 mt-0.5">High WPM speed (220 WPM) but low Form B comprehension (50%). System has capped Module 1 speed to 160 WPM.</p>
-            </div>
-          </div>
-          <div class="bg-emerald-50 p-3 rounded border border-emerald-200 flex space-x-3 items-start">
-            <span class="text-lg">🎯</span>
-            <div>
-              <div class="font-bold text-emerald-900">Promotion Ready: Clara M. (Intermediate Band)</div>
-              <p class="text-emerald-800 mt-0.5">Achieved 245 ERR on Form B with 100% comprehension. Ready to advance to Advanced Band (800L-950L).</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-white p-4 rounded-lg border border-stone-300 space-y-4 shadow-sm">
-        <div class="flex justify-between items-center">
-          <div>
-            <h2 class="text-base font-bold text-sky-950">Live Roster Analytics (Firestore Connected)</h2>
-            <p class="text-xs text-stone-500">Standardized ERR metrics calculated from Form A (Baseline) and Form B (Re-Test)</p>
-          </div>
-          <div class="flex space-x-2">
-            <button onclick="toggleTeacherDemoView()" id="demoToggleBtn" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs px-3 py-1.5 rounded font-bold shadow-sm">
-              👁️ Preview Student Experience (Demo Mode)
-            </button>
-            <button onclick="downloadPDFGuide()" class="bg-indigo-700 hover:bg-indigo-800 text-white text-xs px-3 py-1.5 rounded font-bold shadow-sm">
-              Export Educator Guide (PDF)
-            </button>
-          </div>
-        </div>
-
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs border-collapse">
-            <thead>
-              <tr class="border-b border-stone-300 text-stone-600 font-semibold bg-stone-100">
-                <th class="p-3">Student Name</th>
-                <th class="p-3">Lexile Reading Band</th>
-                <th class="p-3">Form A (Baseline)</th>
-                <th class="p-3">Form B (Re-Test)</th>
-                <th class="p-3">Growth (&Delta;ERR)</th>
-                <th class="p-3 text-right">Status / Action</th>
-              </tr>
-            </thead>
-            <tbody id="teacherRosterBody" class="divide-y divide-stone-200 text-slate-800">
-              <tr><td colspan="6" class="p-4 text-center text-stone-500">Loading student roster data...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </main>
-
-    <!-- STUDENT PORTAL -->
-    <main id="studentPortal" class="hidden space-y-6">
-      
-      <div id="demoBanner" class="hidden bg-amber-50 border border-amber-300 text-amber-900 p-3 rounded-lg text-xs flex justify-between items-center font-sans-ui shadow-sm">
-        <span><strong>Faculty Demo Mode Active:</strong> You are previewing student practice modules. Benchmark saves are in test mode.</span>
-        <button onclick="toggleTeacherDemoView()" class="bg-amber-800 hover:bg-amber-900 text-white px-3 py-1 rounded font-bold">Return to Dashboard</button>
-      </div>
-
-      <!-- STUDENT PROGRESS BAR -->
-      <div class="bg-white p-3.5 rounded-xl border border-stone-300 flex justify-between items-center text-xs font-sans-ui shadow-sm">
         <div class="flex items-center space-x-3">
-          <span class="bg-indigo-100 text-indigo-900 border border-indigo-200 px-2.5 py-1 rounded-md font-bold">Active Goal</span>
-          <span class="text-stone-700">Target Readability: <strong id="studentLexileBadge" class="text-sky-900 font-bold">600L - 750L</strong></span>
-        </div>
-        <div class="flex items-center space-x-4">
-          <div class="text-stone-700">Weekly Training: <strong class="text-emerald-700 font-bold">2 / 3 Completed</strong></div>
-          <div class="text-stone-700">Baseline ERR: <strong id="studentBaselineDisplay" class="text-amber-800 font-bold">180 ERR</strong></div>
-        </div>
-      </div>
-
-      <!-- LEXILE & CONTENT GENERATOR -->
-      <div class="bg-white p-5 rounded-xl border border-stone-300 space-y-3 font-sans-ui shadow-sm">
-        <div class="flex justify-between items-center border-b border-stone-200 pb-2.5">
-          <h2 class="text-sm font-bold text-sky-950">Target Reading Calibration</h2>
+          <button id="accessToggleBtn" onclick="toggleAccessibilityMode()" class="bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-700 text-xs px-2.5 py-1.5 rounded-md font-medium transition-colors">
+            Aa High Contrast
+          </button>
           <div class="flex items-center space-x-2">
-            <button id="accessToggleBtn" onclick="toggleAccessibilityMode()" class="bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-700 text-xs px-2.5 py-1.5 rounded-md font-bold transition-colors">
-              Aa High Contrast
-            </button>
-            <label for="lexileSelect" class="text-xs text-stone-600 font-semibold">IXL Reading Band:</label>
-            <select id="lexileSelect" onchange="onLexileChange()" class="bg-stone-50 border border-stone-300 text-xs px-2.5 py-1.5 rounded-md text-sky-900 font-bold">
-              <option value="tier1">Foundational Band (400L - 550L)</option>
-              <option value="tier2" selected>Intermediate Band (600L - 750L)</option>
-              <option value="tier3">Advanced Band (800L - 950L)</option>
-              <option value="tier4">Mastery Band (1000L+)</option>
+            <label class="text-xs font-semibold text-stone-700">IXL Reading Band:</label>
+            <select id="lexileSelect" class="bg-stone-50 border border-stone-300 rounded-lg text-xs font-medium px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              <option value="500L - 650L">Foundational Band (500L - 650L)</option>
+              <option value="600L - 750L" selected>Intermediate Band (600L - 750L)</option>
+              <option value="800L - 1000L+">Advanced Band (800L - 1000L+)</option>
             </select>
           </div>
         </div>
+      </div>
 
-        <h2 class="text-sm font-bold text-sky-950 pt-1">Generate Custom Practice Passage</h2>
-        
-        <!-- QUICK TOPIC SUGGESTION PILLS -->
-        <div class="flex flex-wrap gap-1.5 pt-0.5 pb-1 font-sans-ui">
-          <span class="text-[11px] text-stone-500 font-semibold self-center mr-1">Quick Suggestions:</span>
-          <button onclick="setQuickTopic('Deep Ocean Vents')" class="bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-700 text-[11px] px-2 py-0.5 rounded font-medium transition-colors">🐋 Deep Ocean Vents</button>
-          <button onclick="setQuickTopic('Roman Gladiators')" class="bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-700 text-[11px] px-2 py-0.5 rounded font-medium transition-colors">🛡️ Roman Gladiators</button>
-          <button onclick="setQuickTopic('Black Holes')" class="bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-700 text-[11px] px-2 py-0.5 rounded font-medium transition-colors">🌌 Black Holes</button>
-          <button onclick="setQuickTopic('Codebreakers of WWII')" class="bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-700 text-[11px] px-2 py-0.5 rounded font-medium transition-colors">🔐 WWII Codebreakers</button>
+      <!-- PRACTICE PASSAGE LOOKUP -->
+      <div class="space-y-3">
+        <label class="block text-xs font-bold uppercase tracking-wider text-stone-600">Generate Custom Practice Passage</label>
+        <div class="flex flex-col sm:flex-row gap-2">
+          <input type="text" id="topicInput" placeholder="Enter topic (e.g., Deep Ocean Vents, Bletchley Park, Gothic Cathedrals)..." class="flex-grow bg-stone-50 border border-stone-300 text-stone-900 text-sm rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-stone-400" />
+          <button id="genBtn" onclick="generateAIContent()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-6 py-2.5 rounded-lg shadow transition-colors flex items-center justify-center space-x-2">
+            <span>Generate Content</span>
+          </button>
         </div>
 
-        <div class="flex space-x-2">
-          <input type="text" id="topicInput" placeholder="Topic (e.g., Solar System, Ancient Rome, Rainforests)" class="bg-stone-50 border border-stone-300 text-xs px-3 py-2 rounded-md flex-1 text-slate-900">
-          <button onclick="generateAIContent()" id="genBtn" class="bg-indigo-700 hover:bg-indigo-800 font-bold px-4 py-2 text-xs rounded-md text-white shadow-sm">Generate Content</button>
-        </div>
-
-        <!-- SMOOTHED PROGRESS BAR UI ANIMATION -->
-        <div id="genStatusContainer" class="hidden space-y-2 pt-2 font-sans-ui">
-          <div class="flex justify-between text-xs text-stone-600 font-semibold">
-            <span id="loaderStepText">Step 1 of 3: Gathering passage content...</span>
-            <span id="loaderPctText" class="font-mono text-sky-900">33%</span>
-          </div>
-          <div class="w-full bg-stone-200 rounded-full h-2 overflow-hidden">
-            <div id="progressBarFill" class="bg-sky-700 h-2 rounded-full transition-all duration-700 ease-out" style="width: 0%;"></div>
-          </div>
-        </div>
-
-        <!-- PROGRESS BAR UI ANIMATION -->
-        <div id="genStatusContainer" class="hidden space-y-2 pt-2">
-          <div class="flex justify-between text-xs text-stone-600 font-semibold">
-            <span id="loaderStepText">Gathering reading passage information...</span>
-            <span id="loaderPctText">Step 1 of 3</span>
-          </div>
-          <div class="w-full bg-stone-200 rounded-full h-2 overflow-hidden">
-            <div id="progressBarFill" class="bg-sky-700 h-2 rounded-full progress-bar-fill"></div>
+        <div class="flex items-center space-x-2 text-xs text-stone-500 pt-1">
+          <span class="font-medium">Quick Suggestions:</span>
+          <div class="flex flex-wrap gap-1.5">
+            <button onclick="setQuickTopic('Deep Ocean Vents')" class="bg-stone-100 hover:bg-stone-200 text-stone-700 px-2.5 py-1 rounded border border-stone-200">🌊 Deep Ocean Vents</button>
+            <button onclick="setQuickTopic('WWII Codebreakers')" class="bg-stone-100 hover:bg-stone-200 text-stone-700 px-2.5 py-1 rounded border border-stone-200">🛈 WWII Codebreakers</button>
+            <button onclick="setQuickTopic('Classic Literature')" class="bg-stone-100 hover:bg-stone-200 text-stone-700 px-2.5 py-1 rounded border border-stone-200">📖 Classic Literature</button>
+            <button onclick="setQuickTopic('Gothic Architecture')" class="bg-stone-100 hover:bg-stone-200 text-stone-700 px-2.5 py-1 rounded border border-stone-200">🏰 Gothic Architecture</button>
           </div>
         </div>
       </div>
 
-      <!-- TABS -->
-      <div class="flex space-x-2 border-b border-stone-300 pb-2 font-sans-ui">
-        <button onclick="switchTab('diagnostic')" class="tab-btn px-4 py-2 text-sm font-semibold rounded-md bg-sky-800 text-white shadow-sm">1. Standardized Diagnostic</button>
-        <button onclick="switchTab('module1')" class="tab-btn px-4 py-2 text-sm font-semibold rounded-md bg-white text-stone-700 border border-stone-300">Module 1 (Accelerator)</button>
-        <button onclick="switchTab('module2')" class="tab-btn px-4 py-2 text-sm font-semibold rounded-md bg-white text-stone-700 border border-stone-300">Module 2 (Visual Flasher)</button>
-        <button onclick="switchTab('module3')" class="tab-btn px-4 py-2 text-sm font-semibold rounded-md bg-white text-stone-700 border border-stone-300">Module 3 (PQRST Reader)</button>
-      </div>
-
-      <!-- TAB 1: DIAGNOSTIC -->
-      <section id="tab-diagnostic" class="tab-content space-y-4">
-        <div class="bg-white p-6 rounded-xl border border-stone-300 shadow-sm">
-          <div class="flex justify-between items-center mb-3 font-sans-ui">
-            <h2 class="text-lg font-bold text-sky-950">Step 1: Standardized Fluency Sprint</h2>
-            <div class="flex space-x-2 text-xs">
-              <button id="formABtn" onclick="setBenchmarkForm('FormA')" class="px-3 py-1 rounded-md bg-sky-800 text-white font-bold">Form A (Baseline)</button>
-              <button id="formBBtn" onclick="setBenchmarkForm('FormB')" class="px-3 py-1 rounded-md bg-stone-200 text-stone-700 font-bold">Form B (Re-Test)</button>
-            </div>
-          </div>
-          
-          <p class="text-xs text-stone-500 mb-4 font-sans-ui">Read the calibrated passage at your normal speed. Click "Finished Reading" when done.</p>
-          
-          <div id="diagText" class="bg-[#faf8f5] p-6 rounded-lg border border-stone-200 text-slate-900 leading-loose text-lg mb-5 min-h-[140px] max-w-2xl mx-auto shadow-inner"></div>
-
-          <div class="font-sans-ui">
-            <button id="diagStartBtn" onclick="startDiagnostic()" class="w-full bg-sky-800 hover:bg-sky-900 font-bold py-2.5 rounded-md text-white shadow-sm">Start Diagnostic Sprint</button>
-            <button id="diagFinishBtn" onclick="finishDiagnostic()" class="hidden w-full bg-emerald-700 hover:bg-emerald-800 font-bold py-2.5 rounded-md text-white shadow-sm">I Finished Reading!</button>
-          </div>
-
-          <div id="diagQuiz" class="hidden mt-6 space-y-4 pt-5 border-t border-stone-200 font-sans-ui">
-            <div class="flex justify-between items-center">
-              <p class="text-sm font-bold text-amber-900">Comprehension Verification Check (3 Questions):</p>
-              <span class="text-xs text-stone-500 font-mono">Literal • Inferential • Vocabulary</span>
-            </div>
-            <div id="diagQuizQuestionsContainer" class="space-y-4"></div>
-            <button onclick="submitDiagnostic()" class="bg-indigo-700 hover:bg-indigo-800 px-5 py-2.5 rounded-md text-sm font-bold mt-2 text-white shadow-sm">Calculate ERR & Save Score</button>
-          </div>
+      <!-- LOADING PROGRESS BAR -->
+      <div id="generationStatus" class="hidden space-y-2 pt-2">
+        <div class="flex justify-between text-xs text-stone-600 font-semibold">
+          <span id="statusText">Loading passage...</span>
+          <span id="pctText">100%</span>
         </div>
-      </section>
-
-      <!-- TAB 2: MODULE 1 -->
-      <section id="tab-module1" class="tab-content hidden space-y-4">
-        <div class="bg-white p-6 rounded-xl border border-stone-300 space-y-4 shadow-sm">
-          <div class="flex justify-between items-center border-b border-stone-200 pb-3 font-sans-ui">
-            <div>
-              <h2 id="m1Title" class="text-lg font-bold text-sky-950">Module 1: Focus Shutter Accelerator</h2>
-              <p class="text-xs text-stone-500">💡 <strong>How to practice:</strong> Keep your gaze inside the moving highlight window to eliminate line re-reading.</p>
-            </div>
-            <div class="flex items-center space-x-2">
-              <label for="wpmInput" class="text-xs text-stone-600 font-semibold">Speed (WPM):</label>
-              <input type="number" id="wpmInput" value="180" class="w-16 bg-stone-50 border border-stone-300 rounded-md px-2 py-1 text-xs text-sky-900 font-bold">
-            </div>
-          </div>
-
-          <div id="shutterViewport" class="bg-[#faf8f5] p-6 rounded-lg border border-stone-200 h-96 overflow-y-auto space-y-4 text-lg leading-[2.2] relative scroll-smooth max-w-2xl mx-auto shadow-inner">
-            <div id="shutterContainer" class="space-y-4"></div>
-          </div>
-
-          <div class="flex space-x-2 mt-4 font-sans-ui">
-            <button onclick="startShutter()" class="flex-1 bg-sky-800 hover:bg-sky-900 text-white font-bold py-2.5 rounded-md shadow-sm">Start Shutter Pacer</button>
-            <button onclick="stopShutter()" class="bg-stone-200 hover:bg-stone-300 px-4 py-2.5 rounded-md text-stone-700 font-bold">Stop</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- TAB 3: MODULE 2 -->
-      <section id="tab-module2" class="tab-content hidden space-y-4">
-        <div class="bg-white p-6 rounded-xl border border-stone-300 space-y-5 text-center font-sans-ui shadow-sm">
-          <div class="border-b border-stone-200 pb-3 text-left flex justify-between items-center">
-            <div>
-              <h2 class="text-lg font-bold text-sky-950">Module 2: Morpho-Visual Flasher</h2>
-              <p class="text-xs text-stone-500">🎯 <strong>How to practice:</strong> Keep your eyes locked on the red ┼ crosshair. Target red letters align directly underneath.</p>
-            </div>
-            <span id="flashCounter" class="bg-stone-100 border border-stone-300 text-stone-700 px-3 py-1 rounded-md text-xs font-bold">Ready: 0 / 0 Flashes</span>
-          </div>
-
-          <div class="flex justify-center items-center space-x-3 text-xs">
-            <span class="text-stone-600 font-semibold">Flash Speed:</span>
-            <button onclick="setFlashSpeed(500)" id="spd500" class="px-3 py-1 rounded-md bg-stone-200 text-stone-700 font-bold">500ms (Slow)</button>
-            <button onclick="setFlashSpeed(350)" id="spd350" class="px-3 py-1 rounded-md bg-indigo-700 text-white font-bold">350ms (Medium)</button>
-            <button onclick="setFlashSpeed(200)" id="spd200" class="px-3 py-1 rounded-md bg-stone-200 text-stone-700 font-bold">200ms (Fast)</button>
-          </div>
-
-          <div class="h-44 bg-[#faf8f5] rounded-lg border border-stone-200 flex flex-col items-center justify-center relative overflow-hidden max-w-xl mx-auto shadow-inner">
-            <div class="text-red-600 font-extrabold text-2xl mb-1 pointer-events-none">┼</div>
-            <div id="flashDisplay" class="text-xl font-bold tracking-wide h-10 flex items-center justify-center w-full">
-              Ready?
-            </div>
-          </div>
-
-          <button onclick="startFlasher()" class="bg-indigo-700 hover:bg-indigo-800 font-bold px-8 py-2.5 rounded-md text-white text-sm shadow-sm">Start Optical Training Session</button>
-        </div>
-      </section>
-
-      <!-- TAB 4: MODULE 3 -->
-      <section id="tab-module3" class="tab-content hidden space-y-4">
-        <div class="bg-white p-6 rounded-xl border border-stone-300 space-y-4 shadow-sm">
-          <div class="border-b border-stone-200 pb-3 flex justify-between items-center font-sans-ui">
-            <div>
-              <h2 class="text-lg font-bold text-sky-950">Module 3: PQRST Active Reading</h2>
-              <p class="text-xs text-stone-500">📘 <strong>How to practice:</strong> Preview key ideas, answer guiding questions, and verify comprehension across 3 question types.</p>
-            </div>
-            <button onclick="pqrstReset()" class="bg-stone-200 hover:bg-stone-300 text-stone-700 text-xs px-3 py-1 rounded-md font-bold">🔄 Restart Passage</button>
-          </div>
-          
-          <div id="pqrstStep1" class="space-y-3">
-            <span class="text-xs bg-indigo-100 text-indigo-900 border border-indigo-200 px-2.5 py-1 rounded-md font-bold font-sans-ui">Step 1: Preview & Question</span>
-            <h3 id="pqrstTitle" class="font-bold text-amber-900 text-lg">Passage Title</h3>
-            <p id="pqrstPreview" class="text-sm text-slate-800 leading-relaxed bg-[#faf8f5] p-4 rounded-lg border border-stone-200">Preview summary...</p>
-            <div class="bg-stone-100 p-3.5 rounded-lg border border-stone-300 text-xs text-stone-700 font-sans-ui">
-              <strong>Guiding Question:</strong> <span id="pqrstQuestion">Guiding question...</span>
-            </div>
-            <button onclick="pqrstNext(2)" class="bg-sky-800 hover:bg-sky-900 text-white font-bold px-4 py-2 rounded-md text-sm mt-2 font-sans-ui shadow-sm">Proceed to Paced Read</button>
-          </div>
-
-          <div id="pqrstStep2" class="hidden space-y-3">
-            <span class="text-xs bg-emerald-100 text-emerald-900 border border-emerald-200 px-2.5 py-1 rounded-md font-bold font-sans-ui">Step 2: Read & Recite</span>
-            <div id="pqrstPassageText" class="bg-[#faf8f5] p-6 rounded-lg border border-stone-200 text-slate-900 leading-loose text-lg max-w-2xl mx-auto shadow-inner"></div>
-            <button onclick="pqrstNext(3)" class="bg-amber-700 hover:bg-amber-800 text-white font-bold px-4 py-2 rounded-md text-sm mt-2 font-sans-ui shadow-sm">Recite & Test Knowledge</button>
-          </div>
-
-          <div id="pqrstStep3" class="hidden space-y-4 font-sans-ui">
-            <div class="flex justify-between items-center">
-              <span class="text-xs bg-purple-100 text-purple-900 border border-purple-200 px-2.5 py-1 rounded-md font-bold">Step 3: Review & 3-Question Verification Quiz</span>
-              <span class="text-xs text-stone-500 font-mono">3 Questions • Mixed Cognitive Depth</span>
-            </div>
-            <div id="pqrstQuizContainer" class="space-y-4"></div>
-            <button onclick="submitPqrstQuiz()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-5 py-2.5 rounded-md text-sm mt-2 shadow-sm">Submit 3-Question Quiz</button>
-          </div>
-        </div>
-      </section>
-    </main>
-
-  </div>
-
-  <!-- EDUCATOR FIELD GUIDE MODAL -->
-  <div id="guideModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden font-sans-ui">
-    <div class="bg-white border border-stone-300 rounded-xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl">
-      <div class="p-4 border-b border-stone-200 flex justify-between items-center bg-stone-50 rounded-t-xl no-print">
-        <h2 class="text-lg font-bold text-sky-950 flex items-center space-x-2">
-          <span>📖 Educator & Parent Field Guide</span>
-        </h2>
-        <div class="flex items-center space-x-2">
-          <button onclick="downloadPDFGuide()" class="bg-indigo-700 hover:bg-indigo-800 text-white text-xs px-3 py-1.5 rounded-md font-bold shadow-sm">Download PDF</button>
-          <button onclick="closeGuideModal()" class="text-stone-500 hover:text-stone-800 text-lg font-bold px-2">✕</button>
+        <div class="w-full bg-stone-100 rounded-full h-2 overflow-hidden border border-stone-200">
+          <div id="fillBar" class="bg-indigo-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
         </div>
       </div>
-      <div id="printableGuide" class="p-6 overflow-y-auto space-y-6 text-slate-800 text-sm leading-relaxed">
-        <div class="border-b border-stone-200 pb-3">
-          <h1 class="text-xl font-bold text-sky-900">Cognitive Reading Pacer — Field Manual</h1>
-          <p class="text-xs text-stone-500 mt-1">Catholic Middle School Edition • Research-Backed Fluency & Comprehension Protocol</p>
-        </div>
-        <section class="space-y-2">
-          <h3 class="font-bold text-sky-950 text-base">1. Key Metrics & Definitions</h3>
-          <div class="bg-stone-50 p-4 rounded-lg border border-stone-200 space-y-2 text-xs">
-            <p><strong>WPM (Words Per Minute):</strong> Pure physical tracking speed across lines of text ($\text{Words} / \text{Seconds} \times 60$).</p>
-            <p><strong>Comprehension %:</strong> Accuracy score on 3-question verification check ($100\%$, $67\%$, $33\%$, or $0\%$).</p>
-            <p><strong>ERR (Effective Reading Rate):</strong> Calculated as $\text{WPM} \times \text{Comprehension \%}$.</p>
-            <p><strong>&Delta;ERR (Growth Delta):</strong> True cognitive growth measured between Form A (Baseline) and Form B (Re-Test).</p>
-          </div>
-        </section>
-        <section class="space-y-2">
-          <h3 class="font-bold text-sky-950 text-base">2. Pedagogical Rationale & Research Base</h3>
-          <p class="text-xs text-stone-700 leading-normal">
-            Middle school reading interventions often fall into two extremes: physical speed reading without understanding, or passive reading without focus pacing. The Cognitive Reading Pacer bridges these modalities by targeting <strong>saccadic eye movement efficiency</strong> and <strong>working memory retention</strong>.
-          </p>
-          <ul class="list-disc pl-5 text-xs text-stone-700 space-y-1">
-            <li><strong>Focus Shutter (Module 1):</strong> Eliminates line re-reading (subvocal regressions) by highlighting one line at a time in a soft yellow lens while dimming peripheral distractors.</li>
-            <li><strong>Morpho-Visual Flasher (Module 2):</strong> Uses Optimal Anchor Point (OAP) targeting underneath a red crosshair, expanding visual span from single letters to 3-word phrase chunks.</li>
-            <li><strong>PQRST Active Reading (Module 3):</strong> Structures metacognitive recall through <em>Preview, Question, Read, Summary Recite, and Test</em> verification.</li>
-          </ul>
-        </section>
-        <section class="space-y-2 print-break-before">
-          <h3 class="font-bold text-sky-950 text-base">3. Weekly 3-Session Implementation Protocol</h3>
-          <table class="w-full text-left text-xs border-collapse border border-stone-300">
-            <thead>
-              <tr class="bg-stone-100 text-stone-700 font-bold border-b border-stone-300">
-                <th class="p-2 border-r border-stone-300">Session</th>
-                <th class="p-2 border-r border-stone-300">Target Module</th>
-                <th class="p-2 border-r border-stone-300">Duration</th>
-                <th class="p-2">Focus Goal</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-stone-200">
-              <tr>
-                <td class="p-2 border-r border-stone-300 font-semibold">Day 1</td>
-                <td class="p-2 border-r border-stone-300">Standardized Sprint + M1</td>
-                <td class="p-2 border-r border-stone-300">15 mins</td>
-                <td class="p-2">Establish baseline ERR on Form A, set Focus Shutter to +10 WPM above baseline.</td>
-              </tr>
-              <tr>
-                <td class="p-2 border-r border-stone-300 font-semibold">Day 2</td>
-                <td class="p-2 border-r border-stone-300">Module 2 (Visual Flasher)</td>
-                <td class="p-2 border-r border-stone-300">12 mins</td>
-                <td class="p-2">Complete 25 flashes at 350ms setting. Lock eye gaze on red target crosshair.</td>
-              </tr>
-              <tr>
-                <td class="p-2 border-r border-stone-300 font-semibold">Day 3</td>
-                <td class="p-2 border-r border-stone-300">Module 3 + Form B Re-Test</td>
-                <td class="p-2 border-r border-stone-300">15 mins</td>
-                <td class="p-2">Complete PQRST active read and execute Form B Re-Test sprint to calculate &Delta;ERR growth.</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-        <section class="space-y-2">
-          <h3 class="font-bold text-sky-950 text-base">4. Lexile Band Calibration Reference</h3>
-          <div class="grid grid-cols-2 gap-3 text-xs">
-            <div class="bg-stone-50 p-3 rounded border border-stone-200">
-              <span class="font-bold text-sky-900">Foundational Band (400L – 550L)</span>
-              <p class="text-stone-600 mt-1">Short sentences, high frequency words. Ideal for 5th grade fluency building or struggling readers.</p>
-            </div>
-            <div class="bg-stone-50 p-3 rounded border border-stone-200">
-              <span class="font-bold text-sky-900">Intermediate Band (600L – 750L)</span>
-              <p class="text-stone-600 mt-1">Standard 6th/7th grade benchmark. Balanced compound sentences with domain vocabulary.</p>
-            </div>
-            <div class="bg-stone-50 p-3 rounded border border-stone-200">
-              <span class="font-bold text-sky-900">Advanced Band (800L – 950L)</span>
-              <p class="text-stone-600 mt-1">7th/8th grade honors target. Multi-clause sentences, high-level vocabulary, non-fiction domain topics.</p>
-            </div>
-            <div class="bg-stone-50 p-3 rounded border border-stone-200">
-              <span class="font-bold text-sky-900">Mastery Band (1000L+)</span>
-              <p class="text-stone-600 mt-1">High school readiness & IXL top band. Complex technical syntax and abstract concepts.</p>
-            </div>
-          </div>
-        </section>
-        <section class="space-y-2 pt-2 border-t border-stone-200">
-          <h3 class="font-bold text-sky-950 text-base">5. Troubleshooting & Support</h3>
-          <p class="text-xs text-stone-600">
-            For school roster adjustments or domain access questions (@avemaria.school or @aveangels.org), contact the Ave Maria Middle School Reading Intervention Team.
-          </p>
-        </section>
+    </div>
+
+    <!-- MODULE TAB NAVIGATION -->
+    <div class="border-b border-stone-200">
+      <nav class="flex space-x-4">
+        <button onclick="switchTab('diagnostic')" id="tab-diagnostic" class="tab-btn pb-3 px-1 text-sm font-semibold border-b-2 border-transparent text-stone-500 hover:text-stone-800 transition-colors">
+          1. Standardized Diagnostic
+        </button>
+        <button onclick="switchTab('module1')" id="tab-module1" class="tab-btn pb-3 px-1 text-sm font-semibold border-b-2 border-indigo-600 text-indigo-600 transition-colors">
+          Module 1 (Accelerator)
+        </button>
+        <button onclick="switchTab('module2')" id="tab-module2" class="tab-btn pb-3 px-1 text-sm font-semibold border-b-2 border-transparent text-stone-500 hover:text-stone-800 transition-colors">
+          Module 2 (Visual Flasher)
+        </button>
+        <button onclick="switchTab('module3')" id="tab-module3" class="tab-btn pb-3 px-1 text-sm font-semibold border-b-2 border-transparent text-stone-500 hover:text-stone-800 transition-colors">
+          Module 3 (PQRST Reader)
+        </button>
+      </nav>
+    </div>
+
+    <!-- MODULE CONTENT CONTAINERS -->
+    <div id="diagnostic" class="tab-content hidden bg-white rounded-xl border border-stone-200 p-6 shadow-sm">
+      <h3 class="text-lg font-bold text-stone-900 mb-2">Standardized Reading Diagnostic</h3>
+      <p class="text-sm text-stone-600">Diagnostic baseline assessment modules load here.</p>
+    </div>
+
+    <div id="module1" class="tab-content bg-white rounded-xl border border-stone-200 p-6 shadow-sm space-y-4">
+      <div class="flex justify-between items-center border-b border-stone-100 pb-3">
+        <h3 id="m1Title" class="text-lg font-bold text-stone-900">Module 1: Wonders of the Hydrothermal Vents</h3>
+        <div class="text-xs font-semibold text-stone-500">Speed (WPM): <span id="m1Speed" class="text-indigo-600 font-bold text-sm">180</span></div>
+      </div>
+      <div id="m1PassageContainer" class="p-6 bg-stone-50 border border-stone-200 rounded-lg text-lg leading-relaxed text-stone-800 min-h-[160px]">
+        Deep on the ocean floor, far below where sunlight can reach...
+      </div>
+    </div>
+
+    <div id="module2" class="tab-content hidden bg-white rounded-xl border border-stone-200 p-6 shadow-sm">
+      <h3 class="text-lg font-bold text-stone-900 mb-2">Module 2: Visual Flasher</h3>
+      <p class="text-sm text-stone-600">Visual pacing flasher modules load here.</p>
+    </div>
+
+    <div id="module3" class="tab-content hidden bg-white rounded-xl border border-stone-200 p-6 shadow-sm">
+      <h3 id="m3Title" class="text-lg font-bold text-stone-900 mb-2">Module 3: PQRST Reader & Comprehension</h3>
+      <div id="m3Questions" class="space-y-4 text-sm text-stone-700">
+        Comprehension checks load here...
+      </div>
+    </div>
+
+  </main>
+
+  <!-- EDUCATOR GUIDE MODAL -->
+  <div id="guideModal" class="hidden fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-stone-200 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-start border-b border-stone-100 pb-3">
+        <h3 class="text-lg font-bold text-stone-900">Educator Guide & Curriculum Overview</h3>
+        <button onclick="closeGuideModal()" class="text-stone-400 hover:text-stone-600 text-xl font-bold">&times;</button>
+      </div>
+      <div class="text-sm text-stone-600 space-y-3">
+        <p>This Cognitive Reading Pacer delivers zero-latency passage modules mapped to IXL Lexile bands and Catholic middle school standards.</p>
+        <p><strong>Training Rhythm:</strong> 3-4 practice sessions per week across 12 weeks for optimal articulation pacing (OAP) and comprehension gains.</p>
+      </div>
+      <div class="flex justify-end space-x-3 pt-4 border-t border-stone-100">
+        <button onclick="downloadPDFGuide()" class="bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-semibold px-4 py-2 rounded-lg transition-colors">Print Guide</button>
+        <button onclick="closeGuideModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors">Close</button>
       </div>
     </div>
   </div>
 
-  <!-- FIREBASE SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAI-HxstOGHjbCxldCJw6RBSosU2kpcs7s",
-      authDomain: "readingpacerapp.firebaseapp.com",
-      projectId: "readingpacerapp",
-      storageBucket: "readingpacerapp.firebasestorage.app",
-      messagingSenderId: "279318284121",
-      appId: "1:279318284121:web:ccb12cb9c95393f42d6e48",
-      measurementId: "G-HMLNRLEQGB"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const provider = new GoogleAuthProvider();
-
-    let currentUser = null;
-
-    window.loginWithGoogle = async () => {
-      try { await signInWithPopup(auth, provider); } catch (err) { alert("Auth Error: " + err.message); }
-    };
-
-    window.handleAuthAction = () => {
-      if (currentUser) { signOut(auth); } else { window.loginWithGoogle(); }
-    };
-
-    onAuthStateChanged(auth, async (user) => {
-      const loggedOutState = document.getElementById('loggedOutState');
-      const teacherPortal = document.getElementById('teacherPortal');
-      const studentPortal = document.getElementById('studentPortal');
-      const authBtn = document.getElementById('authBtn');
-      const userInfoBox = document.getElementById('userInfoBox');
-
-      if (user) {
-        currentUser = user;
-        const email = user.email || '';
-        document.getElementById('userNameDisplay').innerText = user.displayName || 'User';
-        document.getElementById('userDomainDisplay').innerText = email;
-        userInfoBox.classList.remove('hidden');
-        authBtn.innerText = "Sign Out";
-        authBtn.className = "bg-stone-200 hover:bg-stone-300 border border-stone-300 text-xs px-3 py-2 rounded text-stone-800 font-bold shadow-sm";
-        loggedOutState.classList.add('hidden');
-
-        if (email.endsWith('@avemaria.school')) {
-          teacherPortal.classList.remove('hidden');
-          studentPortal.classList.add('hidden');
-          listenToTeacherRoster();
-        } else {
-          studentPortal.classList.remove('hidden');
-          teacherPortal.classList.add('hidden');
-          loadStudentProfile(user);
-        }
-      } else {
-        currentUser = null;
-        userInfoBox.classList.add('hidden');
-        authBtn.innerText = "Sign In with Google";
-        authBtn.className = "bg-emerald-700 hover:bg-emerald-800 text-xs px-3 py-2 rounded text-white font-bold shadow-sm";
-        loggedOutState.classList.remove('hidden');
-        teacherPortal.classList.add('hidden');
-        studentPortal.classList.add('hidden');
-      }
-    });
-
-    async function loadStudentProfile(user) {
-      const userRef = doc(db, 'students', user.uid);
-      const snap = await getDoc(userRef);
-      if (snap.exists() && snap.data().baselineERR) {
-        window.baselineERR = snap.data().baselineERR;
-        document.getElementById('studentBaselineDisplay').innerText = `${snap.data().baselineERR} ERR`;
-      }
-    }
-
-    window.saveStudentAssessment = async (formType, rawWpm, accuracy, calculatedERR) => {
-      if (!currentUser || window.isTeacherDemoActive) return;
-      const studentRef = doc(db, 'students', currentUser.uid);
-      const updateData = { name: currentUser.displayName, email: currentUser.email, lexileTier: window.currentLexileTier || 'tier2', lastUpdated: new Date() };
-      if (formType === 'FormA') { updateData.formA_ERR = calculatedERR; updateData.baselineERR = calculatedERR; window.baselineERR = calculatedERR; document.getElementById('studentBaselineDisplay').innerText = `${calculatedERR} ERR`; } 
-      else { updateData.formB_ERR = calculatedERR; }
-      await setDoc(studentRef, updateData, { merge: true });
-    };
-
-    function listenToTeacherRoster() {
-      const rosterBody = document.getElementById('teacherRosterBody');
-      onSnapshot(collection(db, 'students'), (snapshot) => {
-        if (snapshot.empty) { rosterBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-stone-500">No student assessments recorded yet.</td></tr>`; return; }
-        let html = '';
-        snapshot.forEach(docSnap => {
-          const s = docSnap.data();
-          const formA = s.formA_ERR ? `${s.formA_ERR} ERR` : 'Unset';
-          const formB = s.formB_ERR ? `${s.formB_ERR} ERR` : 'Unset';
-          const delta = (s.formA_ERR && s.formB_ERR) ? (s.formB_ERR - s.formA_ERR) : null;
-          const deltaStr = delta !== null ? (delta >= 0 ? `+${delta} ERR` : `${delta} ERR`) : 'N/A';
-          html += `<tr class="hover:bg-stone-50"><td class="p-3 font-semibold text-slate-900">${s.name || 'Student'}</td><td class="p-3"><span class="bg-stone-100 text-sky-900 border border-stone-200 px-2 py-0.5 rounded font-mono">${s.lexileTier || 'tier2'}</span></td><td class="p-3 font-mono text-stone-600">${formA}</td><td class="p-3 font-mono text-emerald-800 font-bold">${formB}</td><td class="p-3"><span class="text-emerald-800 font-bold">${deltaStr}</span></td><td class="p-3 text-right"><span class="bg-stone-200 text-stone-700 px-2 py-1 rounded text-[10px] font-bold">Active</span></td></tr>`;
-        });
-        rosterBody.innerHTML = html;
-      });
-    }
-  </script>
-
-  <!-- APP SCRIPTS & MODULES -->
-  <script src="js/benchmarkData.js"></script>
-  <script src="js/diagnostic.js"></script>
-  <script src="js/focusShutter.js"></script>
-  <script src="js/visualFlasher.js"></script>
-  <script src="js/pqrstReader.js"></script>
-
-  <!-- MAIN UI CONTROLLER & AI GENERATOR -->
+  <!-- SCRIPT ENGINE (ES MODULE WITH WINDOW GLOBALS) -->
   <script type="module">
     import { getPassageByTopicOrLexile } from './js/library/index.js';
+
+    // 1. Explicitly attach Library Function to Window
     window.getPassageByTopicOrLexile = getPassageByTopicOrLexile;
-  
-    // Explicitly attach modal & demo functions to window for onclick buttons
+
+    // 2. Modal Functions attached to Window
     window.openGuideModal = function() {
       document.getElementById('guideModal')?.classList.remove('hidden');
     };
-  
+
     window.closeGuideModal = function() {
       document.getElementById('guideModal')?.classList.add('hidden');
     };
-  
+
     window.downloadPDFGuide = function() {
       window.openGuideModal();
       setTimeout(() => { window.print(); }, 200);
     };
-  
+
+    // 3. Faculty Demo Mode Toggle attached to Window
+    window.isTeacherDemoActive = false;
     window.toggleTeacherDemoView = function() {
       window.isTeacherDemoActive = !window.isTeacherDemoActive;
       
-      document.getElementById('teacherPortal')?.classList.toggle('hidden', window.isTeacherDemoActive);
-      document.getElementById('studentPortal')?.classList.toggle('hidden', !window.isTeacherDemoActive);
-      document.getElementById('demoBanner')?.classList.toggle('hidden', !window.isTeacherDemoActive);
+      const banner = document.getElementById('demoBanner');
+      if (banner) banner.classList.toggle('hidden', !window.isTeacherDemoActive);
       
       const demoBtn = document.getElementById('demoToggleBtn');
       if (demoBtn) {
@@ -583,148 +216,87 @@
       }
     };
 
-    window.isTeacherDemoActive = false;
-    function toggleTeacherDemoView() {
-      window.isTeacherDemoActive = !window.isTeacherDemoActive;
-      document.getElementById('teacherPortal').classList.toggle('hidden', window.isTeacherDemoActive);
-      document.getElementById('studentPortal').classList.toggle('hidden', !window.isTeacherDemoActive);
-      document.getElementById('demoBanner').classList.toggle('hidden', !window.isTeacherDemoActive);
-      document.getElementById('demoToggleBtn').innerText = window.isTeacherDemoActive ? "🔙 Return to Dashboard" : "👁️ Preview Student Experience (Demo Mode)";
-    }
-
-    window.currentLexileTier = 'tier2';
-    window.currentBenchmarkForm = 'FormA';
-
-    window.currentData = {
-      title: "Volcanoes",
-      passage: window.benchmarkBank.tier2.FormA.passage,
-      preview: "Volcanoes are dangerous crustal vents caused by magma pressure.",
-      guiding_question: "How do scientists monitor volcanic eruptions?",
-      chunks: [],
-      questions: window.benchmarkBank.tier2.FormA.questions
+    // 4. Accessibility High Contrast Toggle attached to Window
+    window.toggleAccessibilityMode = function() {
+      document.body.classList.toggle('bg-stone-900');
+      document.body.classList.toggle('text-white');
     };
 
-    function onLexileChange() { 
-      window.currentLexileTier = document.getElementById('lexileSelect').value; 
-      loadBenchmarkData(); 
-    }
-
-    function setBenchmarkForm(form) {
-      window.currentBenchmarkForm = form;
-      document.getElementById('formABtn').className = form === 'FormA' ? 'px-3 py-1 rounded-md bg-sky-800 text-white font-bold' : 'px-3 py-1 rounded-md bg-stone-200 text-stone-700 font-bold';
-      document.getElementById('formBBtn').className = form === 'FormB' ? 'px-3 py-1 rounded-md bg-sky-800 text-white font-bold' : 'px-3 py-1 rounded-md bg-stone-200 text-stone-700 font-bold';
-      loadBenchmarkData();
-    }
-
-    function renderQuestionList(containerId, questions, groupPrefix) {
-      const container = document.getElementById(containerId);
-      if (!container) return;
-      
-      const safeQuestions = Array.isArray(questions) ? questions : [];
-      
-      if (safeQuestions.length === 0) {
-        container.innerHTML = `<div class="text-xs text-stone-500 italic p-2">No verification questions available for this passage.</div>`;
-        return;
-      }
-
-      container.innerHTML = safeQuestions.map((q, qIdx) => `
-        <div class="bg-[#faf8f5] p-4 rounded-lg border border-stone-200 space-y-2 text-xs">
-          <div class="flex justify-between font-bold text-sky-950">
-            <span>${q.question || 'Question'}</span>
-            <span class="text-[10px] bg-stone-200 text-stone-700 px-2 py-0.5 rounded font-mono">${q.type || 'Comprehension'}</span>
-          </div>
-          <div class="space-y-1.5 pl-2">
-            ${(q.options || []).map((opt, oIdx) => `
-              <label class="block cursor-pointer text-slate-800 hover:text-slate-950">
-                <input type="radio" name="${groupPrefix}_q${qIdx}" value="${oIdx}"> ${opt}
-              </label>
-            `).join('')}
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function loadBenchmarkData() {
-      const benchmark = window.benchmarkBank[window.currentLexileTier][window.currentBenchmarkForm];
-      document.getElementById('diagText').innerText = benchmark.passage;
-      
-      window.currentData.passage = benchmark.passage;
-      window.currentData.questions = benchmark.questions;
-      window.currentData.chunks = window.buildChunksFromPassage(benchmark.passage);
-
-      renderQuestionList('diagQuizQuestionsContainer', benchmark.questions, 'diag');
-      loadDataIntoModules();
-    }
-
-    function loadDataIntoModules() {
-      const sentences = (window.currentData.passage || "").match(/[^.!?]+[.!?]+/g) || [window.currentData.passage || ""];
-      document.getElementById('shutterContainer').innerHTML = sentences.map((s, i) => `<div id="line-${i}" class="shutter-line dimmed p-3.5 rounded-lg">${s.trim()}</div>`).join('');
-      document.getElementById('m1Title').innerText = "Module 1: " + (window.currentData.title || "Focus Shutter Accelerator");
-
-      document.getElementById('pqrstTitle').innerText = window.currentData.title || "Custom Reading Practice";
-      document.getElementById('pqrstPreview').innerText = window.currentData.preview || "Preview main ideas before reading.";
-      document.getElementById('pqrstQuestion').innerText = window.currentData.guiding_question || "What are the main concepts?";
-      document.getElementById('pqrstPassageText').innerText = window.currentData.passage || "";
-      
-      renderQuestionList('pqrstQuizContainer', window.currentData.questions || [], 'pqrst');
-
-      document.getElementById('flashCounter').innerText = `Ready: 0 / ${(window.currentData.chunks || []).length} Flashes`;
-      window.pqrstReset();
-    }
-
-    loadBenchmarkData();
-
-    function setQuickTopic(topicName) {
+    // 5. Quick Suggestion Handler attached to Window
+    window.setQuickTopic = function(topic) {
       const topicInput = document.getElementById('topicInput');
-      if (topicInput) {
-        topicInput.value = topicName;
-        generateAIContent(); // Automatically trigger generation on click
-      }
-    }
+      if (topicInput) topicInput.value = topic;
+      window.generateAIContent();
+    };
 
+    // 6. Tab Switching Logic attached to Window
+    window.switchTab = function(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('border-indigo-600', 'text-indigo-600');
+        btn.classList.add('border-transparent', 'text-stone-500');
+      });
+
+      const targetTab = document.getElementById(tabId);
+      const targetBtn = document.getElementById('tab-' + tabId);
+
+      if (targetTab) targetTab.classList.remove('hidden');
+      if (targetBtn) {
+        targetBtn.classList.remove('border-transparent', 'text-stone-500');
+        targetBtn.classList.add('border-indigo-600', 'text-indigo-600');
+      }
+    };
+
+    // 7. Passage Loader & Module Data Injection
     window.generateAIContent = function() {
       const topicInput = document.getElementById('topicInput')?.value || '';
       const lexileSelect = document.getElementById('lexileSelect')?.value || '600L - 750L';
 
       const statusContainer = document.getElementById('generationStatus');
       const fillBar = document.getElementById('fillBar');
+      const statusText = document.getElementById('statusText');
       const pctText = document.getElementById('pctText');
 
       if (statusContainer) statusContainer.classList.remove('hidden');
       if (fillBar) fillBar.style.width = '100%';
+      if (statusText) statusText.innerText = 'Loading passage...';
       if (pctText) pctText.innerText = '100%';
 
-      // Instant zero-latency lookup from local library
-      const passageData = window.getPassageByTopicOrLexile ? 
-        window.getPassageByTopicOrLexile(topicInput, lexileSelect) : null;
-
-      if (!passageData) {
-        alert("Library passage could not be loaded.");
-        return;
-      }
-
-      window.currentData = passageData;
-      if (!window.currentData.chunks || window.currentData.chunks.length === 0) {
-        window.currentData.chunks = window.buildChunksFromPassage(window.currentData.passage);
-      }
+      // Instant lookup from local library
+      const passageData = window.getPassageByTopicOrLexile(topicInput, lexileSelect);
 
       setTimeout(() => {
-        if (window.loadDataIntoModules) window.loadDataIntoModules();
-        if (window.switchTab) window.switchTab('module1');
-        
+        if (passageData) {
+          window.currentData = passageData;
+          
+          // Load into Module 1
+          const m1Title = document.getElementById('m1Title');
+          const m1Container = document.getElementById('m1PassageContainer');
+          if (m1Title) m1Title.innerText = 'Module 1: ' + passageData.title;
+          if (m1Container) m1Container.innerText = passageData.passage;
+
+          // Load into Module 3
+          const m3Title = document.getElementById('m3Title');
+          const m3Questions = document.getElementById('m3Questions');
+          if (m3Title) m3Title.innerText = 'Module 3: ' + passageData.title + ' (Comprehension)';
+          if (m3Questions && passageData.questions) {
+            m3Questions.innerHTML = passageData.questions.map((q, idx) => `
+              <div class="p-4 bg-stone-50 border border-stone-200 rounded-lg space-y-2">
+                <p class="font-bold text-stone-900">${idx + 1}. ${q.question} <span class="text-xs text-indigo-600 font-normal">(${q.type})</span></p>
+                <div class="space-y-1 pl-2">
+                  ${q.options.map(opt => `<label class="block text-xs"><input type="radio" name="q${idx}" class="mr-2"> ${opt}</label>`).join('')}
+                </div>
+              </div>
+            `).join('');
+          }
+
+          window.switchTab('module1');
+        }
+
         if (statusContainer) statusContainer.classList.add('hidden');
         if (fillBar) fillBar.style.width = '0%';
-      }, 300);
+      }, 250);
     };
-
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.className = 'tab-btn px-4 py-2 text-sm font-semibold rounded-md bg-white text-stone-700 border border-stone-300';
-      });
-      document.querySelector(`[onclick="switchTab('${tabId}')"]`).className = 'tab-btn px-4 py-2 text-sm font-semibold rounded-md bg-sky-800 text-white shadow-sm';
-      document.getElementById('tab-' + tabId).classList.remove('hidden');
-    }
   </script>
 </body>
 </html>
