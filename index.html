@@ -167,9 +167,30 @@
         </div>
 
         <h2 class="text-sm font-bold text-sky-950 pt-1">Generate Custom Practice Passage</h2>
+        
+        <!-- QUICK TOPIC SUGGESTION PILLS -->
+        <div class="flex flex-wrap gap-1.5 pt-0.5 pb-1 font-sans-ui">
+          <span class="text-[11px] text-stone-500 font-semibold self-center mr-1">Quick Suggestions:</span>
+          <button onclick="setQuickTopic('Deep Ocean Vents')" class="bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-700 text-[11px] px-2 py-0.5 rounded font-medium transition-colors">🐋 Deep Ocean Vents</button>
+          <button onclick="setQuickTopic('Roman Gladiators')" class="bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-700 text-[11px] px-2 py-0.5 rounded font-medium transition-colors">🛡️ Roman Gladiators</button>
+          <button onclick="setQuickTopic('Black Holes')" class="bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-700 text-[11px] px-2 py-0.5 rounded font-medium transition-colors">🌌 Black Holes</button>
+          <button onclick="setQuickTopic('Codebreakers of WWII')" class="bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-700 text-[11px] px-2 py-0.5 rounded font-medium transition-colors">🔐 WWII Codebreakers</button>
+        </div>
+
         <div class="flex space-x-2">
           <input type="text" id="topicInput" placeholder="Topic (e.g., Solar System, Ancient Rome, Rainforests)" class="bg-stone-50 border border-stone-300 text-xs px-3 py-2 rounded-md flex-1 text-slate-900">
           <button onclick="generateAIContent()" id="genBtn" class="bg-indigo-700 hover:bg-indigo-800 font-bold px-4 py-2 text-xs rounded-md text-white shadow-sm">Generate Content</button>
+        </div>
+
+        <!-- SMOOTHED PROGRESS BAR UI ANIMATION -->
+        <div id="genStatusContainer" class="hidden space-y-2 pt-2 font-sans-ui">
+          <div class="flex justify-between text-xs text-stone-600 font-semibold">
+            <span id="loaderStepText">Step 1 of 3: Gathering passage content...</span>
+            <span id="loaderPctText" class="font-mono text-sky-900">33%</span>
+          </div>
+          <div class="w-full bg-stone-200 rounded-full h-2 overflow-hidden">
+            <div id="progressBarFill" class="bg-sky-700 h-2 rounded-full transition-all duration-700 ease-out" style="width: 0%;"></div>
+          </div>
         </div>
 
         <!-- PROGRESS BAR UI ANIMATION -->
@@ -641,11 +662,19 @@
 
     loadBenchmarkData();
 
+    function setQuickTopic(topicName) {
+      const topicInput = document.getElementById('topicInput');
+      if (topicInput) {
+        topicInput.value = topicName;
+      }
+    }
+
     async function generateAIContent() {
       const topic = document.getElementById('topicInput').value.trim();
       const statusContainer = document.getElementById('genStatusContainer');
       const stepText = document.getElementById('loaderStepText');
       const pctText = document.getElementById('loaderPctText');
+      const fillBar = document.getElementById('progressBarFill');
       const genBtn = document.getElementById('genBtn');
       const topicInput = document.getElementById('topicInput');
 
@@ -655,20 +684,26 @@
       genBtn.disabled = true;
       topicInput.disabled = true;
 
-      stepText.innerText = "Gathering passage content & historical context...";
-      pctText.innerText = "Step 1 of 3";
+      // STEP 1: START (33%)
+      stepText.innerText = "Step 1 of 3: Gathering passage content & context...";
+      pctText.innerText = "33%";
+      fillBar.style.width = "33%";
 
       const lexileLabel = document.getElementById('lexileSelect').options[document.getElementById('lexileSelect').selectedIndex].text;
 
+      // STEP 2: CHUNK CALIBRATION (66%)
       const timer1 = setTimeout(() => {
-        stepText.innerText = "Calibrating Lexile readability & optical chunk array...";
-        pctText.innerText = "Step 2 of 3";
-      }, 1400);
+        stepText.innerText = "Step 2 of 3: Calibrating Lexile readability & phrase chunks...";
+        pctText.innerText = "66%";
+        fillBar.style.width = "66%";
+      }, 1000);
 
+      // STEP 3: QUIZ FORMATTING (95%)
       const timer2 = setTimeout(() => {
-        stepText.innerText = "Building 3-question comprehension check...";
-        pctText.innerText = "Step 3 of 3";
-      }, 2800);
+        stepText.innerText = "Step 3 of 3: Building 3-question verification check...";
+        pctText.innerText = "95%";
+        fillBar.style.width = "95%";
+      }, 2000);
 
       try {
         const response = await fetch('/api/generate', {
@@ -685,19 +720,30 @@
           throw new Error(errData.error || `HTTP ${response.status}`);
         }
 
+        // COMPLETE (100%)
+        fillBar.style.width = "100%";
+        pctText.innerText = "100%";
+
         window.currentData = await response.json();
         if (!window.currentData.chunks || window.currentData.chunks.length === 0) {
           window.currentData.chunks = window.buildChunksFromPassage(window.currentData.passage);
         }
-        loadDataIntoModules();
-        switchTab('module1');
+        
+        setTimeout(() => {
+          loadDataIntoModules();
+          switchTab('module1');
+        }, 300);
+
       } catch (err) {
         console.error("API Error:", err);
         alert("Generation Error: " + err.message);
       } finally {
-        statusContainer.classList.add('hidden');
-        genBtn.disabled = false;
-        topicInput.disabled = false;
+        setTimeout(() => {
+          statusContainer.classList.add('hidden');
+          fillBar.style.width = "0%";
+          genBtn.disabled = false;
+          topicInput.disabled = false;
+        }, 400);
       }
     }
 
