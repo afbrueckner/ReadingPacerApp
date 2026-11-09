@@ -555,24 +555,33 @@
   <script type="module">
     import { getPassageByTopicOrLexile } from './js/library/index.js';
     window.getPassageByTopicOrLexile = getPassageByTopicOrLexile;
-        
-    function openGuideModal() { document.getElementById('guideModal').classList.remove('hidden'); }
-    function closeGuideModal() { document.getElementById('guideModal').classList.add('hidden'); }
-    function downloadPDFGuide() { openGuideModal(); setTimeout(() => { window.print(); }, 200); }
-
-    function toggleAccessibilityMode() {
-      const isEnabled = document.body.classList.toggle('accessibility-mode');
-      const btn = document.getElementById('accessToggleBtn');
-      if (btn) {
-        if (isEnabled) {
-          btn.className = "bg-sky-900 text-white border border-sky-950 text-xs px-2.5 py-1.5 rounded-md font-bold shadow-sm";
-          btn.innerText = "✓ Aa High Contrast (Active)";
-        } else {
-          btn.className = "bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-700 text-xs px-2.5 py-1.5 rounded-md font-bold transition-colors";
-          btn.innerText = "Aa High Contrast";
-        }
+  
+    // Explicitly attach modal & demo functions to window for onclick buttons
+    window.openGuideModal = function() {
+      document.getElementById('guideModal')?.classList.remove('hidden');
+    };
+  
+    window.closeGuideModal = function() {
+      document.getElementById('guideModal')?.classList.add('hidden');
+    };
+  
+    window.downloadPDFGuide = function() {
+      window.openGuideModal();
+      setTimeout(() => { window.print(); }, 200);
+    };
+  
+    window.toggleTeacherDemoView = function() {
+      window.isTeacherDemoActive = !window.isTeacherDemoActive;
+      
+      document.getElementById('teacherPortal')?.classList.toggle('hidden', window.isTeacherDemoActive);
+      document.getElementById('studentPortal')?.classList.toggle('hidden', !window.isTeacherDemoActive);
+      document.getElementById('demoBanner')?.classList.toggle('hidden', !window.isTeacherDemoActive);
+      
+      const demoBtn = document.getElementById('demoToggleBtn');
+      if (demoBtn) {
+        demoBtn.innerText = window.isTeacherDemoActive ? "Return to Dashboard" : "Faculty Demo Mode";
       }
-    }
+    };
 
     window.isTeacherDemoActive = false;
     function toggleTeacherDemoView() {
