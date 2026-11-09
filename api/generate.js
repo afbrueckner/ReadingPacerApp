@@ -1,21 +1,35 @@
-export default async function handler(req, res) {
+export const config = {
+  runtime: 'edge', // Runs on Vercel Edge Network for instant execution without cold starts or proxy bottlenecks
+};
+
+export default async function handler(req) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+      status: 405,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
-  const { topic, lexileLabel } = req.body;
+  try {
+    const { topic, lexileLabel } = await req.json();
 
-  if (!topic) {
-    return res.status(400).json({ error: 'Topic is required.' });
-  }
+    if (!topic) {
+      return new Response(JSON.stringify({ error: 'Topic is required.' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
 
-  const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY;
 
-  if (!apiKey) {
-    return res.status(500).json({ error: 'GEMINI_API_KEY environment variable is not configured in Vercel.' });
-  }
+    if (!apiKey) {
+      return new Response(JSON.stringify({ error: 'GEMINI_API_KEY environment variable is not configured in Vercel.' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
 
-  const combinedPrompt = `System Instructions:
+    const combinedPrompt = `System Instructions:
 You are an educational content generator for a Catholic middle school reading program.
 1. FAITH & MORAL ALIGNMENT: Content must respect Catholic teachings, natural law, traditional Christian virtues, and classical middle school education standards.
 2. PROHIBITED TOPICS: Strictly avoid any controversial social or political ideologies, gender theory, anti-religious rhetoric, graphic violence, occult themes, or inappropriate concepts.
@@ -54,33 +68,37 @@ Output ONLY a raw JSON object (no markdown formatting, no backticks, no explanat
   ]
 }`;
 
-  try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`, {
+    const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: combinedPrompt }] }],
         generationConfig: {
-          temperature: 0.7,
-          responseMimeType: "application/json",
-          thinking_config: {
-            thinking_budget: 0
-          }
+          temperature: 0.7
         }
       })
     });
 
-    if (!response.ok) {
-      const errData = await response.json();
-      return res.status(response.status).json({ error: errData.error?.message || 'Gemini API Error' });
+    if (!geminiRes.ok) {
+      const errData = await geminiRes.json();
+      return new Response(JSON.stringify({ error: errData.error?.message || 'Gemini API Error' }), {
+        status: geminiRes.status,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
-    const data = await response.json();
+    const data = await geminiRes.json();
     let rawText = data.candidates[0].content.parts[0].text;
     rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
 
-    return res.status(200).json(JSON.parse(rawText));
+    return new Response(rawText, {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    return new Response(JSON.stringify({ error: err.message }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }
