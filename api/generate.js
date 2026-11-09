@@ -63,8 +63,8 @@ Output ONLY a raw JSON object (no markdown formatting, no backticks, no explanat
         generationConfig: {
           temperature: 0.7,
           responseMimeType: "application/json",
-          thinkingConfig: {
-            thinkingBudget: 0
+          thinking_config: {
+            thinking_budget: 0
           }
         }
       })
