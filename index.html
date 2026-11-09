@@ -14,7 +14,7 @@
     <header class="border-b border-stone-300 pb-4 flex justify-between items-center font-sans-ui">
       <div>
         <h1 class="text-2xl font-bold text-sky-900">Cognitive Reading Pacer</h1>
-        <p class="text-xs text-stone-600">Ave Maria Middle School Edition • IXL Lexile & Firebase Connected</p>
+        <p class="text-xs text-stone-600">Ave Maria Middle School Edition • IXL Lexile &amp; Firebase Connected</p>
       </div>
       
       <div class="flex items-center space-x-3">
@@ -192,17 +192,6 @@
             <div id="progressBarFill" class="bg-sky-700 h-2 rounded-full transition-all duration-700 ease-out" style="width: 0%;"></div>
           </div>
         </div>
-
-        <!-- PROGRESS BAR UI ANIMATION -->
-        <div id="genStatusContainer" class="hidden space-y-2 pt-2">
-          <div class="flex justify-between text-xs text-stone-600 font-semibold">
-            <span id="loaderStepText">Gathering reading passage information...</span>
-            <span id="loaderPctText">Step 1 of 3</span>
-          </div>
-          <div class="w-full bg-stone-200 rounded-full h-2 overflow-hidden">
-            <div id="progressBarFill" class="bg-sky-700 h-2 rounded-full progress-bar-fill"></div>
-          </div>
-        </div>
       </div>
 
       <!-- TABS -->
@@ -239,7 +228,7 @@
               <span class="text-xs text-stone-500 font-mono">Literal • Inferential • Vocabulary</span>
             </div>
             <div id="diagQuizQuestionsContainer" class="space-y-4"></div>
-            <button onclick="submitDiagnostic()" class="bg-indigo-700 hover:bg-indigo-800 px-5 py-2.5 rounded-md text-sm font-bold mt-2 text-white shadow-sm">Calculate ERR & Save Score</button>
+            <button onclick="submitDiagnostic()" class="bg-indigo-700 hover:bg-indigo-800 px-5 py-2.5 rounded-md text-sm font-bold mt-2 text-white shadow-sm">Calculate ERR &amp; Save Score</button>
           </div>
         </div>
       </section>
@@ -308,9 +297,9 @@
             </div>
             <button onclick="pqrstReset()" class="bg-stone-200 hover:bg-stone-300 text-stone-700 text-xs px-3 py-1 rounded-md font-bold">🔄 Restart Passage</button>
           </div>
-          
+
           <div id="pqrstStep1" class="space-y-3">
-            <span class="text-xs bg-indigo-100 text-indigo-900 border border-indigo-200 px-2.5 py-1 rounded-md font-bold font-sans-ui">Step 1: Preview & Question</span>
+            <span class="text-xs bg-indigo-100 text-indigo-900 border border-indigo-200 px-2.5 py-1 rounded-md font-bold font-sans-ui">Step 1: Preview &amp; Question</span>
             <h3 id="pqrstTitle" class="font-bold text-amber-900 text-lg">Passage Title</h3>
             <p id="pqrstPreview" class="text-sm text-slate-800 leading-relaxed bg-[#faf8f5] p-4 rounded-lg border border-stone-200">Preview summary...</p>
             <div class="bg-stone-100 p-3.5 rounded-lg border border-stone-300 text-xs text-stone-700 font-sans-ui">
@@ -320,14 +309,14 @@
           </div>
 
           <div id="pqrstStep2" class="hidden space-y-3">
-            <span class="text-xs bg-emerald-100 text-emerald-900 border border-emerald-200 px-2.5 py-1 rounded-md font-bold font-sans-ui">Step 2: Read & Recite</span>
+            <span class="text-xs bg-emerald-100 text-emerald-900 border border-emerald-200 px-2.5 py-1 rounded-md font-bold font-sans-ui">Step 2: Read &amp; Recite</span>
             <div id="pqrstPassageText" class="bg-[#faf8f5] p-6 rounded-lg border border-stone-200 text-slate-900 leading-loose text-lg max-w-2xl mx-auto shadow-inner"></div>
-            <button onclick="pqrstNext(3)" class="bg-amber-700 hover:bg-amber-800 text-white font-bold px-4 py-2 rounded-md text-sm mt-2 font-sans-ui shadow-sm">Recite & Test Knowledge</button>
+            <button onclick="pqrstNext(3)" class="bg-amber-700 hover:bg-amber-800 text-white font-bold px-4 py-2 rounded-md text-sm mt-2 font-sans-ui shadow-sm">Recite &amp; Test Knowledge</button>
           </div>
 
           <div id="pqrstStep3" class="hidden space-y-4 font-sans-ui">
             <div class="flex justify-between items-center">
-              <span class="text-xs bg-purple-100 text-purple-900 border border-purple-200 px-2.5 py-1 rounded-md font-bold">Step 3: Review & 3-Question Verification Quiz</span>
+              <span class="text-xs bg-purple-100 text-purple-900 border border-purple-200 px-2.5 py-1 rounded-md font-bold">Step 3: Review &amp; 3-Question Verification Quiz</span>
               <span class="text-xs text-stone-500 font-mono">3 Questions • Mixed Cognitive Depth</span>
             </div>
             <div id="pqrstQuizContainer" class="space-y-4"></div>
@@ -344,7 +333,7 @@
     <div class="bg-white border border-stone-300 rounded-xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl">
       <div class="p-4 border-b border-stone-200 flex justify-between items-center bg-stone-50 rounded-t-xl no-print">
         <h2 class="text-lg font-bold text-sky-950 flex items-center space-x-2">
-          <span>📖 Educator & Parent Field Guide</span>
+          <span>📖 Educator &amp; Parent Field Guide</span>
         </h2>
         <div class="flex items-center space-x-2">
           <button onclick="downloadPDFGuide()" class="bg-indigo-700 hover:bg-indigo-800 text-white text-xs px-3 py-1.5 rounded-md font-bold shadow-sm">Download PDF</button>
@@ -354,10 +343,10 @@
       <div id="printableGuide" class="p-6 overflow-y-auto space-y-6 text-slate-800 text-sm leading-relaxed">
         <div class="border-b border-stone-200 pb-3">
           <h1 class="text-xl font-bold text-sky-900">Cognitive Reading Pacer — Field Manual</h1>
-          <p class="text-xs text-stone-500 mt-1">Catholic Middle School Edition • Research-Backed Fluency & Comprehension Protocol</p>
+          <p class="text-xs text-stone-500 mt-1">Catholic Middle School Edition • Research-Backed Fluency &amp; Comprehension Protocol</p>
         </div>
         <section class="space-y-2">
-          <h3 class="font-bold text-sky-950 text-base">1. Key Metrics & Definitions</h3>
+          <h3 class="font-bold text-sky-950 text-base">1. Key Metrics &amp; Definitions</h3>
           <div class="bg-stone-50 p-4 rounded-lg border border-stone-200 space-y-2 text-xs">
             <p><strong>WPM (Words Per Minute):</strong> Pure physical tracking speed across lines of text ($\text{Words} / \text{Seconds} \times 60$).</p>
             <p><strong>Comprehension %:</strong> Accuracy score on 3-question verification check ($100\%$, $67\%$, $33\%$, or $0\%$).</p>
@@ -366,7 +355,7 @@
           </div>
         </section>
         <section class="space-y-2">
-          <h3 class="font-bold text-sky-950 text-base">2. Pedagogical Rationale & Research Base</h3>
+          <h3 class="font-bold text-sky-950 text-base">2. Pedagogical Rationale &amp; Research Base</h3>
           <p class="text-xs text-stone-700 leading-normal">
             Middle school reading interventions often fall into two extremes: physical speed reading without understanding, or passive reading without focus pacing. The Cognitive Reading Pacer bridges these modalities by targeting <strong>saccadic eye movement efficiency</strong> and <strong>working memory retention</strong>.
           </p>
@@ -426,12 +415,12 @@
             </div>
             <div class="bg-stone-50 p-3 rounded border border-stone-200">
               <span class="font-bold text-sky-900">Mastery Band (1000L+)</span>
-              <p class="text-stone-600 mt-1">High school readiness & IXL top band. Complex technical syntax and abstract concepts.</p>
+              <p class="text-stone-600 mt-1">High school readiness &amp; IXL top band. Complex technical syntax and abstract concepts.</p>
             </div>
           </div>
         </section>
         <section class="space-y-2 pt-2 border-t border-stone-200">
-          <h3 class="font-bold text-sky-950 text-base">5. Troubleshooting & Support</h3>
+          <h3 class="font-bold text-sky-950 text-base">5. Troubleshooting &amp; Support</h3>
           <p class="text-xs text-stone-600">
             For school roster adjustments or domain access questions (@avemaria.school or @aveangels.org), contact the Ave Maria Middle School Reading Intervention Team.
           </p>
@@ -521,7 +510,7 @@
       if (!currentUser || window.isTeacherDemoActive) return;
       const studentRef = doc(db, 'students', currentUser.uid);
       const updateData = { name: currentUser.displayName, email: currentUser.email, lexileTier: window.currentLexileTier || 'tier2', lastUpdated: new Date() };
-      if (formType === 'FormA') { updateData.formA_ERR = calculatedERR; updateData.baselineERR = calculatedERR; window.baselineERR = calculatedERR; document.getElementById('studentBaselineDisplay').innerText = `${calculatedERR} ERR`; } 
+      if (formType === 'FormA') { updateData.formA_ERR = calculatedERR; updateData.baselineERR = calculatedERR; window.baselineERR = calculatedERR; document.getElementById('studentBaselineDisplay').innerText = `${calculatedERR} ERR`; }  
       else { updateData.formB_ERR = calculatedERR; }
       await setDoc(studentRef, updateData, { merge: true });
     };
@@ -552,199 +541,198 @@
   <script src="js/pqrstReader.js"></script>
 
   <!-- MAIN UI CONTROLLER & AI GENERATOR -->
- <!-- MAIN UI CONTROLLER & AI GENERATOR -->
- <script type="module" src="js/libraryLoader.js"></script>
- <script>
-  import { getPassageByTopicOrLexile } from './js/library/index.js';
-  window.getPassageByTopicOrLexile = getPassageByTopicOrLexile;
+  <script type="module" src="js/libraryLoader.js"></script>
+  <script type="module">
+    import { getPassageByTopicOrLexile } from './js/library/index.js';
+    window.getPassageByTopicOrLexile = getPassageByTopicOrLexile;
 
-  // 1. Explicitly attach UI & Modal Functions to window for HTML onclick handlers
-  window.openGuideModal = function() {
-    document.getElementById('guideModal')?.classList.remove('hidden');
-  };
+    // 1. Explicitly attach UI & Modal Functions to window for HTML onclick handlers
+    window.openGuideModal = function() {
+      document.getElementById('guideModal')?.classList.remove('hidden');
+    };
 
-  window.closeGuideModal = function() {
-    document.getElementById('guideModal')?.classList.add('hidden');
-  };
+    window.closeGuideModal = function() {
+      document.getElementById('guideModal')?.classList.add('hidden');
+    };
 
-  window.downloadPDFGuide = function() {
-    window.openGuideModal();
-    setTimeout(() => { window.print(); }, 200);
-  };
+    window.downloadPDFGuide = function() {
+      window.openGuideModal();
+      setTimeout(() => { window.print(); }, 200);
+    };
 
-  window.isTeacherDemoActive = false;
-  window.toggleTeacherDemoView = function() {
-    window.isTeacherDemoActive = !window.isTeacherDemoActive;
-    document.getElementById('teacherPortal')?.classList.toggle('hidden', window.isTeacherDemoActive);
-    document.getElementById('studentPortal')?.classList.toggle('hidden', !window.isTeacherDemoActive);
-    document.getElementById('demoBanner')?.classList.toggle('hidden', !window.isTeacherDemoActive);
+    window.isTeacherDemoActive = false;
+    window.toggleTeacherDemoView = function() {
+      window.isTeacherDemoActive = !window.isTeacherDemoActive;
+      document.getElementById('teacherPortal')?.classList.toggle('hidden', window.isTeacherDemoActive);
+      document.getElementById('studentPortal')?.classList.toggle('hidden', !window.isTeacherDemoActive);
+      document.getElementById('demoBanner')?.classList.toggle('hidden', !window.isTeacherDemoActive);
 
-    const demoBtn = document.getElementById('demoToggleBtn');
-    if (demoBtn) {
-      demoBtn.innerText = window.isTeacherDemoActive ? "Return to Dashboard" : "Faculty Demo Mode";
-    }
-  };
-
-  window.toggleAccessibilityMode = function() {
-    document.body.classList.toggle('bg-stone-900');
-    document.body.classList.toggle('text-white');
-  };
-
-  window.switchTab = function(tabId) {
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.className = 'tab-btn px-4 py-2 text-sm font-semibold rounded-md bg-white text-stone-700 border border-stone-300';
-    });
-    const activeBtn = document.querySelector(`[onclick="switchTab('${tabId}')"]`);
-    if (activeBtn) activeBtn.className = 'tab-btn px-4 py-2 text-sm font-semibold rounded-md bg-sky-800 text-white shadow-sm';
-    document.getElementById('tab-' + tabId)?.classList.remove('hidden');
-  };
-
-  window.setQuickTopic = function(topicName) {
-    const topicInput = document.getElementById('topicInput');
-    if (topicInput) {
-      topicInput.value = topicName;
-      window.generateAIContent();
-    }
-  };
-
-  window.onLexileChange = function() {
-    window.currentLexileTier = document.getElementById('lexileSelect').value;
-    if (window.loadBenchmarkData) window.loadBenchmarkData();
-  };
-
-  window.setBenchmarkForm = function(form) {
-    window.currentBenchmarkForm = form;
-    document.getElementById('formABtn').className = form === 'FormA' ? 'px-3 py-1 rounded-md bg-sky-800 text-white font-bold' : 'px-3 py-1 rounded-md bg-stone-200 text-stone-700 font-bold';
-    document.getElementById('formBBtn').className = form === 'FormB' ? 'px-3 py-1 rounded-md bg-sky-800 text-white font-bold' : 'px-3 py-1 rounded-md bg-stone-200 text-stone-700 font-bold';
-    if (window.loadBenchmarkData) window.loadBenchmarkData();
-  };
-
-  // 2. Data State Initialization
-  window.currentLexileTier = 'tier2';
-  window.currentBenchmarkForm = 'FormA';
-  window.currentData = {
-    title: "Volcanoes",
-    passage: window.benchmarkBank?.tier2?.FormA?.passage || "",
-    preview: "Volcanoes are dangerous crustal vents caused by magma pressure.",
-    guiding_question: "How do scientists monitor volcanic eruptions?",
-    chunks: [],
-    questions: window.benchmarkBank?.tier2?.FormA?.questions || []
-  };
-
-  // 3. Question Renderer & Data Loaders
-  window.renderQuestionList = function(containerId, questions, groupPrefix) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    const safeQuestions = Array.isArray(questions) ? questions : [];
-    if (safeQuestions.length === 0) {
-      container.innerHTML = `<div class="text-xs text-stone-500 italic p-2">No verification questions available for this passage.</div>`;
-      return;
-    }
-    container.innerHTML = safeQuestions.map((q, qIdx) => `
-      <div class="bg-[#faf8f5] p-4 rounded-lg border border-stone-200 space-y-2 text-xs">
-        <div class="flex justify-between font-bold text-sky-950">
-          <span>${q.question || 'Question'}</span>
-          <span class="text-[10px] bg-stone-200 text-stone-700 px-2 py-0.5 rounded font-mono">${q.type || 'Comprehension'}</span>
-        </div>
-        <div class="space-y-1.5 pl-2">
-          ${(q.options || []).map((opt, oIdx) => `
-            <label class="block cursor-pointer text-slate-800 hover:text-slate-950">
-              <input type="radio" name="${groupPrefix}_q${qIdx}" value="${oIdx}"> ${opt}
-            </label>
-          `).join('')}
-        </div>
-      </div>
-    `).join('');
-  };
-
-  window.loadBenchmarkData = function() {
-    if (!window.benchmarkBank) return;
-    const benchmark = window.benchmarkBank[window.currentLexileTier][window.currentBenchmarkForm];
-    const diagText = document.getElementById('diagText');
-    if (diagText) diagText.innerText = benchmark.passage;
-
-    window.currentData.passage = benchmark.passage;
-    window.currentData.questions = benchmark.questions;
-    if (window.buildChunksFromPassage) {
-      window.currentData.chunks = window.buildChunksFromPassage(benchmark.passage);
-    }
-
-    window.renderQuestionList('diagQuizQuestionsContainer', benchmark.questions, 'diag');
-    window.loadDataIntoModules();
-  };
-
-  window.loadDataIntoModules = function() {
-    const sentences = (window.currentData.passage || "").match(/[^.!?]+[.!?]+/g) || [window.currentData.passage || ""];
-    const shutterContainer = document.getElementById('shutterContainer');
-    if (shutterContainer) {
-      shutterContainer.innerHTML = sentences.map((s, i) => `<div id="line-${i}" class="shutter-line dimmed p-3.5 rounded-lg">${s.trim()}</div>`).join('');
-    }
-
-    const m1Title = document.getElementById('m1Title');
-    if (m1Title) m1Title.innerText = "Module 1: " + (window.currentData.title || "Focus Shutter Accelerator");
-
-    const pqrstTitle = document.getElementById('pqrstTitle');
-    const pqrstPreview = document.getElementById('pqrstPreview');
-    const pqrstQuestion = document.getElementById('pqrstQuestion');
-    const pqrstPassageText = document.getElementById('pqrstPassageText');
-
-    if (pqrstTitle) pqrstTitle.innerText = window.currentData.title || "Custom Reading Practice";
-    if (pqrstPreview) pqrstPreview.innerText = window.currentData.preview || "Preview main ideas before reading.";
-    if (pqrstQuestion) pqrstQuestion.innerText = window.currentData.guiding_question || "What are the main concepts?";
-    if (pqrstPassageText) pqrstPassageText.innerText = window.currentData.passage || "";
-
-    window.renderQuestionList('pqrstQuizContainer', window.currentData.questions || [], 'pqrst');
-
-    const flashCounter = document.getElementById('flashCounter');
-    if (flashCounter) {
-      flashCounter.innerText = `Ready: 0 / ${(window.currentData.chunks || []).length} Flashes`;
-    }
-    if (window.pqrstReset) window.pqrstReset();
-  };
-
-  // 4. Instant Local Library Lookup
-  window.generateAIContent = function() {
-    const topicInput = document.getElementById('topicInput')?.value || '';
-    const lexileSelect = document.getElementById('lexileSelect')?.value || '600L - 750L';
-
-    const statusContainer = document.getElementById('genStatusContainer');
-    const fillBar = document.getElementById('progressBarFill');
-    const statusText = document.getElementById('loaderStepText');
-    const pctText = document.getElementById('loaderPctText');
-
-    if (statusContainer) statusContainer.classList.remove('hidden');
-    if (fillBar) fillBar.style.width = '100%';
-    if (statusText) statusText.innerText = 'Loading curated library passage...';
-    if (pctText) pctText.innerText = '100%';
-
-    const passageData = window.getPassageByTopicOrLexile ? window.getPassageByTopicOrLexile(topicInput, lexileSelect) : null;
-
-    if (!passageData) {
-      alert("Library passage could not be loaded.");
-      if (statusContainer) statusContainer.classList.add('hidden');
-      return;
-    }
-
-    window.currentData = passageData;
-    if (!window.currentData.chunks || window.currentData.chunks.length === 0) {
-      if (window.buildChunksFromPassage) {
-        window.currentData.chunks = window.buildChunksFromPassage(window.currentData.passage);
+      const demoBtn = document.getElementById('demoToggleBtn');
+      if (demoBtn) {
+        demoBtn.innerText = window.isTeacherDemoActive ? "Return to Dashboard" : "Faculty Demo Mode";
       }
-    }
+    };
 
-    setTimeout(() => {
+    window.toggleAccessibilityMode = function() {
+      document.body.classList.toggle('bg-stone-900');
+      document.body.classList.toggle('text-white');
+    };
+
+    window.switchTab = function(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.className = 'tab-btn px-4 py-2 text-sm font-semibold rounded-md bg-white text-stone-700 border border-stone-300';
+      });
+      const activeBtn = document.querySelector(`[onclick="switchTab('${tabId}')"]`);
+      if (activeBtn) activeBtn.className = 'tab-btn px-4 py-2 text-sm font-semibold rounded-md bg-sky-800 text-white shadow-sm';
+      document.getElementById('tab-' + tabId)?.classList.remove('hidden');
+    };
+
+    window.setQuickTopic = function(topicName) {
+      const topicInput = document.getElementById('topicInput');
+      if (topicInput) {
+        topicInput.value = topicName;
+        window.generateAIContent();
+      }
+    };
+
+    window.onLexileChange = function() {
+      window.currentLexileTier = document.getElementById('lexileSelect').value;
+      if (window.loadBenchmarkData) window.loadBenchmarkData();
+    };
+
+    window.setBenchmarkForm = function(form) {
+      window.currentBenchmarkForm = form;
+      document.getElementById('formABtn').className = form === 'FormA' ? 'px-3 py-1 rounded-md bg-sky-800 text-white font-bold' : 'px-3 py-1 rounded-md bg-stone-200 text-stone-700 font-bold';
+      document.getElementById('formBBtn').className = form === 'FormB' ? 'px-3 py-1 rounded-md bg-sky-800 text-white font-bold' : 'px-3 py-1 rounded-md bg-stone-200 text-stone-700 font-bold';
+      if (window.loadBenchmarkData) window.loadBenchmarkData();
+    };
+
+    // 2. Data State Initialization
+    window.currentLexileTier = 'tier2';
+    window.currentBenchmarkForm = 'FormA';
+    window.currentData = {
+      title: "Volcanoes",
+      passage: window.benchmarkBank?.tier2?.FormA?.passage || "",
+      preview: "Volcanoes are dangerous crustal vents caused by magma pressure.",
+      guiding_question: "How do scientists monitor volcanic eruptions?",
+      chunks: [],
+      questions: window.benchmarkBank?.tier2?.FormA?.questions || []
+    };
+
+    // 3. Question Renderer & Data Loaders
+    window.renderQuestionList = function(containerId, questions, groupPrefix) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      const safeQuestions = Array.isArray(questions) ? questions : [];
+      if (safeQuestions.length === 0) {
+        container.innerHTML = `<div class="text-xs text-stone-500 italic p-2">No verification questions available for this passage.</div>`;
+        return;
+      }
+      container.innerHTML = safeQuestions.map((q, qIdx) => `
+        <div class="bg-[#faf8f5] p-4 rounded-lg border border-stone-200 space-y-2 text-xs">
+          <div class="flex justify-between font-bold text-sky-950">
+            <span>${q.question || 'Question'}</span>
+            <span class="text-[10px] bg-stone-200 text-stone-700 px-2 py-0.5 rounded font-mono">${q.type || 'Comprehension'}</span>
+          </div>
+          <div class="space-y-1.5 pl-2">
+            ${(q.options || []).map((opt, oIdx) => `
+              <label class="block cursor-pointer text-slate-800 hover:text-slate-950">
+                <input type="radio" name="${groupPrefix}_q${qIdx}" value="${oIdx}"> ${opt}
+              </label>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    };
+
+    window.loadBenchmarkData = function() {
+      if (!window.benchmarkBank) return;
+      const benchmark = window.benchmarkBank[window.currentLexileTier][window.currentBenchmarkForm];
+      const diagText = document.getElementById('diagText');
+      if (diagText) diagText.innerText = benchmark.passage;
+
+      window.currentData.passage = benchmark.passage;
+      window.currentData.questions = benchmark.questions;
+      if (window.buildChunksFromPassage) {
+        window.currentData.chunks = window.buildChunksFromPassage(benchmark.passage);
+      }
+
+      window.renderQuestionList('diagQuizQuestionsContainer', benchmark.questions, 'diag');
       window.loadDataIntoModules();
-      window.switchTab('module1');
-      if (statusContainer) statusContainer.classList.add('hidden');
-      if (fillBar) fillBar.style.width = '0%';
-    }, 250);
-  };
+    };
 
-  // Initial boot load
-  if (window.benchmarkBank) {
-    window.loadBenchmarkData();
-  }
-</script>
+    window.loadDataIntoModules = function() {
+      const sentences = (window.currentData.passage || "").match(/[^.!?]+[.!?]+/g) || [window.currentData.passage || ""];
+      const shutterContainer = document.getElementById('shutterContainer');
+      if (shutterContainer) {
+        shutterContainer.innerHTML = sentences.map((s, i) => `<div id="line-${i}" class="shutter-line dimmed p-3.5 rounded-lg">${s.trim()}</div>`).join('');
+      }
+
+      const m1Title = document.getElementById('m1Title');
+      if (m1Title) m1Title.innerText = "Module 1: " + (window.currentData.title || "Focus Shutter Accelerator");
+
+      const pqrstTitle = document.getElementById('pqrstTitle');
+      const pqrstPreview = document.getElementById('pqrstPreview');
+      const pqrstQuestion = document.getElementById('pqrstQuestion');
+      const pqrstPassageText = document.getElementById('pqrstPassageText');
+
+      if (pqrstTitle) pqrstTitle.innerText = window.currentData.title || "Custom Reading Practice";
+      if (pqrstPreview) pqrstPreview.innerText = window.currentData.preview || "Preview main ideas before reading.";
+      if (pqrstQuestion) pqrstQuestion.innerText = window.currentData.guiding_question || "What are the main concepts?";
+      if (pqrstPassageText) pqrstPassageText.innerText = window.currentData.passage || "";
+
+      window.renderQuestionList('pqrstQuizContainer', window.currentData.questions || [], 'pqrst');
+
+      const flashCounter = document.getElementById('flashCounter');
+      if (flashCounter) {
+        flashCounter.innerText = `Ready: 0 / ${(window.currentData.chunks || []).length} Flashes`;
+      }
+      if (window.pqrstReset) window.pqrstReset();
+    };
+
+    // 4. Instant Local Library Lookup
+    window.generateAIContent = function() {
+      const topicInput = document.getElementById('topicInput')?.value || '';
+      const lexileSelect = document.getElementById('lexileSelect')?.value || '600L - 750L';
+
+      const statusContainer = document.getElementById('genStatusContainer');
+      const fillBar = document.getElementById('progressBarFill');
+      const statusText = document.getElementById('loaderStepText');
+      const pctText = document.getElementById('loaderPctText');
+
+      if (statusContainer) statusContainer.classList.remove('hidden');
+      if (fillBar) fillBar.style.width = '100%';
+      if (statusText) statusText.innerText = 'Loading curated library passage...';
+      if (pctText) pctText.innerText = '100%';
+
+      const passageData = window.getPassageByTopicOrLexile ? window.getPassageByTopicOrLexile(topicInput, lexileSelect) : null;
+
+      if (!passageData) {
+        alert("Library passage could not be loaded.");
+        if (statusContainer) statusContainer.classList.add('hidden');
+        return;
+      }
+
+      window.currentData = passageData;
+      if (!window.currentData.chunks || window.currentData.chunks.length === 0) {
+        if (window.buildChunksFromPassage) {
+          window.currentData.chunks = window.buildChunksFromPassage(window.currentData.passage);
+        }
+      }
+
+      setTimeout(() => {
+        window.loadDataIntoModules();
+        window.switchTab('module1');
+        if (statusContainer) statusContainer.classList.add('hidden');
+        if (fillBar) fillBar.style.width = '0%';
+      }, 250);
+    };
+
+    // Initial boot load
+    if (window.benchmarkBank) {
+      window.loadBenchmarkData();
+    }
+  </script>
 </body>
 </html>
