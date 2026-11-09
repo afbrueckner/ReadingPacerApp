@@ -15,7 +15,6 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'GEMINI_API_KEY environment variable is not configured in Vercel.' });
   }
 
-  // Combined prompt payload compatible with gemini-3.8-flash REST endpoint
   const combinedPrompt = `System Instructions:
 You are an educational content generator for a Catholic middle school reading program.
 1. FAITH & MORAL ALIGNMENT: Content must respect Catholic teachings, natural law, traditional Christian virtues, and classical middle school education standards.
@@ -62,7 +61,8 @@ Output ONLY a raw JSON object (no markdown formatting, no backticks, no explanat
       body: JSON.stringify({
         contents: [{ parts: [{ text: combinedPrompt }] }],
         generationConfig: {
-          temperature: 0.7
+          temperature: 0.7,
+          responseMimeType: "application/json"
         }
       })
     });
@@ -74,8 +74,6 @@ Output ONLY a raw JSON object (no markdown formatting, no backticks, no explanat
 
     const data = await response.json();
     let rawText = data.candidates[0].content.parts[0].text;
-    
-    // Clean code blocks if returned
     rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
 
     return res.status(200).json(JSON.parse(rawText));
