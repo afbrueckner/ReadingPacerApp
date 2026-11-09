@@ -64,7 +64,7 @@ Output ONLY a raw JSON object (no markdown formatting, no backticks, no explanat
           temperature: 0.7,
           responseMimeType: "application/json",
           thinkingConfig: {
-            thinkingLevel: "low"
+            thinkingBudget: 0
           }
         }
       })
