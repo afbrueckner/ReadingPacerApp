@@ -552,179 +552,198 @@
   <script src="js/pqrstReader.js"></script>
 
   <!-- MAIN UI CONTROLLER & AI GENERATOR -->
-  <script type="module">
-    import { getPassageByTopicOrLexile } from './js/library/index.js';
-    window.getPassageByTopicOrLexile = getPassageByTopicOrLexile;
-  
-    // Explicitly attach modal & demo functions to window for onclick buttons
-    window.openGuideModal = function() {
-      document.getElementById('guideModal')?.classList.remove('hidden');
-    };
-  
-    window.closeGuideModal = function() {
-      document.getElementById('guideModal')?.classList.add('hidden');
-    };
-  
-    window.downloadPDFGuide = function() {
-      window.openGuideModal();
-      setTimeout(() => { window.print(); }, 200);
-    };
-  
-    window.toggleTeacherDemoView = function() {
-      window.isTeacherDemoActive = !window.isTeacherDemoActive;
-      
-      document.getElementById('teacherPortal')?.classList.toggle('hidden', window.isTeacherDemoActive);
-      document.getElementById('studentPortal')?.classList.toggle('hidden', !window.isTeacherDemoActive);
-      document.getElementById('demoBanner')?.classList.toggle('hidden', !window.isTeacherDemoActive);
-      
-      const demoBtn = document.getElementById('demoToggleBtn');
-      if (demoBtn) {
-        demoBtn.innerText = window.isTeacherDemoActive ? "Return to Dashboard" : "Faculty Demo Mode";
-      }
-    };
+ <!-- MAIN UI CONTROLLER & AI GENERATOR -->
+ <script type="module">
+  import { getPassageByTopicOrLexile } from './js/library/index.js';
+  window.getPassageByTopicOrLexile = getPassageByTopicOrLexile;
 
-    window.isTeacherDemoActive = false;
-    function toggleTeacherDemoView() {
-      window.isTeacherDemoActive = !window.isTeacherDemoActive;
-      document.getElementById('teacherPortal').classList.toggle('hidden', window.isTeacherDemoActive);
-      document.getElementById('studentPortal').classList.toggle('hidden', !window.isTeacherDemoActive);
-      document.getElementById('demoBanner').classList.toggle('hidden', !window.isTeacherDemoActive);
-      document.getElementById('demoToggleBtn').innerText = window.isTeacherDemoActive ? "🔙 Return to Dashboard" : "👁️ Preview Student Experience (Demo Mode)";
+  // 1. Explicitly attach UI & Modal Functions to window for HTML onclick handlers
+  window.openGuideModal = function() {
+    document.getElementById('guideModal')?.classList.remove('hidden');
+  };
+
+  window.closeGuideModal = function() {
+    document.getElementById('guideModal')?.classList.add('hidden');
+  };
+
+  window.downloadPDFGuide = function() {
+    window.openGuideModal();
+    setTimeout(() => { window.print(); }, 200);
+  };
+
+  window.isTeacherDemoActive = false;
+  window.toggleTeacherDemoView = function() {
+    window.isTeacherDemoActive = !window.isTeacherDemoActive;
+    document.getElementById('teacherPortal')?.classList.toggle('hidden', window.isTeacherDemoActive);
+    document.getElementById('studentPortal')?.classList.toggle('hidden', !window.isTeacherDemoActive);
+    document.getElementById('demoBanner')?.classList.toggle('hidden', !window.isTeacherDemoActive);
+
+    const demoBtn = document.getElementById('demoToggleBtn');
+    if (demoBtn) {
+      demoBtn.innerText = window.isTeacherDemoActive ? "Return to Dashboard" : "Faculty Demo Mode";
     }
+  };
 
-    window.currentLexileTier = 'tier2';
-    window.currentBenchmarkForm = 'FormA';
+  window.toggleAccessibilityMode = function() {
+    document.body.classList.toggle('bg-stone-900');
+    document.body.classList.toggle('text-white');
+  };
 
-    window.currentData = {
-      title: "Volcanoes",
-      passage: window.benchmarkBank.tier2.FormA.passage,
-      preview: "Volcanoes are dangerous crustal vents caused by magma pressure.",
-      guiding_question: "How do scientists monitor volcanic eruptions?",
-      chunks: [],
-      questions: window.benchmarkBank.tier2.FormA.questions
-    };
+  window.switchTab = function(tabId) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.className = 'tab-btn px-4 py-2 text-sm font-semibold rounded-md bg-white text-stone-700 border border-stone-300';
+    });
+    const activeBtn = document.querySelector(`[onclick="switchTab('${tabId}')"]`);
+    if (activeBtn) activeBtn.className = 'tab-btn px-4 py-2 text-sm font-semibold rounded-md bg-sky-800 text-white shadow-sm';
+    document.getElementById('tab-' + tabId)?.classList.remove('hidden');
+  };
 
-    function onLexileChange() { 
-      window.currentLexileTier = document.getElementById('lexileSelect').value; 
-      loadBenchmarkData(); 
+  window.setQuickTopic = function(topicName) {
+    const topicInput = document.getElementById('topicInput');
+    if (topicInput) {
+      topicInput.value = topicName;
+      window.generateAIContent();
     }
+  };
 
-    function setBenchmarkForm(form) {
-      window.currentBenchmarkForm = form;
-      document.getElementById('formABtn').className = form === 'FormA' ? 'px-3 py-1 rounded-md bg-sky-800 text-white font-bold' : 'px-3 py-1 rounded-md bg-stone-200 text-stone-700 font-bold';
-      document.getElementById('formBBtn').className = form === 'FormB' ? 'px-3 py-1 rounded-md bg-sky-800 text-white font-bold' : 'px-3 py-1 rounded-md bg-stone-200 text-stone-700 font-bold';
-      loadBenchmarkData();
+  window.onLexileChange = function() {
+    window.currentLexileTier = document.getElementById('lexileSelect').value;
+    if (window.loadBenchmarkData) window.loadBenchmarkData();
+  };
+
+  window.setBenchmarkForm = function(form) {
+    window.currentBenchmarkForm = form;
+    document.getElementById('formABtn').className = form === 'FormA' ? 'px-3 py-1 rounded-md bg-sky-800 text-white font-bold' : 'px-3 py-1 rounded-md bg-stone-200 text-stone-700 font-bold';
+    document.getElementById('formBBtn').className = form === 'FormB' ? 'px-3 py-1 rounded-md bg-sky-800 text-white font-bold' : 'px-3 py-1 rounded-md bg-stone-200 text-stone-700 font-bold';
+    if (window.loadBenchmarkData) window.loadBenchmarkData();
+  };
+
+  // 2. Data State Initialization
+  window.currentLexileTier = 'tier2';
+  window.currentBenchmarkForm = 'FormA';
+  window.currentData = {
+    title: "Volcanoes",
+    passage: window.benchmarkBank?.tier2?.FormA?.passage || "",
+    preview: "Volcanoes are dangerous crustal vents caused by magma pressure.",
+    guiding_question: "How do scientists monitor volcanic eruptions?",
+    chunks: [],
+    questions: window.benchmarkBank?.tier2?.FormA?.questions || []
+  };
+
+  // 3. Question Renderer & Data Loaders
+  window.renderQuestionList = function(containerId, questions, groupPrefix) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const safeQuestions = Array.isArray(questions) ? questions : [];
+    if (safeQuestions.length === 0) {
+      container.innerHTML = `<div class="text-xs text-stone-500 italic p-2">No verification questions available for this passage.</div>`;
+      return;
     }
-
-    function renderQuestionList(containerId, questions, groupPrefix) {
-      const container = document.getElementById(containerId);
-      if (!container) return;
-      
-      const safeQuestions = Array.isArray(questions) ? questions : [];
-      
-      if (safeQuestions.length === 0) {
-        container.innerHTML = `<div class="text-xs text-stone-500 italic p-2">No verification questions available for this passage.</div>`;
-        return;
-      }
-
-      container.innerHTML = safeQuestions.map((q, qIdx) => `
-        <div class="bg-[#faf8f5] p-4 rounded-lg border border-stone-200 space-y-2 text-xs">
-          <div class="flex justify-between font-bold text-sky-950">
-            <span>${q.question || 'Question'}</span>
-            <span class="text-[10px] bg-stone-200 text-stone-700 px-2 py-0.5 rounded font-mono">${q.type || 'Comprehension'}</span>
-          </div>
-          <div class="space-y-1.5 pl-2">
-            ${(q.options || []).map((opt, oIdx) => `
-              <label class="block cursor-pointer text-slate-800 hover:text-slate-950">
-                <input type="radio" name="${groupPrefix}_q${qIdx}" value="${oIdx}"> ${opt}
-              </label>
-            `).join('')}
-          </div>
+    container.innerHTML = safeQuestions.map((q, qIdx) => `
+      <div class="bg-[#faf8f5] p-4 rounded-lg border border-stone-200 space-y-2 text-xs">
+        <div class="flex justify-between font-bold text-sky-950">
+          <span>${q.question || 'Question'}</span>
+          <span class="text-[10px] bg-stone-200 text-stone-700 px-2 py-0.5 rounded font-mono">${q.type || 'Comprehension'}</span>
         </div>
-      `).join('');
-    }
+        <div class="space-y-1.5 pl-2">
+          ${(q.options || []).map((opt, oIdx) => `
+            <label class="block cursor-pointer text-slate-800 hover:text-slate-950">
+              <input type="radio" name="${groupPrefix}_q${qIdx}" value="${oIdx}"> ${opt}
+            </label>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+  };
 
-    function loadBenchmarkData() {
-      const benchmark = window.benchmarkBank[window.currentLexileTier][window.currentBenchmarkForm];
-      document.getElementById('diagText').innerText = benchmark.passage;
-      
-      window.currentData.passage = benchmark.passage;
-      window.currentData.questions = benchmark.questions;
+  window.loadBenchmarkData = function() {
+    if (!window.benchmarkBank) return;
+    const benchmark = window.benchmarkBank[window.currentLexileTier][window.currentBenchmarkForm];
+    const diagText = document.getElementById('diagText');
+    if (diagText) diagText.innerText = benchmark.passage;
+
+    window.currentData.passage = benchmark.passage;
+    window.currentData.questions = benchmark.questions;
+    if (window.buildChunksFromPassage) {
       window.currentData.chunks = window.buildChunksFromPassage(benchmark.passage);
-
-      renderQuestionList('diagQuizQuestionsContainer', benchmark.questions, 'diag');
-      loadDataIntoModules();
     }
 
-    function loadDataIntoModules() {
-      const sentences = (window.currentData.passage || "").match(/[^.!?]+[.!?]+/g) || [window.currentData.passage || ""];
-      document.getElementById('shutterContainer').innerHTML = sentences.map((s, i) => `<div id="line-${i}" class="shutter-line dimmed p-3.5 rounded-lg">${s.trim()}</div>`).join('');
-      document.getElementById('m1Title').innerText = "Module 1: " + (window.currentData.title || "Focus Shutter Accelerator");
+    window.renderQuestionList('diagQuizQuestionsContainer', benchmark.questions, 'diag');
+    window.loadDataIntoModules();
+  };
 
-      document.getElementById('pqrstTitle').innerText = window.currentData.title || "Custom Reading Practice";
-      document.getElementById('pqrstPreview').innerText = window.currentData.preview || "Preview main ideas before reading.";
-      document.getElementById('pqrstQuestion').innerText = window.currentData.guiding_question || "What are the main concepts?";
-      document.getElementById('pqrstPassageText').innerText = window.currentData.passage || "";
-      
-      renderQuestionList('pqrstQuizContainer', window.currentData.questions || [], 'pqrst');
-
-      document.getElementById('flashCounter').innerText = `Ready: 0 / ${(window.currentData.chunks || []).length} Flashes`;
-      window.pqrstReset();
+  window.loadDataIntoModules = function() {
+    const sentences = (window.currentData.passage || "").match(/[^.!?]+[.!?]+/g) || [window.currentData.passage || ""];
+    const shutterContainer = document.getElementById('shutterContainer');
+    if (shutterContainer) {
+      shutterContainer.innerHTML = sentences.map((s, i) => `<div id="line-${i}" class="shutter-line dimmed p-3.5 rounded-lg">${s.trim()}</div>`).join('');
     }
 
-    loadBenchmarkData();
+    const m1Title = document.getElementById('m1Title');
+    if (m1Title) m1Title.innerText = "Module 1: " + (window.currentData.title || "Focus Shutter Accelerator");
 
-    function setQuickTopic(topicName) {
-      const topicInput = document.getElementById('topicInput');
-      if (topicInput) {
-        topicInput.value = topicName;
-        generateAIContent(); // Automatically trigger generation on click
-      }
+    const pqrstTitle = document.getElementById('pqrstTitle');
+    const pqrstPreview = document.getElementById('pqrstPreview');
+    const pqrstQuestion = document.getElementById('pqrstQuestion');
+    const pqrstPassageText = document.getElementById('pqrstPassageText');
+
+    if (pqrstTitle) pqrstTitle.innerText = window.currentData.title || "Custom Reading Practice";
+    if (pqrstPreview) pqrstPreview.innerText = window.currentData.preview || "Preview main ideas before reading.";
+    if (pqrstQuestion) pqrstQuestion.innerText = window.currentData.guiding_question || "What are the main concepts?";
+    if (pqrstPassageText) pqrstPassageText.innerText = window.currentData.passage || "";
+
+    window.renderQuestionList('pqrstQuizContainer', window.currentData.questions || [], 'pqrst');
+
+    const flashCounter = document.getElementById('flashCounter');
+    if (flashCounter) {
+      flashCounter.innerText = `Ready: 0 / ${(window.currentData.chunks || []).length} Flashes`;
+    }
+    if (window.pqrstReset) window.pqrstReset();
+  };
+
+  // 4. Instant Local Library Lookup
+  window.generateAIContent = function() {
+    const topicInput = document.getElementById('topicInput')?.value || '';
+    const lexileSelect = document.getElementById('lexileSelect')?.value || '600L - 750L';
+
+    const statusContainer = document.getElementById('genStatusContainer');
+    const fillBar = document.getElementById('progressBarFill');
+    const statusText = document.getElementById('loaderStepText');
+    const pctText = document.getElementById('loaderPctText');
+
+    if (statusContainer) statusContainer.classList.remove('hidden');
+    if (fillBar) fillBar.style.width = '100%';
+    if (statusText) statusText.innerText = 'Loading curated library passage...';
+    if (pctText) pctText.innerText = '100%';
+
+    const passageData = window.getPassageByTopicOrLexile ? window.getPassageByTopicOrLexile(topicInput, lexileSelect) : null;
+
+    if (!passageData) {
+      alert("Library passage could not be loaded.");
+      if (statusContainer) statusContainer.classList.add('hidden');
+      return;
     }
 
-    window.generateAIContent = function() {
-      const topicInput = document.getElementById('topicInput')?.value || '';
-      const lexileSelect = document.getElementById('lexileSelect')?.value || '600L - 750L';
-
-      const statusContainer = document.getElementById('generationStatus');
-      const fillBar = document.getElementById('fillBar');
-      const pctText = document.getElementById('pctText');
-
-      if (statusContainer) statusContainer.classList.remove('hidden');
-      if (fillBar) fillBar.style.width = '100%';
-      if (pctText) pctText.innerText = '100%';
-
-      // Instant zero-latency lookup from local library
-      const passageData = window.getPassageByTopicOrLexile ? 
-        window.getPassageByTopicOrLexile(topicInput, lexileSelect) : null;
-
-      if (!passageData) {
-        alert("Library passage could not be loaded.");
-        return;
-      }
-
-      window.currentData = passageData;
-      if (!window.currentData.chunks || window.currentData.chunks.length === 0) {
+    window.currentData = passageData;
+    if (!window.currentData.chunks || window.currentData.chunks.length === 0) {
+      if (window.buildChunksFromPassage) {
         window.currentData.chunks = window.buildChunksFromPassage(window.currentData.passage);
       }
-
-      setTimeout(() => {
-        if (window.loadDataIntoModules) window.loadDataIntoModules();
-        if (window.switchTab) window.switchTab('module1');
-        
-        if (statusContainer) statusContainer.classList.add('hidden');
-        if (fillBar) fillBar.style.width = '0%';
-      }, 300);
-    };
-
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.className = 'tab-btn px-4 py-2 text-sm font-semibold rounded-md bg-white text-stone-700 border border-stone-300';
-      });
-      document.querySelector(`[onclick="switchTab('${tabId}')"]`).className = 'tab-btn px-4 py-2 text-sm font-semibold rounded-md bg-sky-800 text-white shadow-sm';
-      document.getElementById('tab-' + tabId).classList.remove('hidden');
     }
-  </script>
+
+    setTimeout(() => {
+      window.loadDataIntoModules();
+      window.switchTab('module1');
+      if (statusContainer) statusContainer.classList.add('hidden');
+      if (fillBar) fillBar.style.width = '0%';
+    }, 250);
+  };
+
+  // Initial boot load
+  if (window.benchmarkBank) {
+    window.loadBenchmarkData();
+  }
+</script>
 </body>
 </html>
