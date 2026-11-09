@@ -552,7 +552,10 @@
   <script src="js/pqrstReader.js"></script>
 
   <!-- MAIN UI CONTROLLER & AI GENERATOR -->
-  <script>
+  <script type="module">
+    import { getPassageByTopicOrLexile } from './js/library/index.js';
+    window.getPassageByTopicOrLexile = getPassageByTopicOrLexile;
+        
     function openGuideModal() { document.getElementById('guideModal').classList.remove('hidden'); }
     function closeGuideModal() { document.getElementById('guideModal').classList.add('hidden'); }
     function downloadPDFGuide() { openGuideModal(); setTimeout(() => { window.print(); }, 200); }
@@ -670,83 +673,40 @@
       }
     }
 
-    async function generateAIContent() {
-      const topic = document.getElementById('topicInput').value.trim();
-      const statusContainer = document.getElementById('genStatusContainer');
-      const stepText = document.getElementById('loaderStepText');
-      const pctText = document.getElementById('loaderPctText');
-      const fillBar = document.getElementById('progressBarFill');
-      const genBtn = document.getElementById('genBtn');
-      const topicInput = document.getElementById('topicInput');
+    window.generateAIContent = function() {
+      const topicInput = document.getElementById('topicInput')?.value || '';
+      const lexileSelect = document.getElementById('lexileSelect')?.value || '600L - 750L';
 
-      if (!topic) { alert("Please enter a Topic."); return; }
+      const statusContainer = document.getElementById('generationStatus');
+      const fillBar = document.getElementById('fillBar');
+      const pctText = document.getElementById('pctText');
 
-      statusContainer.classList.remove('hidden');
-      genBtn.disabled = true;
-      topicInput.disabled = true;
+      if (statusContainer) statusContainer.classList.remove('hidden');
+      if (fillBar) fillBar.style.width = '100%';
+      if (pctText) pctText.innerText = '100%';
 
-      // STEP 1: START (33%)
-      stepText.innerText = "Step 1 of 3: Gathering passage content & context...";
-      pctText.innerText = "33%";
-      fillBar.style.width = "33%";
+      // Instant zero-latency lookup from local library
+      const passageData = window.getPassageByTopicOrLexile ? 
+        window.getPassageByTopicOrLexile(topicInput, lexileSelect) : null;
 
-      const lexileLabel = document.getElementById('lexileSelect').options[document.getElementById('lexileSelect').selectedIndex].text;
-
-      // STEP 2: CHUNK CALIBRATION (66%)
-      const timer1 = setTimeout(() => {
-        stepText.innerText = "Step 2 of 3: Calibrating Lexile readability & phrase chunks...";
-        pctText.innerText = "66%";
-        fillBar.style.width = "66%";
-      }, 1000);
-
-      // STEP 3: QUIZ FORMATTING (95%)
-      const timer2 = setTimeout(() => {
-        stepText.innerText = "Step 3 of 3: Building 3-question verification check...";
-        pctText.innerText = "95%";
-        fillBar.style.width = "95%";
-      }, 2000);
-
-      try {
-        const response = await fetch('/api/generate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ topic, lexileLabel })
-        });
-
-        clearTimeout(timer1);
-        clearTimeout(timer2);
-
-        if (!response.ok) {
-          const errData = await response.json();
-          throw new Error(errData.error || `HTTP ${response.status}`);
-        }
-
-        // COMPLETE (100%)
-        fillBar.style.width = "100%";
-        pctText.innerText = "100%";
-
-        window.currentData = await response.json();
-        if (!window.currentData.chunks || window.currentData.chunks.length === 0) {
-          window.currentData.chunks = window.buildChunksFromPassage(window.currentData.passage);
-        }
-        
-        setTimeout(() => {
-          loadDataIntoModules();
-          switchTab('module1');
-        }, 300);
-
-      } catch (err) {
-        console.error("API Error:", err);
-        alert("Generation Error: " + err.message);
-      } finally {
-        setTimeout(() => {
-          statusContainer.classList.add('hidden');
-          fillBar.style.width = "0%";
-          genBtn.disabled = false;
-          topicInput.disabled = false;
-        }, 400);
+      if (!passageData) {
+        alert("Library passage could not be loaded.");
+        return;
       }
-    }
+
+      window.currentData = passageData;
+      if (!window.currentData.chunks || window.currentData.chunks.length === 0) {
+        window.currentData.chunks = window.buildChunksFromPassage(window.currentData.passage);
+      }
+
+      setTimeout(() => {
+        if (window.loadDataIntoModules) window.loadDataIntoModules();
+        if (window.switchTab) window.switchTab('module1');
+        
+        if (statusContainer) statusContainer.classList.add('hidden');
+        if (fillBar) fillBar.style.width = '0%';
+      }, 300);
+    };
 
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
