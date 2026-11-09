@@ -1,0 +1,106 @@
+/* CLASSIC PAPER & INK TYPOGRAPHY STYLES */
+body {
+    background-color: #f7f5f0;
+    color: #1e293b;
+    font-family: Georgia, Cambria, "Times New Roman", Times, serif;
+  }
+  
+  .font-sans-ui {
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  
+  /* MODULE 1: FOCUS SHUTTER HIGHLIGHTER (CRISP & DELIBERATE) */
+  .shutter-line { 
+    transition: opacity 0.15s ease-in-out, background-color 0.15s ease-in-out; 
+  }
+  .dimmed { 
+    opacity: 0.15; 
+    filter: blur(0.5px); 
+  }
+  .focused { 
+    opacity: 1; 
+    filter: blur(0px); 
+    font-weight: 600; 
+    background-color: #fef08a; 
+    color: #0f172a; 
+    border-radius: 6px;
+    box-shadow: inset 3px 0 0 #0284c7, 0 1px 4px rgba(0, 0, 0, 0.06); 
+  }
+  
+  /* MODULE 2: PERFECT OPTICAL FLASHER ANCHOR ALIGNMENT */
+  .flash-container {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 1.65rem;
+    line-height: 1;
+    width: 100%;
+  }
+  .flash-prefix { 
+    text-align: right; 
+    flex: 1; 
+    white-space: pre; 
+    color: #1e293b; 
+  }
+  .flash-anchor { 
+    color: #dc2626; 
+    font-weight: 900; 
+    text-decoration: underline; 
+    text-underline-offset: 4px; 
+    flex: 0 0 auto; 
+    padding: 0 1px;
+    display: inline-block;
+    transform: scale(1.04);
+    transition: transform 0.08s ease-out;
+  }
+  .flash-suffix { 
+    text-align: left; 
+    flex: 1; 
+    white-space: pre; 
+    color: #1e293b; 
+  }
+  
+  /* ANIMATED PROGRESS BAR PULSE */
+  @keyframes progressPulse {
+    0% { width: 15%; }
+    50% { width: 70%; }
+    100% { width: 95%; }
+  }
+  .progress-bar-fill {
+    animation: progressPulse 4s ease-in-out infinite alternate;
+  }
+  
+  /* PHASE 2: ACCESSIBILITY MODE (LARGE TEXT & HIGH CONTRAST) */
+  body.accessibility-mode {
+    color: #020617;
+  }
+  body.accessibility-mode #diagText,
+  body.accessibility-mode #shutterViewport,
+  body.accessibility-mode #pqrstPassageText {
+    font-size: 1.25rem !important; /* ~20px */
+    line-height: 2.4 !important;
+    color: #020617 !important;
+    background-color: #ffffff !important;
+    border-color: #94a3b8 !important;
+  }
+  body.accessibility-mode .flash-container {
+    font-size: 2.1rem !important;
+  }
+  body.accessibility-mode .flash-prefix,
+  body.accessibility-mode .flash-suffix {
+    color: #020617 !important;
+    font-weight: 600;
+  }
+  
+  /* PERFECT 2-PAGE PRINT STYLESHEET */
+  @media print {
+    body * { visibility: hidden !important; }
+    #guideModal { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; height: auto !important; background: white !important; display: block !important; }
+    #guideModal > div { max-height: none !important; border: none !important; box-shadow: none !important; width: 100% !important; background: white !important; }
+    #printableGuide, #printableGuide * { visibility: visible !important; }
+    #printableGuide { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; color: #0f172a !important; background: white !important; font-size: 10pt !important; line-height: 1.35 !important; padding: 0 !important; }
+    .no-print { display: none !important; }
+    .print-break-before { page-break-before: always !important; break-before: page !important; }
+  }

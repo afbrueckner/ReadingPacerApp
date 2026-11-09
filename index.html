@@ -5,114 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reading Pacer App - Ave Maria Edition</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    /* CLASSIC PAPER & INK TYPOGRAPHY STYLES */
-    body {
-      background-color: #f7f5f0;
-      color: #1e293b;
-      font-family: Georgia, Cambria, "Times New Roman", Times, serif;
-    }
-
-    .font-sans-ui {
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    }
-
-    /* MODULE 1: FOCUS SHUTTER HIGHLIGHTER (CRISP & DELIBERATE) */
-    .shutter-line { 
-      transition: opacity 0.15s ease-in-out, background-color 0.15s ease-in-out; 
-    }
-    .dimmed { 
-      opacity: 0.15; 
-      filter: blur(0.5px); 
-    }
-    .focused { 
-      opacity: 1; 
-      filter: blur(0px); 
-      font-weight: 600; 
-      background-color: #fef08a; 
-      color: #0f172a; 
-      border-radius: 6px;
-      box-shadow: inset 3px 0 0 #0284c7, 0 1px 4px rgba(0, 0, 0, 0.06); 
-    }
-
-    /* MODULE 2: PERFECT OPTICAL FLASHER ANCHOR ALIGNMENT */
-    .flash-container {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      white-space: nowrap;
-      font-family: "Courier New", Courier, monospace;
-      font-size: 1.65rem;
-      line-height: 1;
-      width: 100%;
-    }
-    .flash-prefix { 
-      text-align: right; 
-      flex: 1; 
-      white-space: pre; 
-      color: #1e293b; 
-    }
-    .flash-anchor { 
-      color: #dc2626; 
-      font-weight: 900; 
-      text-decoration: underline; 
-      text-underline-offset: 4px; 
-      flex: 0 0 auto; 
-      padding: 0 1px;
-      display: inline-block;
-      transform: scale(1.04);
-      transition: transform 0.08s ease-out;
-    }
-    .flash-suffix { 
-      text-align: left; 
-      flex: 1; 
-      white-space: pre; 
-      color: #1e293b; 
-    }
-
-    /* ANIMATED PROGRESS BAR PULSE */
-    @keyframes progressPulse {
-      0% { width: 15%; }
-      50% { width: 70%; }
-      100% { width: 95%; }
-    }
-    .progress-bar-fill {
-      animation: progressPulse 4s ease-in-out infinite alternate;
-    }
-
-    /* PHASE 2: ACCESSIBILITY MODE (LARGE TEXT & HIGH CONTRAST) */
-    body.accessibility-mode {
-      color: #020617;
-    }
-    body.accessibility-mode #diagText,
-    body.accessibility-mode #shutterViewport,
-    body.accessibility-mode #pqrstPassageText {
-      font-size: 1.25rem !important; /* ~20px */
-      line-height: 2.4 !important;
-      color: #020617 !important;
-      background-color: #ffffff !important;
-      border-color: #94a3b8 !important;
-    }
-    body.accessibility-mode .flash-container {
-      font-size: 2.1rem !important;
-    }
-    body.accessibility-mode .flash-prefix,
-    body.accessibility-mode .flash-suffix {
-      color: #020617 !important;
-      font-weight: 600;
-    }
-
-    /* PERFECT 2-PAGE PRINT STYLESHEET */
-    @media print {
-      body * { visibility: hidden !important; }
-      #guideModal { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; height: auto !important; background: white !important; display: block !important; }
-      #guideModal > div { max-height: none !important; border: none !important; box-shadow: none !important; width: 100% !important; background: white !important; }
-      #printableGuide, #printableGuide * { visibility: visible !important; }
-      #printableGuide { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; color: #0f172a !important; background: white !important; font-size: 10pt !important; line-height: 1.35 !important; padding: 0 !important; }
-      .no-print { display: none !important; }
-      .print-break-before { page-break-before: always !important; break-before: page !important; }
-    }
-  </style>
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body id="appBody" class="min-h-screen p-6">
   <div class="max-w-4xl mx-auto space-y-6">
@@ -143,7 +36,7 @@
     <!-- SIGN-IN PROMPT SCREEN -->
     <div id="loggedOutState" class="bg-white p-8 rounded-xl border border-stone-300 text-center space-y-4 max-w-md mx-auto my-12 shadow-sm font-sans-ui">
       <div class="text-4xl">⛪</div>
-      <h2 class="text-lg font-bold text-sky-950">Catholic School Portal Sign-In</h2>
+      <h2 class="text-lg font-bold text-sky-950">Ave Maria Catholic School Portal Sign-In</h2>
       <p class="text-xs text-stone-600 leading-relaxed">
         Please sign in using your school Google account to access your reading modules or classroom dashboard.
       </p>
@@ -255,7 +148,7 @@
         </div>
       </div>
 
-      <!-- LEXILE & CONTENT GENERATOR WITH ACCESSIBILITY TOGGLE -->
+      <!-- LEXILE & CONTENT GENERATOR -->
       <div class="bg-white p-5 rounded-xl border border-stone-300 space-y-3 font-sans-ui shadow-sm">
         <div class="flex justify-between items-center border-b border-stone-200 pb-2.5">
           <h2 class="text-sm font-bold text-sky-950">Target Reading Calibration</h2>
@@ -425,11 +318,9 @@
 
   </div>
 
-  <!-- FULL EDUCATOR & PARENT FIELD GUIDE MODAL -->
+  <!-- EDUCATOR FIELD GUIDE MODAL -->
   <div id="guideModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden font-sans-ui">
     <div class="bg-white border border-stone-300 rounded-xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl">
-      
-      <!-- MODAL NAVBAR -->
       <div class="p-4 border-b border-stone-200 flex justify-between items-center bg-stone-50 rounded-t-xl no-print">
         <h2 class="text-lg font-bold text-sky-950 flex items-center space-x-2">
           <span>📖 Educator & Parent Field Guide</span>
@@ -439,17 +330,11 @@
           <button onclick="closeGuideModal()" class="text-stone-500 hover:text-stone-800 text-lg font-bold px-2">✕</button>
         </div>
       </div>
-
-      <!-- PRINTABLE MANUAL CONTENT -->
       <div id="printableGuide" class="p-6 overflow-y-auto space-y-6 text-slate-800 text-sm leading-relaxed">
-        
-        <!-- HEADER PAGE 1 -->
         <div class="border-b border-stone-200 pb-3">
           <h1 class="text-xl font-bold text-sky-900">Cognitive Reading Pacer — Field Manual</h1>
           <p class="text-xs text-stone-500 mt-1">Catholic Middle School Edition • Research-Backed Fluency & Comprehension Protocol</p>
         </div>
-
-        <!-- SECTION 1 -->
         <section class="space-y-2">
           <h3 class="font-bold text-sky-950 text-base">1. Key Metrics & Definitions</h3>
           <div class="bg-stone-50 p-4 rounded-lg border border-stone-200 space-y-2 text-xs">
@@ -459,8 +344,6 @@
             <p><strong>&Delta;ERR (Growth Delta):</strong> True cognitive growth measured between Form A (Baseline) and Form B (Re-Test).</p>
           </div>
         </section>
-
-        <!-- SECTION 2 -->
         <section class="space-y-2">
           <h3 class="font-bold text-sky-950 text-base">2. Pedagogical Rationale & Research Base</h3>
           <p class="text-xs text-stone-700 leading-normal">
@@ -472,8 +355,6 @@
             <li><strong>PQRST Active Reading (Module 3):</strong> Structures metacognitive recall through <em>Preview, Question, Read, Summary Recite, and Test</em> verification.</li>
           </ul>
         </section>
-
-        <!-- SECTION 3: PAGE BREAK FOR PRINT -->
         <section class="space-y-2 print-break-before">
           <h3 class="font-bold text-sky-950 text-base">3. Weekly 3-Session Implementation Protocol</h3>
           <table class="w-full text-left text-xs border-collapse border border-stone-300">
@@ -507,8 +388,6 @@
             </tbody>
           </table>
         </section>
-
-        <!-- SECTION 4 -->
         <section class="space-y-2">
           <h3 class="font-bold text-sky-950 text-base">4. Lexile Band Calibration Reference</h3>
           <div class="grid grid-cols-2 gap-3 text-xs">
@@ -530,15 +409,12 @@
             </div>
           </div>
         </section>
-
-        <!-- SECTION 5 -->
         <section class="space-y-2 pt-2 border-t border-stone-200">
           <h3 class="font-bold text-sky-950 text-base">5. Troubleshooting & Support</h3>
           <p class="text-xs text-stone-600">
             For school roster adjustments or domain access questions (@avemaria.school or @aveangels.org), contact the Ave Maria Middle School Reading Intervention Team.
           </p>
         </section>
-
       </div>
     </div>
   </div>
@@ -647,7 +523,14 @@
     }
   </script>
 
-  <!-- PACER SCRIPT ENGINE -->
+  <!-- APP SCRIPTS & MODULES -->
+  <script src="js/benchmarkData.js"></script>
+  <script src="js/diagnostic.js"></script>
+  <script src="js/focusShutter.js"></script>
+  <script src="js/visualFlasher.js"></script>
+  <script src="js/pqrstReader.js"></script>
+
+  <!-- MAIN UI CONTROLLER & AI GENERATOR -->
   <script>
     function openGuideModal() { document.getElementById('guideModal').classList.remove('hidden'); }
     function closeGuideModal() { document.getElementById('guideModal').classList.add('hidden'); }
@@ -676,120 +559,17 @@
       document.getElementById('demoToggleBtn').innerText = window.isTeacherDemoActive ? "🔙 Return to Dashboard" : "👁️ Preview Student Experience (Demo Mode)";
     }
 
-    const benchmarkBank = {
-      tier1: {
-        FormA: { wordCount: 110, passage: "Lighthouses are tall towers built near coasts and harbors. They shine bright beams of light to guide ships safely through dark waters. Long ago, lighthouse keepers had to trim oil lamps every night. Today, most lighthouses use electric bulbs and automatic timers. Warnings from lighthouses prevent boats from hitting sharp rocks near the shore during stormy weather.", 
-          questions: [
-            { type: "Literal Recall", question: "1. What was a task for lighthouse keepers long ago?", options: ["Fixing electric bulbs", "Trimming oil lamps every night", "Building new harbors"], correctIndex: 1 },
-            { type: "Inferential", question: "2. Why are lighthouses built on high coastal rocks?", options: ["So keepers can see stars", "To maximize light visibility for approaching ships", "To stay away from town noise"], correctIndex: 1 },
-            { type: "Vocabulary", question: "3. What does 'automatic' mean in the context of modern lighthouses?", options: ["Operated by hand", "Self-operating without manual effort", "Broken and unpowered"], correctIndex: 1 }
-          ]
-        },
-        FormB: { wordCount: 115, passage: "Coral reefs are underwater structures made by tiny sea creatures called polyps. These reefs provide homes for one quarter of all marine life in the ocean. Bright fish, sea turtles, and crabs rely on corals for food and shelter. Ocean pollution and warm water can harm these fragile ecosystems. Scientists work to protect reefs by creating ocean sanctuaries.", 
-          questions: [
-            { type: "Literal Recall", question: "1. What creatures build coral reefs?", options: ["Sea turtles", "Tiny polyps", "Electric eels"], correctIndex: 1 },
-            { type: "Inferential", question: "2. What would happen if coral reefs were destroyed?", options: ["25% of marine life would lose their habitat", "Ocean water would instantly dry up", "Fish would swim faster"], correctIndex: 0 },
-            { type: "Vocabulary", question: "3. What does 'fragile' mean when describing reef ecosystems?", options: ["Strong and indestructible", "Easily damaged or delicate", "Deep underwater"], correctIndex: 1 }
-          ]
-        }
-      },
-      tier2: {
-        FormA: { wordCount: 165, passage: "Volcanoes are openings in the Earth's crust that allow molten rock, ash, and gases to escape onto the surface. When magma builds up pressure beneath a volcano, an eruption can occur. Some eruptions are explosive and send ash high into the atmosphere, while others produce gentle flows of liquid lava. Scientists monitor volcanic activity by measuring seismic waves, gas emissions, and ground deformation. Understanding these signs helps warning systems protect nearby communities from unexpected hazards.", 
-          questions: [
-            { type: "Literal Recall", question: "1. What allows scientists to monitor volcanic activity?", options: ["Weather forecasts", "Seismic waves, gas emissions, and ground deformation", "Ocean tides"], correctIndex: 1 },
-            { type: "Inferential", question: "2. Why is monitoring ground deformation critical near active volcanoes?", options: ["It shows where trees grow best", "It indicates rising magma pressure underneath", "It tracks animal migration"], correctIndex: 1 },
-            { type: "Vocabulary", question: "3. What is 'magma' before it reaches the Earth's surface?", options: ["Molten rock beneath the surface", "Cold volcanic ash", "Atmospheric gas"], correctIndex: 0 }
-          ]
-        },
-        FormB: { wordCount: 170, passage: "Glaciers are massive sheets of dense ice that move slowly across land under their own weight. Formed over hundreds of years from accumulated snow, glaciers hold most of the world's freshwater. As climate temperatures rise, glaciers melt faster than new snow can collect. Scientists track glacier movement using satellite imagery and aerial radar. Shrinking glaciers cause rising sea levels and alter river habitats around the world.", 
-          questions: [
-            { type: "Literal Recall", question: "1. How do scientists track glacier movement?", options: ["Using satellite imagery and aerial radar", "By measuring rainwater", "Through deep sea diving"], correctIndex: 0 },
-            { type: "Inferential", question: "2. Why does melting glaciers impact coastal communities?", options: ["It decreases ocean levels", "It causes sea levels to rise and floods coasts", "It stops river flow entirely"], correctIndex: 1 },
-            { type: "Vocabulary", question: "3. What does 'accumulated' mean regarding glacier formation?", options: ["Melted away quickly", "Gathered and built up over time", "Blown away by wind"], correctIndex: 1 }
-          ]
-        }
-      },
-      tier3: {
-        FormA: { wordCount: 210, passage: "Hydrothermal vents are fissures on the ocean floor where geothermally heated water emerges. Located near volcanically active oceanic ridges, these vents discharge mineral-rich fluids exceeding four hundred degrees Celsius. Despite the total absence of sunlight and extreme hydrostatic pressure, complex ecosystems thrive surrounding hydrothermal vents. Chemosynthetic bacteria convert chemical compounds like hydrogen sulfide into organic energy, serving as the primary producers for specialized sea life including giant tube worms and blind shrimp.", 
-          questions: [
-            { type: "Literal Recall", question: "1. What process do bacteria near hydrothermal vents use to generate energy?", options: ["Photosynthesis", "Chemosynthesis using chemical compounds", "Nuclear decay"], correctIndex: 1 },
-            { type: "Inferential", question: "2. Why is chemosynthesis necessary for vent life instead of photosynthesis?", options: ["Sunlight cannot penetrate to deep ocean floors", "Water is too cold for plants", "Bacteria prefer dark colors"], correctIndex: 0 },
-            { type: "Vocabulary", question: "3. What are 'fissures' in the ocean floor?", options: ["Floating seaweed beds", "Deep cracks or openings in the crust", "Solid ice formations"], correctIndex: 1 }
-          ]
-        },
-        FormB: { wordCount: 215, passage: "Bioluminescence is the biochemical emission of light by living organisms, occurring predominantly among marine species. This physiological reaction requires the enzyme luciferase to catalyze the oxidation of luciferin, generating light without heat. Organisms utilize bioluminescence for diverse evolutionary adaptations, including camouflage through counterillumination, attracting prey, and deterring potential predators. Marine biologists study these molecular mechanisms to develop advanced medical imaging technologies.", 
-          questions: [
-            { type: "Literal Recall", question: "1. What enzyme catalyzes the light-producing reaction in bioluminescence?", options: ["Luciferase", "Amylase", "Hemoglobin"], correctIndex: 0 },
-            { type: "Inferential", question: "2. How does counterillumination aid a deep-sea creature's survival?", options: ["It glows brightly to blind enemies", "It matches overhead light to hide its silhouette from predators below", "It warms the cold surrounding water"], correctIndex: 1 },
-            { type: "Vocabulary", question: "3. What does 'catalyze' mean in a biochemical reaction?", options: ["To prevent or block a change", "To accelerate or trigger a chemical process", "To freeze liquids"], correctIndex: 1 }
-          ]
-        }
-      },
-      tier4: {
-        FormA: { wordCount: 235, passage: "Quantum computing represents a paradigm shift from classical computation, leveraging the principles of quantum mechanics to process information. Unlike classical bits that exist in definitive binary states of zero or one, quantum bits or qubits exhibit superposition, enabling simultaneous representation of multiple state combinations. Furthermore, quantum entanglement allows qubits to remain interconnected regardless of spatial distance, exponentially accelerating complex calculations in cryptography, material science, and algorithmic simulation.", 
-          questions: [
-            { type: "Literal Recall", question: "1. What property allows qubits to represent multiple states simultaneously?", options: ["Binary compilation", "Superposition", "Thermal conductivity"], correctIndex: 1 },
-            { type: "Inferential", question: "2. Why does quantum computing threaten traditional data cryptography?", options: ["Qubits can process complex calculations exponentially faster", "Qubits delete classical hard drives", "Quantum computers use less electricity"], correctIndex: 0 },
-            { type: "Vocabulary", question: "3. What is a 'paradigm shift' in scientific computing?", options: ["A minor hardware update", "A fundamental change in basic concepts and approach", "A system error"], correctIndex: 1 }
-          ]
-        },
-        FormB: { wordCount: 240, passage: "The CRISPR-Cas9 system is a revolutionary genome-editing tool derived from bacterial adaptive immune mechanisms. Bacteria employ CRISPR sequences to recognize and destroy recurring viral DNA using the endonuclease Cas9 as molecular scissors. Researchers have repurposed this precision mechanism to introduce targeted alterations within complex eukaryotic genomes, opening unprecedented avenues for treating hereditary genetic disorders, enhancing agricultural resilience, and elucidating fundamental cellular pathways.", 
-          questions: [
-            { type: "Literal Recall", question: "1. What is the function of the Cas9 protein in CRISPR editing?", options: ["Synthesizing sugars", "Acting as molecular scissors to cut DNA", "Storing lipids"], correctIndex: 1 },
-            { type: "Inferential", question: "2. How did bacteria originally evolve the CRISPR-Cas9 system?", options: ["To store excess food energy", "As an adaptive immune system against viral attacks", "To build cell walls"], correctIndex: 1 },
-            { type: "Vocabulary", question: "3. What does 'elucidating' mean in scientific research?", options: ["Hiding secret data", "Making clear or explaining complex pathways", "Removing cellular waste"], correctIndex: 1 }
-          ]
-        }
-      }
-    };
-
     window.currentLexileTier = 'tier2';
     window.currentBenchmarkForm = 'FormA';
 
-    let currentData = {
+    window.currentData = {
       title: "Volcanoes",
-      passage: benchmarkBank.tier2.FormA.passage,
+      passage: window.benchmarkBank.tier2.FormA.passage,
       preview: "Volcanoes are dangerous crustal vents caused by magma pressure.",
       guiding_question: "How do scientists monitor volcanic eruptions?",
       chunks: [],
-      questions: benchmarkBank.tier2.FormA.questions
+      questions: window.benchmarkBank.tier2.FormA.questions
     };
-
-    function buildChunksFromPassage(passageText) {
-      if (!passageText) return [];
-
-      const sentences = passageText.match(/[^.!?]+[.!?]+/g) || [passageText];
-      const chunks = [];
-
-      sentences.forEach(sentence => {
-        const clauses = sentence.trim().split(/(?<=[,;:])/g);
-
-        clauses.forEach(clause => {
-          const words = clause.trim().split(/\s+/).filter(w => w.length > 0);
-          let i = 0;
-
-          while (i < words.length) {
-            const remaining = words.length - i;
-            let count = 3;
-
-            if (remaining === 4) {
-              count = 2;
-            } else if (remaining < 3) {
-              count = remaining;
-            }
-
-            const chunkText = words.slice(i, i + count).join(' ');
-            if (chunkText.trim()) {
-              const oapIndex = Math.floor(chunkText.length / 2);
-              chunks.push({ text: chunkText, oap: oapIndex });
-            }
-            i += count;
-          }
-        });
-      });
-
-      return chunks;
-    }
 
     function onLexileChange() { 
       window.currentLexileTier = document.getElementById('lexileSelect').value; 
@@ -832,36 +612,35 @@
     }
 
     function loadBenchmarkData() {
-      const benchmark = benchmarkBank[window.currentLexileTier][window.currentBenchmarkForm];
+      const benchmark = window.benchmarkBank[window.currentLexileTier][window.currentBenchmarkForm];
       document.getElementById('diagText').innerText = benchmark.passage;
       
-      currentData.passage = benchmark.passage;
-      currentData.questions = benchmark.questions;
-      currentData.chunks = buildChunksFromPassage(benchmark.passage);
+      window.currentData.passage = benchmark.passage;
+      window.currentData.questions = benchmark.questions;
+      window.currentData.chunks = window.buildChunksFromPassage(benchmark.passage);
 
       renderQuestionList('diagQuizQuestionsContainer', benchmark.questions, 'diag');
       loadDataIntoModules();
     }
 
     function loadDataIntoModules() {
-      const sentences = (currentData.passage || "").match(/[^.!?]+[.!?]+/g) || [currentData.passage || ""];
+      const sentences = (window.currentData.passage || "").match(/[^.!?]+[.!?]+/g) || [window.currentData.passage || ""];
       document.getElementById('shutterContainer').innerHTML = sentences.map((s, i) => `<div id="line-${i}" class="shutter-line dimmed p-3.5 rounded-lg">${s.trim()}</div>`).join('');
-      document.getElementById('m1Title').innerText = "Module 1: " + (currentData.title || "Focus Shutter Accelerator");
+      document.getElementById('m1Title').innerText = "Module 1: " + (window.currentData.title || "Focus Shutter Accelerator");
 
-      document.getElementById('pqrstTitle').innerText = currentData.title || "Custom Reading Practice";
-      document.getElementById('pqrstPreview').innerText = currentData.preview || "Preview main ideas before reading.";
-      document.getElementById('pqrstQuestion').innerText = currentData.guiding_question || "What are the main concepts?";
-      document.getElementById('pqrstPassageText').innerText = currentData.passage || "";
+      document.getElementById('pqrstTitle').innerText = window.currentData.title || "Custom Reading Practice";
+      document.getElementById('pqrstPreview').innerText = window.currentData.preview || "Preview main ideas before reading.";
+      document.getElementById('pqrstQuestion').innerText = window.currentData.guiding_question || "What are the main concepts?";
+      document.getElementById('pqrstPassageText').innerText = window.currentData.passage || "";
       
-      renderQuestionList('pqrstQuizContainer', currentData.questions || [], 'pqrst');
+      renderQuestionList('pqrstQuizContainer', window.currentData.questions || [], 'pqrst');
 
-      document.getElementById('flashCounter').innerText = `Ready: 0 / ${(currentData.chunks || []).length} Flashes`;
-      pqrstReset();
+      document.getElementById('flashCounter').innerText = `Ready: 0 / ${(window.currentData.chunks || []).length} Flashes`;
+      window.pqrstReset();
     }
 
     loadBenchmarkData();
 
-    // DYNAMIC UI PROGRESS LOADER (CLEAN & ACADEMIC)
     async function generateAIContent() {
       const topic = document.getElementById('topicInput').value.trim();
       const statusContainer = document.getElementById('genStatusContainer');
@@ -906,9 +685,9 @@
           throw new Error(errData.error || `HTTP ${response.status}`);
         }
 
-        currentData = await response.json();
-        if (!currentData.chunks || currentData.chunks.length === 0) {
-          currentData.chunks = buildChunksFromPassage(currentData.passage);
+        window.currentData = await response.json();
+        if (!window.currentData.chunks || window.currentData.chunks.length === 0) {
+          window.currentData.chunks = window.buildChunksFromPassage(window.currentData.passage);
         }
         loadDataIntoModules();
         switchTab('module1');
@@ -929,131 +708,6 @@
       });
       document.querySelector(`[onclick="switchTab('${tabId}')"]`).className = 'tab-btn px-4 py-2 text-sm font-semibold rounded-md bg-sky-800 text-white shadow-sm';
       document.getElementById('tab-' + tabId).classList.remove('hidden');
-    }
-
-    let diagStartTime;
-    function startDiagnostic() { diagStartTime = Date.now(); document.getElementById('diagStartBtn').classList.add('hidden'); document.getElementById('diagFinishBtn').classList.remove('hidden'); }
-    function finishDiagnostic() { 
-      const elapsed = (Date.now() - diagStartTime) / 1000; 
-      const wordCount = benchmarkBank[window.currentLexileTier][window.currentBenchmarkForm].wordCount;
-      window.rawWpm = Math.round((wordCount / elapsed) * 60); 
-      document.getElementById('diagFinishBtn').classList.add('hidden'); 
-      document.getElementById('diagQuiz').classList.remove('hidden'); 
-    }
-
-    function submitDiagnostic() { 
-      const questions = currentData.questions || benchmarkBank[window.currentLexileTier][window.currentBenchmarkForm].questions;
-      let correctCount = 0;
-
-      questions.forEach((q, idx) => {
-        const selected = document.querySelector(`input[name="diag_q${idx}"]:checked`);
-        if (selected && parseInt(selected.value) === q.correctIndex) {
-          correctCount++;
-        }
-      });
-
-      const accuracy = correctCount / questions.length;
-      const calculatedERR = Math.round(window.rawWpm * accuracy);
-
-      if (window.saveStudentAssessment) {
-        window.saveStudentAssessment(window.currentBenchmarkForm, window.rawWpm, accuracy, calculatedERR);
-      }
-
-      alert(`Diagnostic Sprint Completed!\n------------------------------\nSpeed: ${window.rawWpm} WPM\nComprehension: ${correctCount}/${questions.length} Correct (${Math.round(accuracy * 100)}%)\nCalculated ERR: ${calculatedERR}`);
-
-      document.getElementById('diagQuiz').classList.add('hidden');
-      document.getElementById('diagStartBtn').classList.remove('hidden');
-      switchTab('module1');
-    }
-
-    function submitPqrstQuiz() {
-      const questions = currentData.questions;
-      let correctCount = 0;
-      questions.forEach((q, idx) => {
-        const selected = document.querySelector(`input[name="pqrst_q${idx}"]:checked`);
-        if (selected && parseInt(selected.value) === q.correctIndex) {
-          correctCount++;
-        }
-      });
-      const pct = Math.round((correctCount / questions.length) * 100);
-      alert(`PQRST Module Completed!\nScore: ${correctCount}/${questions.length} Correct (${pct}%)`);
-    }
-
-    let shutterIdx = 0, shutterInterval;
-    function startShutter() {
-      clearInterval(shutterInterval);
-      shutterIdx = 0;
-      const lines = document.querySelectorAll('#shutterContainer > div');
-      const wpm = parseInt(document.getElementById('wpmInput').value);
-      const delay = (60 / (wpm / 10)) * 1000;
-      
-      shutterInterval = setInterval(() => {
-        lines.forEach((el, i) => {
-          if (i === shutterIdx) {
-            el.className = 'shutter-line focused p-3.5 rounded-lg';
-            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          } else {
-            el.className = 'shutter-line dimmed p-3.5 rounded-lg';
-          }
-        });
-        shutterIdx++;
-        if (shutterIdx >= lines.length) clearInterval(shutterInterval);
-      }, delay);
-    }
-    function stopShutter() { clearInterval(shutterInterval); }
-
-    let currentFlashDelay = 350;
-    function setFlashSpeed(speedMs) {
-      currentFlashDelay = speedMs;
-      document.getElementById('spd500').className = speedMs === 500 ? 'px-3 py-1 rounded-md bg-indigo-700 text-white font-bold' : 'px-3 py-1 rounded-md bg-stone-200 text-stone-700 font-bold';
-      document.getElementById('spd350').className = speedMs === 350 ? 'px-3 py-1 rounded-md bg-indigo-700 text-white font-bold' : 'px-3 py-1 rounded-md bg-stone-200 text-stone-700 font-bold';
-      document.getElementById('spd200').className = speedMs === 200 ? 'px-3 py-1 rounded-md bg-indigo-700 text-white font-bold' : 'px-3 py-1 rounded-md bg-stone-200 text-stone-700 font-bold';
-    }
-
-    function startFlasher() {
-      let i = 0;
-      const display = document.getElementById('flashDisplay');
-      const counter = document.getElementById('flashCounter');
-      const chunks = currentData.chunks || buildChunksFromPassage(currentData.passage);
-      
-      const interval = setInterval(() => {
-        if (i >= chunks.length) { 
-          clearInterval(interval); 
-          display.innerHTML = `<span class="text-emerald-700 font-bold text-base">Session Complete! (${chunks.length} Flashes)</span>`; 
-          counter.innerText = `Done: ${chunks.length} / ${chunks.length} Flashes`;
-          return; 
-        }
-        
-        const item = chunks[i];
-        const text = item.text || "";
-        const oap = item.oap !== undefined ? item.oap : Math.floor(text.length / 2);
-        
-        const prefix = text.slice(0, oap);
-        const anchorChar = text[oap] || text[0];
-        const suffix = text.slice(oap + 1);
-
-        display.innerHTML = `
-          <div class="flash-container">
-            <span class="flash-prefix">${prefix}</span>
-            <span class="flash-anchor">${anchorChar}</span>
-            <span class="flash-suffix">${suffix}</span>
-          </div>
-        `;
-        
-        counter.innerText = `Training: ${i + 1} / ${chunks.length} Flashes`;
-        i++;
-      }, currentFlashDelay);
-    }
-
-    function pqrstNext(step) {
-      document.getElementById('pqrstStep1').classList.add('hidden');
-      document.getElementById('pqrstStep2').classList.add('hidden');
-      document.getElementById('pqrstStep3').classList.add('hidden');
-      document.getElementById(`pqrstStep${step}`).classList.remove('hidden');
-    }
-
-    function pqrstReset() {
-      pqrstNext(1);
     }
   </script>
 </body>
