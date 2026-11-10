@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cognitive Reading Pacer</title>
+  <title>Reading Pacer</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -14,8 +14,8 @@
     <!-- HEADER / NAVIGATION BANNER -->
     <header class="bg-white p-5 rounded-xl border border-stone-300 flex justify-between items-center shadow-sm">
       <div>
-        <h1 class="text-xl font-black text-sky-950 tracking-tight">Cognitive Reading Pacer</h1>
-        <p class="text-xs text-stone-500 font-medium">Ave Maria Middle School Edition · IXL Lexile & Firebase Connected</p>
+        <h1 class="text-xl font-black text-sky-950 tracking-tight">Reading Pacer</h1>
+        <p class="text-xs text-stone-500 font-medium">Ave Maria Middle School Editiond</p>
       </div>
 
       <div class="flex items-center space-x-3">
@@ -124,7 +124,7 @@
         </button>
       </div>
 
-      <!-- LEXILE BAND & PASSAGE SELECTION DROPDOWN -->
+      <!-- TARGET READING CALIBRATION & LEVEL-FILTERED PASSAGE SELECTOR -->
       <div class="bg-white p-5 rounded-xl border border-stone-300 space-y-3 font-sans-ui shadow-sm">
         <div class="flex justify-between items-center border-b border-stone-200 pb-2.5">
           <h2 class="text-sm font-bold text-sky-950">Target Reading Calibration</h2>
@@ -142,11 +142,11 @@
           </div>
         </div>
 
-        <!-- DYNAMIC LEVEL-FILTERED PASSAGE SELECTOR -->
+        <!-- DYNAMIC PASSAGE DROPDOWN -->
         <div class="space-y-1.5 pt-1">
           <label for="passageSelect" class="text-xs font-bold text-sky-950">Select Practice Passage for Current Band:</label>
           <select id="passageSelect" onchange="onPassageDropdownSelect(this.value)" class="w-full bg-stone-50 border border-stone-300 text-xs px-3 py-2 rounded-md text-slate-900 font-medium shadow-sm">
-            <!-- Dynamically populated by JS -->
+            <!-- Dynamically populated from js/library/index.js -->
           </select>
         </div>
       </div>
@@ -159,7 +159,7 @@
         <button onclick="switchTab('module3')" class="tab-btn px-4 py-2 text-sm font-semibold rounded-md bg-white text-stone-700 border border-stone-300">Module 3 (PQRST Reader)</button>
       </div>
 
-      <!-- TAB CONTENT 0: DIAGNOSTIC -->
+      <!-- TAB CONTENT 0: DIAGNOSTIC (STRICT BENCHMARKS FORM A & FORM B ONLY) -->
       <div id="tab-diagnostic" class="tab-content bg-white p-6 rounded-xl border border-stone-300 shadow-sm space-y-4">
         <div class="flex justify-between items-center border-b border-stone-200 pb-3">
           <div>
@@ -198,18 +198,35 @@
         <button onclick="startShutter()" class="bg-sky-800 hover:bg-sky-900 text-white text-xs px-4 py-2 rounded-md font-bold">Begin Line Pacer</button>
       </div>
 
-      <!-- TAB CONTENT 2: VISUAL FLASHER -->
+      <!-- TAB CONTENT 2: VISUAL FLASHER (FULLY RESTORED FLASHER & ENHANCEMENTS) -->
       <div id="tab-module2" class="tab-content hidden bg-white p-6 rounded-xl border border-stone-300 shadow-sm space-y-4 text-center">
-        <div class="border-b border-stone-200 pb-3 text-left">
-          <h3 class="text-base font-bold text-sky-950">Module 2: Visual Chunk Flasher</h3>
-          <p class="text-xs text-stone-500">Expands tachistoscopic phrase span (2-4 word phrases flashed at target WPM speed).</p>
+        <div class="border-b border-stone-200 pb-3 text-left flex justify-between items-center">
+          <div>
+            <h3 class="text-base font-bold text-sky-950">Module 2: Visual Chunk Flasher</h3>
+            <p class="text-xs text-stone-500">Expands tachistoscopic phrase span (2-4 word phrases flashed at target WPM speed).</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <label for="flasherWpmSelect" class="text-xs font-bold text-stone-600">Target WPM:</label>
+            <select id="flasherWpmSelect" onchange="window.updateFlasherSpeed && window.updateFlasherSpeed(this.value)" class="bg-stone-50 border border-stone-300 text-xs px-2 py-1 rounded font-bold text-sky-900">
+              <option value="180">180 WPM</option>
+              <option value="220" selected>220 WPM</option>
+              <option value="260">260 WPM</option>
+              <option value="300">300 WPM</option>
+            </select>
+          </div>
         </div>
-        <div id="flashBox" class="h-32 bg-stone-900 text-emerald-400 rounded-xl flex items-center justify-center text-xl font-mono font-bold shadow-inner">
+
+        <!-- MAIN FLASH DISPLAY BOX -->
+        <div id="flashBox" class="h-36 bg-stone-900 text-emerald-400 rounded-xl flex items-center justify-center text-2xl font-mono font-bold shadow-inner border border-stone-800 transition-all">
           READY TO FLASH
         </div>
-        <div class="flex justify-center space-x-3 items-center">
+
+        <div class="flex justify-between items-center px-2 pt-1">
           <p id="flashCounter" class="text-xs font-bold text-stone-500">Ready: 0 / 0 Flashes</p>
-          <button onclick="startFlasher()" class="bg-sky-800 hover:bg-sky-900 text-white text-xs px-5 py-2 rounded-md font-bold">Start Flasher</button>
+          <div class="flex space-x-2">
+            <button id="startFlashBtn" onclick="startFlasher()" class="bg-sky-800 hover:bg-sky-900 text-white text-xs px-5 py-2 rounded-md font-bold shadow-sm transition-colors">Start Flasher</button>
+            <button id="pauseFlashBtn" onclick="pauseFlasher()" class="hidden bg-stone-200 hover:bg-stone-300 text-stone-800 text-xs px-4 py-2 rounded-md font-bold transition-colors">Pause</button>
+          </div>
         </div>
       </div>
 
@@ -280,18 +297,29 @@
 
   <!-- MAIN CONTROLLER MODULE -->
   <script type="module">
-    import { allPassages, getPassagesByTier, getPassageById, getPassageByTopicOrLexile } from './js/library/index.js';  
+    import { allPassages, getPassagesByTier, getPassageById, getPassageByTopicOrLexile } from './js/library/index.js';
+
+    // Global Module Bindings
+    window.allPassages = allPassages;
+    window.getPassagesByTier = getPassagesByTier;
+    window.getPassageById = getPassageById;
+    window.getPassageByTopicOrLexile = getPassageByTopicOrLexile;
+
     // App Global State
     window.currentLexileTier = 'tier2';
     window.currentBenchmarkForm = 'FormA';
     window.isTeacherDemoActive = false;
     window.currentData = null;
-    window.allPassages = allPassages;
-    window.getPassagesByTier = getPassagesByTier;
-    window.getPassageById = getPassageById;
-    window.getPassageByTopicOrLexile = getPassageByTopicOrLexile;
-  
-  // 1. GLOBAL WINDOW ATTACHMENTS (Ensures HTML onclick buttons never throw ReferenceErrors)
+
+    // Tier mapping table (maps dropdown values to lexileLabels)
+    const tierMap = {
+      'tier1': 'Foundational',
+      'tier2': 'Intermediate',
+      'tier3': 'Advanced',
+      'tier4': 'Mastery'
+    };
+
+    // 1. GLOBAL WINDOW ATTACHMENTS FOR BUTTON HANDLERS
     window.openGuideModal = function() {
       document.getElementById('guideModal')?.classList.remove('hidden');
     };
@@ -310,10 +338,14 @@
       document.getElementById('teacherPortal')?.classList.toggle('hidden', window.isTeacherDemoActive);
       document.getElementById('studentPortal')?.classList.toggle('hidden', !window.isTeacherDemoActive);
       document.getElementById('demoBanner')?.classList.toggle('hidden', !window.isTeacherDemoActive);
+      
+      if (window.isTeacherDemoActive) {
+        window.setBenchmarkForm(window.currentBenchmarkForm || 'FormA');
+      }
     };
 
     window.handleAuthAction = function() {
-      alert("Auth handler active.");
+      alert("Sign out triggered.");
     };
 
     window.toggleAccessibilityMode = function() {
@@ -334,21 +366,31 @@
       if (activeBtn) activeBtn.className = 'tab-btn px-4 py-2 text-sm font-semibold rounded-md bg-sky-800 text-white shadow-sm';
     };
 
+    // 2. FIXED BENCHMARK HANDLER (STEP 1 DIAGNOSTIC ONLY)
     window.setBenchmarkForm = function(form) {
       window.currentBenchmarkForm = form;
-      document.getElementById('formABtn').className = form === 'FormA' 
-        ? 'px-3 py-1 text-xs font-bold rounded bg-sky-800 text-white' 
-        : 'px-3 py-1 text-xs font-bold rounded bg-stone-100 border text-stone-700';
-      document.getElementById('formBBtn').className = form === 'FormB' 
-        ? 'px-3 py-1 text-xs font-bold rounded bg-sky-800 text-white' 
-        : 'px-3 py-1 text-xs font-bold rounded bg-stone-100 border text-stone-700';
       
-      window.populatePassageDropdown();
+      const btnA = document.getElementById('formABtn');
+      const btnB = document.getElementById('formBBtn');
+      if (btnA) btnA.className = form === 'FormA' ? 'px-3 py-1 text-xs font-bold rounded bg-sky-800 text-white' : 'px-3 py-1 text-xs font-bold rounded bg-stone-100 border text-stone-700';
+      if (btnB) btnB.className = form === 'FormB' ? 'px-3 py-1 text-xs font-bold rounded bg-sky-800 text-white' : 'px-3 py-1 text-xs font-bold rounded bg-stone-100 border text-stone-700';
+
+      const tier = window.currentLexileTier || 'tier2';
+      if (window.benchmarkBank && window.benchmarkBank[tier] && window.benchmarkBank[tier][form]) {
+        const benchData = window.benchmarkBank[tier][form];
+        const diagText = document.getElementById('diagText');
+        if (diagText) diagText.innerText = benchData.passage;
+
+        if (window.renderQuestionList) {
+          window.renderQuestionList('diagQuizQuestionsContainer', benchData.questions, 'diag');
+        }
+      }
     };
 
-    // 2. PASSAGE DROPDOWN & LEVEL FILTERING
+    // 3. PASSAGE DROPDOWN & PRACTICE SELECTION
     window.onLexileChange = function() {
       window.currentLexileTier = document.getElementById('lexileSelect')?.value || 'tier2';
+      window.setBenchmarkForm(window.currentBenchmarkForm);
       window.populatePassageDropdown();
     };
 
@@ -356,53 +398,36 @@
       const passageSelect = document.getElementById('passageSelect');
       if (!passageSelect) return;
 
-      const currentTier = document.getElementById('lexileSelect')?.value || 'tier2';
-      let passages = [];
+      const rawTier = document.getElementById('lexileSelect')?.value || 'tier2';
+      const mappedLabel = tierMap[rawTier] || rawTier;
 
-      // Fetch from library module
-      if (typeof getPassagesByTier === 'function') {
-        passages = getPassagesByTier(currentTier);
-      }
+      let passages = (typeof window.getPassagesByTier === 'function') ? window.getPassagesByTier(mappedLabel) : [];
 
-      // Fallback to benchmark Bank if library array is unpopulated
       if (!passages || passages.length === 0) {
-        if (window.benchmarkBank && window.benchmarkBank[currentTier]) {
-          passages = [
-            { id: 'FormA', title: `${currentTier.toUpperCase()} - Baseline Benchmark (Form A)` },
-            { id: 'FormB', title: `${currentTier.toUpperCase()} - Re-Test Assessment (Form B)` }
-          ];
-        }
+        passages = window.allPassages || [];
       }
 
       if (passages.length > 0) {
         passageSelect.innerHTML = passages.map(p => 
-          `<option value="${p.id}">${p.title || p.id}</option>`
+          `<option value="${p.id}">${p.title} (${p.lexileLabel || 'Standard'})</option>`
         ).join('');
         
-        // Auto-select and load first passage into state
         window.onPassageDropdownSelect(passages[0].id);
       } else {
-        passageSelect.innerHTML = `<option value="">No passages found for this level</option>`;
+        passageSelect.innerHTML = `<option value="">No passages found</option>`;
       }
     };
 
-    // 3. ATOMIC DATA ROUTING (Prevents text scrambling across modules)
     window.onPassageDropdownSelect = function(passageId) {
-      let passageData = (typeof getPassageById === 'function') ? getPassageById(passageId) : null;
-
-      if (!passageData && window.benchmarkBank) {
-        const currentTier = document.getElementById('lexileSelect')?.value || 'tier2';
-        passageData = window.benchmarkBank[currentTier]?.[passageId] || window.benchmarkBank[currentTier]?.['FormA'];
-      }
-
+      const passageData = (typeof window.getPassageById === 'function') ? window.getPassageById(passageId) : null;
       if (!passageData) return;
 
       window.currentData = {
-        id: passageData.id || passageId,
+        id: passageData.id,
         title: passageData.title || "Reading Passage",
         passage: passageData.passage || "",
-        preview: passageData.preview || "Preview key concepts and main ideas before reading.",
-        guiding_question: passageData.guiding_question || "What key information is highlighted in this passage?",
+        preview: passageData.preview || "Preview main ideas before reading.",
+        guiding_question: passageData.guiding_question || "What key information is highlighted?",
         chunks: passageData.chunks || (window.buildChunksFromPassage ? window.buildChunksFromPassage(passageData.passage) : []),
         questions: passageData.questions || []
       };
@@ -414,13 +439,6 @@
       const data = window.currentData;
       if (!data || !data.passage) return;
 
-      // Update Diagnostic
-      const diagText = document.getElementById('diagText');
-      if (diagText) diagText.innerText = data.passage;
-      if (window.renderQuestionList) {
-        window.renderQuestionList('diagQuizQuestionsContainer', data.questions, 'diag');
-      }
-
       // Update Module 1 (Shutter)
       const m1Title = document.getElementById('m1Title');
       if (m1Title) m1Title.innerText = "Module 1: " + data.title;
@@ -429,7 +447,7 @@
       const shutterContainer = document.getElementById('shutterContainer');
       if (shutterContainer) {
         shutterContainer.innerHTML = sentences.map((s, i) => 
-          `<div id="line-${i}" class="shutter-line dimmed p-3 bg-stone-50 rounded border border-stone-200 text-stone-800">${s.trim()}</div>`
+          `<div id="line-${i}" class="shutter-line dimmed p-3 bg-stone-50 rounded border border-stone-200 text-stone-800 font-serif">${s.trim()}</div>`
         ).join('');
       }
 
@@ -437,6 +455,9 @@
       const flashCounter = document.getElementById('flashCounter');
       if (flashCounter) {
         flashCounter.innerText = `Ready: 0 / ${(data.chunks || []).length} Flashes`;
+      }
+      if (window.initFlasherData) {
+        window.initFlasherData(data.chunks);
       }
 
       // Update Module 3 (PQRST Reader)
@@ -457,7 +478,6 @@
       if (window.pqrstReset) window.pqrstReset();
     };
 
-    // PQRST Step Switcher
     window.pqrstNextStep = function(stepNum) {
       document.getElementById('pqrstStep1')?.classList.toggle('hidden', stepNum !== 1);
       document.getElementById('pqrstStep2')?.classList.toggle('hidden', stepNum !== 2);
@@ -468,13 +488,13 @@
       window.pqrstNextStep(1);
     };
 
-    // Boot execution: Auto-populate passage list when DOM is ready
+    // Initializer Boot
     document.addEventListener('DOMContentLoaded', () => {
-      window.populatePassageDropdown();
+      window.onLexileChange();
     });
 
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
-      window.populatePassageDropdown();
+      window.onLexileChange();
     }
   </script>
 </body>
