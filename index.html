@@ -198,8 +198,8 @@
         <button onclick="startShutter()" class="bg-sky-800 hover:bg-sky-900 text-white text-xs px-4 py-2 rounded-md font-bold">Begin Line Pacer</button>
       </div>
 
-     <!-- TAB CONTENT 2: VISUAL FLASHER -->
-     <div id="tab-module2" class="tab-content hidden bg-white p-6 rounded-xl border border-stone-300 shadow-sm space-y-4 text-center">
+    <!-- TAB CONTENT 2: VISUAL FLASHER -->
+    <div id="tab-module2" class="tab-content hidden bg-white p-6 rounded-xl border border-stone-300 shadow-sm space-y-4 text-center">
       <div class="border-b border-stone-200 pb-3 text-left flex justify-between items-center">
         <div>
           <h3 class="text-base font-bold text-sky-950">Module 2: Visual Chunk Flasher</h3>
@@ -207,21 +207,22 @@
         </div>
         <div class="flex items-center space-x-2">
           <label for="flasherWpmSelect" class="text-xs font-bold text-stone-600">Target WPM:</label>
-          <select id="flasherWpmSelect" onchange="window.setFlasherSpeed && window.setFlasherSpeed(this.value)" class="bg-stone-50 border border-stone-300 text-xs px-2.5 py-1.5 rounded-md font-bold text-sky-900">
-            <option value="180">180 WPM</option>
-            <option value="220" selected>220 WPM</option>
-            <option value="260">260 WPM</option>
-            <option value="300">300 WPM</option>
+          <select id="flasherWpmSelect" onchange="window.setFlashSpeed && window.setFlashSpeed(this.value)" class="bg-stone-50 border border-stone-300 text-xs px-2.5 py-1.5 rounded-md font-bold text-sky-900">
+            <option value="500">180 WPM</option>
+            <option value="350" selected>220 WPM</option>
+            <option value="200">260 WPM</option>
           </select>
         </div>
       </div>
 
-      <!-- MAIN FLASH DISPLAY (USES OPTICAL FLASHER STYLES FROM STYLES.CSS) -->
+      <!-- MAIN FLASH DISPLAY CONTAINER -->
       <div id="flashBox" class="h-36 bg-stone-50 border border-stone-200 rounded-xl flex items-center justify-center p-4 shadow-inner">
-        <div class="flash-container">
-          <span class="flash-prefix">READY TO </span>
-          <span class="flash-anchor">F</span>
-          <span class="flash-suffix">LASH</span>
+        <div id="flashDisplay" class="w-full">
+          <div class="flash-container">
+            <span class="flash-prefix">READY TO </span>
+            <span class="flash-anchor">F</span>
+            <span class="flash-suffix">LASH</span>
+          </div>
         </div>
       </div>
 
