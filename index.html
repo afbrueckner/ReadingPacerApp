@@ -535,9 +535,128 @@
   <!-- MAIN UI CONTROLLER & AI GENERATOR -->
   <script type="module" src="js/libraryLoader.js"></script>
   <script type="module">
-    import { getPassageByTopicOrLexile } from './js/library/index.js';
-    window.getPassageByTopicOrLexile = getPassageByTopicOrLexile;
-
+    import { getPassagesByTier, getPassageById } from './js/library/index.js';
+  
+    // 1. Level Change Handler
+    window.onLexileChange = function() {
+      window.currentLexileTier = document.getElementById('lexileSelect')?.value || 'tier2';
+      window.populatePassageDropdown();
+    };
+  
+    // 2. Populate Dropdown Options dynamically with fallbacks
+    window.populatePassageDropdown = function() {
+      const passageSelect = document.getElementById('passageSelect');
+      if (!passageSelect) return;
+  
+      const currentTier = document.getElementById('lexileSelect')?.value || 'tier2';
+      let passages = [];
+  
+      // Fetch passages from library
+      if (typeof getPassagesByTier === 'function') {
+        passages = getPassagesByTier(currentTier);
+      }
+  
+      // Fallback to benchmarkBank if library array isn't populated
+      if (!passages || passages.length === 0) {
+        if (window.benchmarkBank && window.benchmarkBank[currentTier]) {
+          passages = [
+            { id: 'FormA', title: `${currentTier.toUpperCase()} - Form A (Baseline)` },
+            { id: 'FormB', title: `${currentTier.toUpperCase()} - Form B (Re-Test)` }
+          ];
+        }
+      }
+  
+      // Render <option> tags into dropdown
+      if (passages.length > 0) {
+        passageSelect.innerHTML = passages.map(p => 
+          `<option value="${p.id}">${p.title || p.id}</option>`
+        ).join('');
+        
+        // Auto-select and load the first item in the list
+        window.onPassageDropdownSelect(passages[0].id);
+      } else {
+        passageSelect.innerHTML = `<option value="">No passages found for this level</option>`;
+      }
+    };
+  
+    // 3. Passage Selection Handler: Updates all modules simultaneously
+    window.onPassageDropdownSelect = function(passageId) {
+      let passageData = (typeof getPassageById === 'function') ? getPassageById(passageId) : null;
+  
+      if (!passageData && window.benchmarkBank) {
+        const currentTier = document.getElementById('lexileSelect')?.value || 'tier2';
+        passageData = window.benchmarkBank[currentTier]?.[passageId] || window.benchmarkBank[currentTier]?.['FormA'];
+      }
+  
+      if (!passageData) return;
+  
+      // Single source of truth update
+      window.currentData = {
+        id: passageData.id || passageId,
+        title: passageData.title || "Reading Passage",
+        passage: passageData.passage || "",
+        preview: passageData.preview || "Preview main ideas before reading.",
+        guiding_question: passageData.guiding_question || "What are the key concepts of this passage?",
+        chunks: passageData.chunks || (window.buildChunksFromPassage ? window.buildChunksFromPassage(passageData.passage) : []),
+        questions: passageData.questions || []
+      };
+  
+      window.syncAllModulesWithCurrentData();
+    };
+  
+    // 4. Atomic Sync across all views (prevents text mismatches between Step 1 and Step 2)
+    window.syncAllModulesWithCurrentData = function() {
+      const data = window.currentData;
+      if (!data || !data.passage) return;
+  
+      // Update Diagnostic tab
+      const diagText = document.getElementById('diagText');
+      if (diagText) diagText.innerText = data.passage;
+      if (window.renderQuestionList) {
+        window.renderQuestionList('diagQuizQuestionsContainer', data.questions, 'diag');
+      }
+  
+      // Update Module 1 (Accelerator Shutter)
+      const m1Title = document.getElementById('m1Title');
+      if (m1Title) m1Title.innerText = "Module 1: " + data.title;
+      
+      const sentences = data.passage.match(/[^.!?]+[.!?]+/g) || [data.passage];
+      const shutterContainer = document.getElementById('shutterContainer');
+      if (shutterContainer) {
+        shutterContainer.innerHTML = sentences.map((s, i) => 
+          `<div id="line-${i}" class="shutter-line dimmed p-3.5 rounded-lg">${s.trim()}</div>`
+        ).join('');
+      }
+  
+      // Update Module 2 (Flasher)
+      const flashCounter = document.getElementById('flashCounter');
+      if (flashCounter) {
+        flashCounter.innerText = `Ready: 0 / ${(data.chunks || []).length} Flashes`;
+      }
+  
+      // Update Module 3 (PQRST Reader)
+      const pqrstTitle = document.getElementById('pqrstTitle');
+      const pqrstPreview = document.getElementById('pqrstPreview');
+      const pqrstQuestion = document.getElementById('pqrstQuestion');
+      const pqrstPassageText = document.getElementById('pqrstPassageText');
+  
+      if (pqrstTitle) pqrstTitle.innerText = data.title;
+      if (pqrstPreview) pqrstPreview.innerText = data.preview;
+      if (pqrstQuestion) pqrstQuestion.innerText = data.guiding_question;
+      if (pqrstPassageText) pqrstPassageText.innerText = data.passage;
+  
+      if (window.renderQuestionList) {
+        window.renderQuestionList('pqrstQuizContainer', data.questions, 'pqrst');
+      }
+  
+      // Reset PQRST steps back to Step 1
+      if (window.pqrstReset) window.pqrstReset();
+    };
+  
+    // Boot initializer: run on load
+    document.addEventListener('DOMContentLoaded', () => {
+      window.populatePassageDropdown();
+    });
     // 1. Explicitly attach UI & Modal Functions to window for HTML onclick handlers
     window.openGuideModal = function() {
       document.getElementById('guideModal')?.classList.remove('hidden');
