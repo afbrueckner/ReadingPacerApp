@@ -148,42 +148,34 @@
         </div>
       </div>
 
-      <!-- LEXILE & CONTENT GENERATOR -->
-      <div class="bg-white p-5 rounded-xl border border-stone-300 space-y-3 font-sans-ui shadow-sm">
-        <div class="flex justify-between items-center border-b border-stone-200 pb-2.5">
-          <h2 class="text-sm font-bold text-sky-950">Target Reading Calibration</h2>
-          <div class="flex items-center space-x-2">
-            <button id="accessToggleBtn" onclick="toggleAccessibilityMode()" class="bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-700 text-xs px-2.5 py-1.5 rounded-md font-bold transition-colors">
-              Aa High Contrast
-            </button>
-            <label for="lexileSelect" class="text-xs text-stone-600 font-semibold">IXL Reading Band:</label>
-            <select id="lexileSelect" onchange="onLexileChange()" class="bg-stone-50 border border-stone-300 text-xs px-2.5 py-1.5 rounded-md text-sky-900 font-bold">
-              <option value="tier1">Foundational Band (400L - 550L)</option>
-              <option value="tier2" selected>Intermediate Band (600L - 750L)</option>
-              <option value="tier3">Advanced Band (800L - 950L)</option>
-              <option value="tier4">Mastery Band (1000L+)</option>
-            </select>
-          </div>
+     <!-- LEXILE & CONTENT GENERATOR -->
+     <div class="bg-white p-5 rounded-xl border border-stone-300 space-y-3 font-sans-ui shadow-sm">
+      <div class="flex justify-between items-center border-b border-stone-200 pb-2.5">
+        <h2 class="text-sm font-bold text-sky-950">Target Reading Calibration</h2>
+        <div class="flex items-center space-x-2">
+          <button id="accessToggleBtn" onclick="toggleAccessibilityMode()" class="bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-700 text-xs px-2.5 py-1.5 rounded-md font-bold transition-colors">
+            Aa High Contrast
+          </button>
+          <label for="lexileSelect" class="text-xs text-stone-600 font-semibold">IXL Reading Band:</label>
+          <select id="lexileSelect" onchange="onLexileChange()" class="bg-stone-50 border border-stone-300 text-xs px-2.5 py-1.5 rounded-md text-sky-900 font-bold">
+            <option value="tier1">Foundational Band (400L - 550L)</option>
+            <option value="tier2" selected>Intermediate Band (600L - 750L)</option>
+            <option value="tier3">Advanced Band (800L - 950L)</option>
+            <option value="tier4">Mastery Band (1000L+)</option>
+          </select>
         </div>
+      </div>
 
-        <h2 class="text-sm font-bold text-sky-950 pt-1">Generate Custom Practice Passage</h2>
-        
-        <!-- QUICK TOPIC SUGGESTION PILLS -->
-        <div class="flex flex-wrap gap-1.5 pt-0.5 pb-1 font-sans-ui">
-          <span class="text-[11px] text-stone-500 font-semibold self-center mr-1">Quick Suggestions:</span>
-          <button onclick="setQuickTopic('Deep Ocean Vents')" class="bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-700 text-[11px] px-2 py-0.5 rounded font-medium transition-colors">🐋 Deep Ocean Vents</button>
-          <button onclick="setQuickTopic('Roman Gladiators')" class="bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-700 text-[11px] px-2 py-0.5 rounded font-medium transition-colors">🛡️ Roman Gladiators</button>
-          <button onclick="setQuickTopic('Black Holes')" class="bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-700 text-[11px] px-2 py-0.5 rounded font-medium transition-colors">🌌 Black Holes</button>
-          <button onclick="setQuickTopic('Codebreakers of WWII')" class="bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-700 text-[11px] px-2 py-0.5 rounded font-medium transition-colors">🔐 WWII Codebreakers</button>
-        </div>
+      <!-- LEVEL-FILTERED PASSAGE SELECTOR -->
+      <div class="space-y-2 pt-1 font-sans-ui">
+        <label for="passageSelect" class="text-xs font-bold text-sky-950">Select Practice Passage for Current Band:</label>
+        <select id="passageSelect" onchange="onPassageDropdownSelect(this.value)" class="w-full bg-stone-50 border border-stone-300 text-xs px-3 py-2 rounded-md text-slate-900 font-medium shadow-sm">
+          <!-- Dynamically populated by JavaScript based on chosen Lexile level -->
+        </select>
+      </div>
 
-        <div class="flex space-x-2">
-          <input type="text" id="topicInput" placeholder="Topic (e.g., Solar System, Ancient Rome, Rainforests)" class="bg-stone-50 border border-stone-300 text-xs px-3 py-2 rounded-md flex-1 text-slate-900">
-          <button onclick="generateAIContent()" id="genBtn" class="bg-indigo-700 hover:bg-indigo-800 font-bold px-4 py-2 text-xs rounded-md text-white shadow-sm">Generate Content</button>
-        </div>
-
-        <!-- SMOOTHED PROGRESS BAR UI ANIMATION -->
-        <div id="genStatusContainer" class="hidden space-y-2 pt-2 font-sans-ui">
+      <!-- SMOOTHED PROGRESS BAR UI ANIMATION -->
+      <div id="genStatusContainer" class="hidden space-y-2 pt-2 font-sans-ui">
           <div class="flex justify-between text-xs text-stone-600 font-semibold">
             <span id="loaderStepText">Step 1 of 3: Gathering passage content...</span>
             <span id="loaderPctText" class="font-mono text-sky-900">33%</span>
