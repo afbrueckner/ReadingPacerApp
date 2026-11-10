@@ -198,37 +198,38 @@
         <button onclick="startShutter()" class="bg-sky-800 hover:bg-sky-900 text-white text-xs px-4 py-2 rounded-md font-bold">Begin Line Pacer</button>
       </div>
 
-      <!-- TAB CONTENT 2: VISUAL FLASHER (FULLY RESTORED FLASHER & ENHANCEMENTS) -->
-      <div id="tab-module2" class="tab-content hidden bg-white p-6 rounded-xl border border-stone-300 shadow-sm space-y-4 text-center">
-        <div class="border-b border-stone-200 pb-3 text-left flex justify-between items-center">
-          <div>
-            <h3 class="text-base font-bold text-sky-950">Module 2: Visual Chunk Flasher</h3>
-            <p class="text-xs text-stone-500">Expands tachistoscopic phrase span (2-4 word phrases flashed at target WPM speed).</p>
-          </div>
-          <div class="flex items-center space-x-2">
-            <label for="flasherWpmSelect" class="text-xs font-bold text-stone-600">Target WPM:</label>
-            <select id="flasherWpmSelect" onchange="window.updateFlasherSpeed && window.updateFlasherSpeed(this.value)" class="bg-stone-50 border border-stone-300 text-xs px-2 py-1 rounded font-bold text-sky-900">
-              <option value="180">180 WPM</option>
-              <option value="220" selected>220 WPM</option>
-              <option value="260">260 WPM</option>
-              <option value="300">300 WPM</option>
-            </select>
-          </div>
+     <!-- TAB CONTENT 2: VISUAL FLASHER -->
+     <div id="tab-module2" class="tab-content hidden bg-white p-6 rounded-xl border border-stone-300 shadow-sm space-y-4 text-center">
+      <div class="border-b border-stone-200 pb-3 text-left flex justify-between items-center">
+        <div>
+          <h3 class="text-base font-bold text-sky-950">Module 2: Visual Chunk Flasher</h3>
+          <p class="text-xs text-stone-500">Expands tachistoscopic phrase span (2-4 word phrases flashed at target WPM speed).</p>
         </div>
-
-        <!-- MAIN FLASH DISPLAY BOX -->
-        <div id="flashBox" class="h-36 bg-stone-900 text-emerald-400 rounded-xl flex items-center justify-center text-2xl font-mono font-bold shadow-inner border border-stone-800 transition-all">
-          READY TO FLASH
-        </div>
-
-        <div class="flex justify-between items-center px-2 pt-1">
-          <p id="flashCounter" class="text-xs font-bold text-stone-500">Ready: 0 / 0 Flashes</p>
-          <div class="flex space-x-2">
-            <button id="startFlashBtn" onclick="startFlasher()" class="bg-sky-800 hover:bg-sky-900 text-white text-xs px-5 py-2 rounded-md font-bold shadow-sm transition-colors">Start Flasher</button>
-            <button id="pauseFlashBtn" onclick="pauseFlasher()" class="hidden bg-stone-200 hover:bg-stone-300 text-stone-800 text-xs px-4 py-2 rounded-md font-bold transition-colors">Pause</button>
-          </div>
+        <div class="flex items-center space-x-2">
+          <label for="flasherWpmSelect" class="text-xs font-bold text-stone-600">Target WPM:</label>
+          <select id="flasherWpmSelect" onchange="window.setFlasherSpeed && window.setFlasherSpeed(this.value)" class="bg-stone-50 border border-stone-300 text-xs px-2.5 py-1.5 rounded-md font-bold text-sky-900">
+            <option value="180">180 WPM</option>
+            <option value="220" selected>220 WPM</option>
+            <option value="260">260 WPM</option>
+            <option value="300">300 WPM</option>
+          </select>
         </div>
       </div>
+
+      <!-- MAIN FLASH DISPLAY (USES OPTICAL FLASHER STYLES FROM STYLES.CSS) -->
+      <div id="flashBox" class="h-36 bg-stone-50 border border-stone-200 rounded-xl flex items-center justify-center p-4 shadow-inner">
+        <div class="flash-container">
+          <span class="flash-prefix">READY TO </span>
+          <span class="flash-anchor">F</span>
+          <span class="flash-suffix">LASH</span>
+        </div>
+      </div>
+
+      <div class="flex justify-between items-center pt-1">
+        <p id="flashCounter" class="text-xs font-bold text-stone-500">Ready: 0 / 0 Flashes</p>
+        <button id="startFlashBtn" onclick="startFlasher()" class="bg-sky-800 hover:bg-sky-900 text-white text-xs px-5 py-2 rounded-md font-bold transition-colors shadow-sm">Start Flasher</button>
+      </div>
+    </div>
 
       <!-- TAB CONTENT 3: PQRST ACTIVE READING -->
       <div id="tab-module3" class="tab-content hidden bg-white p-6 rounded-xl border border-stone-300 shadow-sm space-y-4">
