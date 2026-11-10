@@ -31,4 +31,14 @@ export function getPassageByTopicOrLexile(queryTopic, lexileBand) {
 
   // 3. Fallback to default first entry
   return allPassages[0];
+}// Add to bottom of js/library/index.js
+
+export function getPassagesByTier(lexileBand) {
+  if (!lexileBand) return allPassages;
+  const matches = allPassages.filter(p => p.lexileLabel === lexileBand);
+  return matches.length > 0 ? matches : allPassages;
+}
+
+export function getPassageById(id) {
+  return allPassages.find(p => p.id === id) || allPassages[0];
 }

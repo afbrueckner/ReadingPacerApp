@@ -280,15 +280,18 @@
 
   <!-- MAIN CONTROLLER MODULE -->
   <script type="module">
-    import { getPassagesByTier, getPassageById } from './js/library/index.js';
-
+    import { allPassages, getPassagesByTier, getPassageById, getPassageByTopicOrLexile } from './js/library/index.js';  
     // App Global State
     window.currentLexileTier = 'tier2';
     window.currentBenchmarkForm = 'FormA';
     window.isTeacherDemoActive = false;
     window.currentData = null;
-
-    // 1. GLOBAL WINDOW ATTACHMENTS (Ensures HTML onclick buttons never throw ReferenceErrors)
+    window.allPassages = allPassages;
+    window.getPassagesByTier = getPassagesByTier;
+    window.getPassageById = getPassageById;
+    window.getPassageByTopicOrLexile = getPassageByTopicOrLexile;
+  
+  // 1. GLOBAL WINDOW ATTACHMENTS (Ensures HTML onclick buttons never throw ReferenceErrors)
     window.openGuideModal = function() {
       document.getElementById('guideModal')?.classList.remove('hidden');
     };
