@@ -1,39 +1,69 @@
 let currentFlashDelay = 350;
 
+// SURGICAL FIX: Natural 3-4 word chunking with ORP Word-Center Anchor
 window.buildChunksFromPassage = function(passageText) {
   if (!passageText) return [];
 
-  const sentences = passageText.match(/[^.!?]+[.!?]+/g) || [passageText];
-  const chunks = [];
+  // 1. Split into primary clauses by punctuation
+  const rawClauses = passageText.split(/([,.;:!—–\n]+)/);
+  const rawUnits = [];
 
-  sentences.forEach(sentence => {
-    const clauses = sentence.trim().split(/(?<=[,;:])/g);
+  for (let i = 0; i < rawClauses.length; i++) {
+    const text = rawClauses[i].trim();
+    if (!text) continue;
 
-    clauses.forEach(clause => {
-      const words = clause.trim().split(/\s+/).filter(w => w.length > 0);
-      let i = 0;
-
-      while (i < words.length) {
-        const remaining = words.length - i;
-        let count = 3;
-
-        if (remaining === 4) {
-          count = 2;
-        } else if (remaining < 3) {
-          count = remaining;
-        }
-
-        const chunkText = words.slice(i, i + count).join(' ');
-        if (chunkText.trim()) {
-          const oapIndex = Math.floor(chunkText.length / 2);
-          chunks.push({ text: chunkText, oap: oapIndex });
-        }
-        i += count;
+    // Attach punctuation directly to the preceding word group
+    if (/^[,.;:!—–]+$/.test(text)) {
+      if (rawUnits.length > 0) {
+        rawUnits[rawUnits.length - 1] += text;
       }
-    });
+      continue;
+    }
+    rawUnits.push(text);
+  }
+
+  // 2. Break clauses into tight 3-4 word visual targets (no 1-word orphans)
+  const phrases = [];
+  rawUnits.forEach(clause => {
+    const words = clause.split(/\s+/);
+    let current = [];
+
+    for (let w = 0; w < words.length; w++) {
+      current.push(words[w]);
+
+      // Target 3-4 words per chunk
+      if (current.length === 3 && w === words.length - 2) {
+        // Leave 2 words for the last chunk instead of an orphan 1 word
+        phrases.push(current.join(' '));
+        current = [];
+      } else if (current.length >= 4 || w === words.length - 1) {
+        phrases.push(current.join(' '));
+        current = [];
+      }
+    }
   });
 
-  return chunks;
+  // 3. Calculate True Optimal Recognition Point (ORP) per phrase
+  return phrases.map(phrase => {
+    const words = phrase.split(' ');
+    // Select the middle word as the visual focus target
+    const targetWordIndex = Math.floor(words.length / 2);
+    
+    let charOffset = 0;
+    for (let i = 0; i < targetWordIndex; i++) {
+      charOffset += words[i].length + 1; // Word length + space
+    }
+
+    const targetWord = words[targetWordIndex];
+    // Select the ORP character inside the middle word (~30-40% into the word)
+    const wordOrpIndex = Math.max(0, Math.floor(targetWord.length / 3));
+    const oap = charOffset + wordOrpIndex;
+
+    return {
+      text: phrase,
+      oap: oap
+    };
+  });
 };
 
 window.setFlashSpeed = function(speedMs) {
